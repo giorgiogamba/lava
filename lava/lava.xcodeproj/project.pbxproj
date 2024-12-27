@@ -97,9 +97,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = F19512DE2D1EA7FB00A4CD01 /* Build configuration list for PBXNativeTarget "lava" */;
 			buildPhases = (
+				F19512D52D1EA7FB00A4CD01 /* CopyFiles */,
 				F19512D32D1EA7FB00A4CD01 /* Sources */,
 				F19512D42D1EA7FB00A4CD01 /* Frameworks */,
-				F19512D52D1EA7FB00A4CD01 /* CopyFiles */,
 			);
 			buildRules = (
 			);
