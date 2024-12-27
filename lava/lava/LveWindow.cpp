@@ -30,8 +30,13 @@ bool LveWindow::shouldClose()
 
 void LveWindow::InitWindow()
 {
+    // Initialize library
     glfwInit();
+    
+    // Ask to not create a OpenGL context
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+    
+    // Avoid resizing
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
     
     Window = glfwCreateWindow(Width, Heigth, Name.c_str(), nullptr, nullptr);
