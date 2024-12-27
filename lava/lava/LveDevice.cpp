@@ -509,7 +509,7 @@ void LveDevice::createBuffer(
 
       if (vkAllocateMemory(device_, &allocInfo, nullptr, &bufferMemory) != VK_SUCCESS)
       {
-        throw std::runtime_error("failed to allocate vertex buffer memory!");
+          throw std::runtime_error("failed to allocate vertex buffer memory!");
       }
 
       vkBindBufferMemory(device_, buffer, bufferMemory, 0);
@@ -611,12 +611,12 @@ void LveDevice::createImageWithInfo(
 
       if (vkAllocateMemory(device_, &allocInfo, nullptr, &imageMemory) != VK_SUCCESS)
       {
-        throw std::runtime_error("failed to allocate image memory!");
+          throw std::runtime_error("failed to allocate image memory!");
       }
 
       if (vkBindImageMemory(device_, image, imageMemory, 0) != VK_SUCCESS)
       {
-        throw std::runtime_error("failed to bind image memory!");
+          throw std::runtime_error("failed to bind image memory!");
       }
 }
 
