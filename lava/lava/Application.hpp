@@ -34,10 +34,12 @@ private:
     // #TODO remove this absolute path
     std::string absPathPrefix = "/Users/giorgiogamba/Documents/Projects/lava/lava/lava/";
     
-    LveWindow LveWindow{WIDTH, HEIGTH, "TEST"};
+    LveWindow Window{WIDTH, HEIGTH, "TEST"};
+    
+    LveDevice Device{Window};
     
     // Cannot create constexpr strings
-    LvePipeline LvePipeline{absPathPrefix + "shaders/vertex_shader.vert.spv", absPathPrefix + "shaders/fragment_shader.frag.spv"};
+    LvePipeline LvePipeline{Device, LvePipeline::defaultPipelineConfigInfo(WIDTH, HEIGTH), absPathPrefix + "shaders/vertex_shader.vert.spv", absPathPrefix + "shaders/fragment_shader.frag.spv"};
     
 };
 
