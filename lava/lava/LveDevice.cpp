@@ -107,6 +107,7 @@ void LveDevice::createInstance()
 
     VkInstanceCreateInfo createInfo = {};
     createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+    createInfo.flags = VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR;
     createInfo.pApplicationInfo = &appInfo;
 
     auto extensions = getRequiredExtensions();
@@ -229,7 +230,7 @@ void LveDevice::createCommandPool()
 
       if (vkCreateCommandPool(device_, &poolInfo, nullptr, &commandPool) != VK_SUCCESS)
       {
-        throw std::runtime_error("failed to create command pool!");
+          throw std::runtime_error("failed to create command pool!");
       }
 }
 
@@ -247,15 +248,14 @@ bool LveDevice::isDeviceSuitable(VkPhysicalDevice device)
       bool swapChainAdequate = false;
       if (extensionsSupported)
       {
-        SwapChainSupportDetails swapChainSupport = querySwapChainSupport(device);
-        swapChainAdequate = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
+          SwapChainSupportDetails swapChainSupport = querySwapChainSupport(device);
+          swapChainAdequate = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
       }
 
       VkPhysicalDeviceFeatures supportedFeatures;
       vkGetPhysicalDeviceFeatures(device, &supportedFeatures);
 
-      return indices.isComplete() && extensionsSupported && swapChainAdequate &&
-             supportedFeatures.samplerAnisotropy;
+      return indices.isComplete() && extensionsSupported && swapChainAdequate && supportedFeatures.samplerAnisotropy;
 }
 
 void LveDevice::populateDebugMessengerCreateInfo(
@@ -281,7 +281,7 @@ void LveDevice::setupDebugMessenger()
       populateDebugMessengerCreateInfo(createInfo);
       if (CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger) != VK_SUCCESS)
       {
-        throw std::runtime_error("failed to set up debug messenger!");
+          throw std::runtime_error("failed to set up debug messenger!");
       }
 }
 
@@ -295,21 +295,21 @@ bool LveDevice::checkValidationLayerSupport()
 
       for (const char *layerName : validationLayers)
       {
-        bool layerFound = false;
+          bool layerFound = false;
 
-        for (const auto &layerProperties : availableLayers)
-        {
-          if (strcmp(layerName, layerProperties.layerName) == 0)
+          for (const auto &layerProperties : availableLayers)
           {
-            layerFound = true;
-            break;
+              if (strcmp(layerName, layerProperties.layerName) == 0)
+              {
+                  layerFound = true;
+                  break;
+              }
           }
-        }
 
-        if (!layerFound)
-        {
-          return false;
-        }
+          if (!layerFound)
+          {
+              return false;
+          }
       }
 
       return true;
@@ -325,7 +325,8 @@ std::vector<const char *> LveDevice::getRequiredExtensions()
 
       if (enableValidationLayers)
       {
-        extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+          extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+          extensions.push_back(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
       }
 
       return extensions;
@@ -342,19 +343,19 @@ void LveDevice::hasGflwRequiredInstanceExtensions()
       std::unordered_set<std::string> available;
       for (const auto &extension : extensions)
       {
-        std::cout << "\t" << extension.extensionName << std::endl;
-        available.insert(extension.extensionName);
+          std::cout << "\t" << extension.extensionName << std::endl;
+          available.insert(extension.extensionName);
       }
 
       std::cout << "required extensions:" << std::endl;
       auto requiredExtensions = getRequiredExtensions();
       for (const auto &required : requiredExtensions)
       {
-        std::cout << "\t" << required << std::endl;
-        if (available.find(required) == available.end())
-        {
-          throw std::runtime_error("Missing required glfw extension");
-        }
+          std::cout << "\t" << required << std::endl;
+          if (available.find(required) == available.end())
+          {
+              throw std::runtime_error("Missing required glfw extension");
+          }
       }
 }
 
@@ -374,7 +375,7 @@ bool LveDevice::checkDeviceExtensionSupport(VkPhysicalDevice device)
 
       for (const auto &extension : availableExtensions)
       {
-        requiredExtensions.erase(extension.extensionName);
+          requiredExtensions.erase(extension.extensionName);
       }
 
       return requiredExtensions.empty();
@@ -392,28 +393,29 @@ QueueFamilyIndices LveDevice::findQueueFamilies(VkPhysicalDevice device) {
       int i = 0;
       for (const auto &queueFamily : queueFamilies)
       {
-        if (queueFamily.queueCount > 0 && queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
-        {
-          indices.graphicsFamily = i;
-          indices.graphicsFamilyHasValue = true;
-        }
+          if (queueFamily.queueCount > 0 && queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
+          {
+            indices.graphicsFamily = i;
+              indices.graphicsFamilyHasValue = true;
+          }
           
-        VkBool32 presentSupport = false;
-        vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface_, &presentSupport);
-        if (queueFamily.queueCount > 0 && presentSupport)
-        {
-          indices.presentFamily = i;
-          indices.presentFamilyHasValue = true;
-        }
-        if (indices.isComplete())
-        {
-          break;
+          VkBool32 presentSupport = false;
+          vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface_, &presentSupport);
+          if (queueFamily.queueCount > 0 && presentSupport)
+          {
+              indices.presentFamily = i;
+              indices.presentFamilyHasValue = true;
+          }
+          
+          if (indices.isComplete())
+          {
+              break;
+          }
+
+          i++;
         }
 
-        i++;
-      }
-
-      return indices;
+        return indices;
 }
 
 SwapChainSupportDetails LveDevice::querySwapChainSupport(VkPhysicalDevice device) {
@@ -424,8 +426,8 @@ SwapChainSupportDetails LveDevice::querySwapChainSupport(VkPhysicalDevice device
       vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface_, &formatCount, nullptr);
 
       if (formatCount != 0) {
-        details.formats.resize(formatCount);
-        vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface_, &formatCount, details.formats.data());
+          details.formats.resize(formatCount);
+          vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface_, &formatCount, details.formats.data());
       }
 
       uint32_t presentModeCount;
@@ -433,8 +435,8 @@ SwapChainSupportDetails LveDevice::querySwapChainSupport(VkPhysicalDevice device
 
       if (presentModeCount != 0)
       {
-        details.presentModes.resize(presentModeCount);
-        vkGetPhysicalDeviceSurfacePresentModesKHR(
+          details.presentModes.resize(presentModeCount);
+          vkGetPhysicalDeviceSurfacePresentModesKHR(
             device,
             surface_,
             &presentModeCount,
@@ -448,18 +450,19 @@ VkFormat LveDevice::findSupportedFormat(
 {
       for (VkFormat format : candidates)
       {
-        VkFormatProperties props;
-        vkGetPhysicalDeviceFormatProperties(physicalDevice, format, &props);
+          VkFormatProperties props;
+          vkGetPhysicalDeviceFormatProperties(physicalDevice, format, &props);
 
-        if (tiling == VK_IMAGE_TILING_LINEAR && (props.linearTilingFeatures & features) == features)
-        {
-          return format;
-        }
-        else if (
-            tiling == VK_IMAGE_TILING_OPTIMAL && (props.optimalTilingFeatures & features) == features) {
-          return format;
-        }
+          if (tiling == VK_IMAGE_TILING_LINEAR && (props.linearTilingFeatures & features) == features)
+          {
+              return format;
+          }
+          else if (tiling == VK_IMAGE_TILING_OPTIMAL && (props.optimalTilingFeatures & features) == features)
+          {
+              return format;
+          }
       }
+    
       throw std::runtime_error("failed to find supported format!");
 }
 
@@ -469,11 +472,10 @@ uint32_t LveDevice::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags pr
       vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memProperties);
       for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++)
       {
-        if ((typeFilter & (1 << i)) &&
-            (memProperties.memoryTypes[i].propertyFlags & properties) == properties)
-        {
-          return i;
-        }
+          if ((typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & properties) == properties)
+          {
+              return i;
+          }
       }
 
       throw std::runtime_error("failed to find suitable memory type!");
@@ -494,7 +496,7 @@ void LveDevice::createBuffer(
 
       if (vkCreateBuffer(device_, &bufferInfo, nullptr, &buffer) != VK_SUCCESS)
       {
-        throw std::runtime_error("failed to create vertex buffer!");
+          throw std::runtime_error("failed to create vertex buffer!");
       }
 
       VkMemoryRequirements memRequirements;
@@ -596,7 +598,7 @@ void LveDevice::createImageWithInfo(
 {
       if (vkCreateImage(device_, &imageInfo, nullptr, &image) != VK_SUCCESS)
       {
-        throw std::runtime_error("failed to create image!");
+          throw std::runtime_error("failed to create image!");
       }
 
       VkMemoryRequirements memRequirements;
