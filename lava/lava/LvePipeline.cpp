@@ -9,12 +9,21 @@
 #include <iostream>
 
 #include "LvePipeline.hpp"
+#include "LveDevice.hpp"
 
 namespace Lve {
 
-LvePipeline::LvePipeline(const std::string& vertexShaderPath, const std::string& fragmentShaderPath)
+LvePipelineConfigInfo LvePipeline::defaultPipelineConfigInfo(const uint32_t Width, const uint32_t Height)
 {
-    createPipeline(vertexShaderPath, fragmentShaderPath);
+    LvePipelineConfigInfo ConfigInfo;
+    
+    return ConfigInfo;
+}
+
+LvePipeline::LvePipeline(LveDevice& InDevice, const LvePipelineConfigInfo& configInfo, const std::string& vertexShaderPath, const std::string& fragmentShaderPath)
+: Device(InDevice)
+{
+    createPipeline(configInfo, vertexShaderPath, fragmentShaderPath);
 }
 
 std::vector<char> LvePipeline::readFile(const std::string& filePath)
@@ -39,7 +48,7 @@ std::vector<char> LvePipeline::readFile(const std::string& filePath)
     return buffer;
 }
 
-void LvePipeline::createPipeline(const std::string& vertexShaderPath, const std::string& fragmentShaderPath)
+void LvePipeline::createPipeline(const LvePipelineConfigInfo& configInfo, const std::string& vertexShaderPath, const std::string& fragmentShaderPath)
 {
     const std::vector<char>& vertexShader = readFile(vertexShaderPath);
     const std::vector<char>& fragmentShader = readFile(fragmentShaderPath);
@@ -48,5 +57,22 @@ void LvePipeline::createPipeline(const std::string& vertexShaderPath, const std:
     std::cout << "Vertex shader size: " << vertexShader.size() << "\n";
     std::cout << "Fragment shader size: " << fragmentShader.size() << std::endl;
 }
+
+void LvePipeline::createShaderModule(const std::vector<char>& code, VkShaderModule* Module)
+{
+    VkShaderModuleCreateInfo createInfo;
+    createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+    createInfo.codeSize = code.size();
+    
+    // Since code dara are stored in a vector, its default allocat
+    // already ensures correctness by the worst case alignment requirement
+    createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
+    
+    if (vkCreateShaderModule(Device.device(), &createInfo, nullptr, Module) != VK_SUCCESS)
+    {
+        throw std::runtime_error("Failed to create shader module");
+    }
+}
+
 
 }

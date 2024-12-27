@@ -14,24 +14,46 @@
 #include <string>
 #include <vector>
 
-#include "LvePipeline.hpp"
+#include "LveDevice.hpp"
 
 #endif /* LvePipeline_hpp */
 
 namespace Lve {
 
+#pragma region Types
+
+struct LvePipelineConfigInfo
+{
+    
+};
+
+#pragma endregion
+
 class LvePipeline
 {
 public:
     
-    LvePipeline(const std::string& vertexShaderPath, const std::string& fragmentShaderPath);
+    LvePipeline(LveDevice& InDevice, const LvePipelineConfigInfo& configInfo, const std::string& vertexShaderPath, const std::string& fragmentShaderPath);
+    ~LvePipeline(){};
+    
+    LvePipeline(const LvePipeline&) = delete;
+    void operator=(const LvePipeline&) = delete;
+    
+    static LvePipelineConfigInfo defaultPipelineConfigInfo(const uint32_t Width, const uint32_t Height);
     
 private:
     
     static std::vector<char> readFile(const std::string& filePath);
     
-    void createPipeline(const std::string& vertexShaderPath, const std::string& fragmentShaderPath);
+    void createPipeline(const LvePipelineConfigInfo& configInfo, const std::string& vertexShaderPath, const std::string& fragmentShaderPath);
     
+    void createShaderModule(const std::vector<char>& code, VkShaderModule* Module);
+    
+    // UNsafe
+    LveDevice& Device;
+    VkPipeline Pipeline;
+    VkShaderModule vertexShaderModule;
+    VkShaderModule fragmentShaderModule;
 };
 
 }
