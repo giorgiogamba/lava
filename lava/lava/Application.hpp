@@ -9,10 +9,12 @@
 #define Application_hpp
 
 #include <stdio.h>
+#include <string>
 
 #endif /* Application_hpp */
 
 #include "LveWindow.hpp"
+#include "LvePipeline.hpp"
 
 namespace Lve {
 
@@ -27,7 +29,13 @@ public:
     
 private:
     
+    // #TODO remove this absolute path
+    std::string absPathPrefix = "/Users/giorgiogamba/Documents/Projects/lava/lava/lava/";
+    
     LveWindow LveWindow{WIDTH, HEIGTH, "TEST"};
+    
+    // Cannot create constexpr strings
+    LvePipeline LvePipeline{absPathPrefix + "shaders/vertex_shader.vert.spv", absPathPrefix + "shaders/fragment_shader.frag.spv"};
     
 };
 
