@@ -37,6 +37,8 @@ public:
     
     bool shouldClose();
     
+    void createWindowSurface(VkInstance Instance, VkSurfaceKHR* Surface);
+    
 private:
     
     void InitWindow();
