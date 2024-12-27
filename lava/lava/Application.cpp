@@ -6,3 +6,15 @@
 //
 
 #include "Application.hpp"
+
+namespace Lve {
+
+void Application::Run()
+{
+    while (!LveWindow.shouldClose())
+    {
+        glfwPollEvents();
+    }
+}
+
+}
