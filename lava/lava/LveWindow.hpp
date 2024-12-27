@@ -5,6 +5,8 @@
 //  Created by Giorgio Gamba on 27/12/24.
 //
 
+#pragma once
+
 #ifndef LveWindow_hpp
 #define LveWindow_hpp
 
@@ -50,4 +52,5 @@ private:
     GLFWwindow* Window;
     
 };
+
 }

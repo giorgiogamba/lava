@@ -5,6 +5,8 @@
 //  Created by Giorgio Gamba on 27/12/24.
 //
 
+#pragma once
+
 #ifndef Application_hpp
 #define Application_hpp
 
