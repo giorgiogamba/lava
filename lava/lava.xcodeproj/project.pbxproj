@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F120E95E2D1EC75A00A2BA17 /* LveWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F120E95C2D1EC75A00A2BA17 /* LveWindow.cpp */; };
+		F120E9612D1EC95100A2BA17 /* Application.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F120E95F2D1EC95100A2BA17 /* Application.cpp */; };
 		F19512DB2D1EA7FB00A4CD01 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F19512DA2D1EA7FB00A4CD01 /* main.cpp */; };
 		F19512EC2D1EAA5600A4CD01 /* libglfw.3.4.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F19512E22D1EA88B00A4CD01 /* libglfw.3.4.dylib */; };
 		F19512ED2D1EAAA400A4CD01 /* libvulkan.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F19512E62D1EA8A600A4CD01 /* libvulkan.1.dylib */; };
@@ -32,6 +34,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		F120E95C2D1EC75A00A2BA17 /* LveWindow.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = LveWindow.cpp; sourceTree = "<group>"; };
+		F120E95D2D1EC75A00A2BA17 /* LveWindow.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = LveWindow.hpp; sourceTree = "<group>"; };
+		F120E95F2D1EC95100A2BA17 /* Application.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Application.cpp; sourceTree = "<group>"; };
+		F120E9602D1EC95100A2BA17 /* Application.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Application.hpp; sourceTree = "<group>"; };
 		F19512D72D1EA7FB00A4CD01 /* lava */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = lava; sourceTree = BUILT_PRODUCTS_DIR; };
 		F19512DA2D1EA7FB00A4CD01 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		F19512E22D1EA88B00A4CD01 /* libglfw.3.4.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.3.4.dylib; path = ../../../../../../usr/local/lib/libglfw.3.4.dylib; sourceTree = "<group>"; };
@@ -76,6 +82,10 @@
 			children = (
 				F19512EB2D1EA9A700A4CD01 /* lava.entitlements */,
 				F19512DA2D1EA7FB00A4CD01 /* main.cpp */,
+				F120E95C2D1EC75A00A2BA17 /* LveWindow.cpp */,
+				F120E95D2D1EC75A00A2BA17 /* LveWindow.hpp */,
+				F120E95F2D1EC95100A2BA17 /* Application.cpp */,
+				F120E9602D1EC95100A2BA17 /* Application.hpp */,
 			);
 			path = lava;
 			sourceTree = "<group>";
@@ -148,6 +158,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				F19512DB2D1EA7FB00A4CD01 /* main.cpp in Sources */,
+				F120E95E2D1EC75A00A2BA17 /* LveWindow.cpp in Sources */,
+				F120E9612D1EC95100A2BA17 /* Application.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -281,7 +293,7 @@
 					/usr/local/include,
 				);
 				LIBRARY_SEARCH_PATHS = (
-					vulkansdk/macOS/lib,
+					/Users/giorgiogamba/VulkanSDK/1.3.296.0/macOS,
 					/usr/local/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -300,7 +312,7 @@
 					/usr/local/include,
 				);
 				LIBRARY_SEARCH_PATHS = (
-					vulkansdk/macOS/lib,
+					/Users/giorgiogamba/VulkanSDK/1.3.296.0/macOS,
 					/usr/local/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
