@@ -6,15 +6,17 @@
 #include <string>
 #include <vector>
 
-namespace lve {
+namespace Lve {
 
-struct SwapChainSupportDetails {
+struct SwapChainSupportDetails
+{
   VkSurfaceCapabilitiesKHR capabilities;
   std::vector<VkSurfaceFormatKHR> formats;
   std::vector<VkPresentModeKHR> presentModes;
 };
 
-struct QueueFamilyIndices {
+struct QueueFamilyIndices
+{
   uint32_t graphicsFamily;
   uint32_t presentFamily;
   bool graphicsFamilyHasValue = false;
@@ -22,7 +24,9 @@ struct QueueFamilyIndices {
   bool isComplete() { return graphicsFamilyHasValue && presentFamilyHasValue; }
 };
 
-class LveDevice {
+class LveDevice
+{
+    
  public:
 #ifdef NDEBUG
   const bool enableValidationLayers = false;
@@ -73,6 +77,7 @@ class LveDevice {
   VkPhysicalDeviceProperties properties;
 
  private:
+    
   void createInstance();
   void setupDebugMessenger();
   void createSurface();
