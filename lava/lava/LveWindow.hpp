@@ -28,6 +28,15 @@ public:
     LveWindow(const int InWidth, const int InHeigth, const std::string InName);
     ~LveWindow();
     
+    // Delete copy constructor and operator to avoid dangling pointers,
+    // becase we are usign pointers to GLFWwindow, which means that if we make a copy the LveWindow
+    // and we delete one of them, we will also delete with Window pointer and thus
+    // the remaining LveWindow will have a dangling pointer
+    LveWindow(const LveWindow&) = delete;
+    LveWindow& operator=(const LveWindow&) = delete;
+    
+    bool shouldClose();
+    
 private:
     
     void InitWindow();

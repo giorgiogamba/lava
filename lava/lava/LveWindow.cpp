@@ -23,6 +23,11 @@ LveWindow::~LveWindow()
     glfwTerminate();
 }
 
+bool LveWindow::shouldClose()
+{
+    return glfwWindowShouldClose(Window);
+}
+
 void LveWindow::InitWindow()
 {
     glfwInit();
