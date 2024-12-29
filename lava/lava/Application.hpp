@@ -12,11 +12,13 @@
 
 #include <stdio.h>
 #include <string>
+#include <memory>
 
 #endif /* Application_hpp */
 
 #include "LveWindow.hpp"
 #include "LvePipeline.hpp"
+#include "LveSwapChain.hpp"
 
 namespace Lve {
 
