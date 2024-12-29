@@ -136,7 +136,7 @@ void LvePipeline::createPipeline(const LvePipelineConfigInfo& configInfo, const 
 
 void LvePipeline::createShaderModule(const std::vector<char>& code, VkShaderModule* Module)
 {
-    VkShaderModuleCreateInfo createInfo;
+    VkShaderModuleCreateInfo createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
     createInfo.codeSize = code.size();
     
