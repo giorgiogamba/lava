@@ -126,12 +126,65 @@ std::vector<char> LvePipeline::readFile(const std::string& filePath)
 
 void LvePipeline::createPipeline(const LvePipelineConfigInfo& configInfo, const std::string& vertexShaderPath, const std::string& fragmentShaderPath)
 {
-    const std::vector<char>& vertexShader = readFile(vertexShaderPath);
-    const std::vector<char>& fragmentShader = readFile(fragmentShaderPath);
+    const std::vector<char>& vertexShaderCode = readFile(vertexShaderPath);
+    const std::vector<char>& fragmentShaderCode = readFile(fragmentShaderPath);
     
     std::cout << "Shaders allocation completed" << "\n";
-    std::cout << "Vertex shader size: " << vertexShader.size() << "\n";
-    std::cout << "Fragment shader size: " << fragmentShader.size() << std::endl;
+    std::cout << "Vertex shader size: " << vertexShaderCode.size() << "\n";
+    std::cout << "Fragment shader size: " << fragmentShaderCode.size() << std::endl;
+    
+    createShaderModule(vertexShaderCode, &vertexShaderModule);
+    createShaderModule(fragmentShaderCode, &fragmentShaderModule);
+    
+    VkPipelineShaderStageCreateInfo ShaderStages[2];
+    
+    ShaderStages[0].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    ShaderStages[0].stage = VK_SHADER_STAGE_VERTEX_BIT;
+    ShaderStages[0].module = vertexShaderModule;
+    ShaderStages[0].pName = "main";
+    ShaderStages[0].flags = 0;
+    ShaderStages[0].pNext = nullptr;
+    ShaderStages[0].pSpecializationInfo = nullptr;
+    
+    ShaderStages[1].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    ShaderStages[1].stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+    ShaderStages[1].module = fragmentShaderModule;
+    ShaderStages[1].pName = "main";
+    ShaderStages[1].flags = 0;
+    ShaderStages[1].pNext = nullptr;
+    ShaderStages[1].pSpecializationInfo = nullptr;
+    
+    VkPipelineVertexInputStateCreateInfo VertexInputInfo{};
+    VertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+    VertexInputInfo.vertexAttributeDescriptionCount = 0;
+    VertexInputInfo.vertexBindingDescriptionCount = 0;
+    VertexInputInfo.pVertexAttributeDescriptions = nullptr;
+    VertexInputInfo.pVertexBindingDescriptions = nullptr;
+    
+    VkGraphicsPipelineCreateInfo PipelineInfo{};
+    PipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+    PipelineInfo.stageCount = 2;
+    PipelineInfo.pStages = ShaderStages;
+    PipelineInfo.pVertexInputState = &VertexInputInfo;
+    PipelineInfo.pInputAssemblyState = &configInfo.inputAssemblyInfo;
+    PipelineInfo.pViewportState = &configInfo.viewportInfo;
+    PipelineInfo.pRasterizationState = &configInfo.rasterizationInfo;
+    PipelineInfo.pMultisampleState = &configInfo.multisampleInfo;
+    PipelineInfo.pColorBlendState = &configInfo.colorBlendInfo;
+    PipelineInfo.pDepthStencilState = &configInfo.depthStencilInfo;
+    PipelineInfo.pDynamicState = nullptr;
+    
+    PipelineInfo.layout = configInfo.pipelineLayout;
+    PipelineInfo.renderPass = configInfo.renderPass;
+    PipelineInfo.subpass = configInfo.subpass;
+    
+    PipelineInfo.basePipelineIndex = -1;
+    PipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
+    
+    if (vkCreateGraphicsPipelines(Device.device(), VK_NULL_HANDLE, 1, &PipelineInfo, nullptr, &Pipeline) != VK_SUCCESS)
+    {
+        throw std::runtime_error("Failed to create Graphics pipeline");
+    }
 }
 
 void LvePipeline::createShaderModule(const std::vector<char>& code, VkShaderModule* Module)
