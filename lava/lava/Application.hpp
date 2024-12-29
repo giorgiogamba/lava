@@ -37,6 +37,12 @@ public:
     
 private:
     
+    void CreatePipelineLayout();
+    void CreatePipeline();
+    void CreateCommandBuffers();
+    
+    void DrawFrame() {};
+    
     // #TODO remove this absolute path
     std::string absPathPrefix = "/Users/giorgiogamba/Documents/Projects/lava/lava/lava/";
     
@@ -44,9 +50,11 @@ private:
     
     LveDevice Device{Window};
     
-    // Cannot create constexpr strings
-    LvePipeline LvePipeline{Device, LvePipeline::defaultPipelineConfigInfo(WIDTH, HEIGTH), absPathPrefix + "shaders/vertex_shader.vert.spv", absPathPrefix + "shaders/fragment_shader.frag.spv"};
+    LveSwapChain SwapChain{Device, Window.getExtent()};
     
+    std::unique_ptr<LvePipeline> Pipeline;
+    VkPipelineLayout PipelineLayout;
+    std::vector<VkCommandBuffer> CommandBuffers;
 };
 
 }
