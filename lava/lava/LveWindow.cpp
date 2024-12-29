@@ -5,6 +5,8 @@
 //  Created by Giorgio Gamba on 27/12/24.
 //
 
+#include <stdexcept>
+
 #include "LveWindow.hpp"
 
 namespace Lve {
@@ -26,6 +28,15 @@ LveWindow::~LveWindow()
 bool LveWindow::shouldClose()
 {
     return glfwWindowShouldClose(Window);
+}
+
+void LveWindow::createWindowSurface(VkInstance Instance, VkSurfaceKHR* Surface)
+{
+    if (glfwCreateWindowSurface(Instance, Window, nullptr, Surface) != VK_SUCCESS)
+    {
+        throw std::runtime_error("Failed to create window surface!");
+    }
+    
 }
 
 void LveWindow::InitWindow()

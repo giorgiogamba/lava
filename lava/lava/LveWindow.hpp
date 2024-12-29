@@ -5,6 +5,8 @@
 //  Created by Giorgio Gamba on 27/12/24.
 //
 
+#pragma once
+
 #ifndef LveWindow_hpp
 #define LveWindow_hpp
 
@@ -37,6 +39,8 @@ public:
     
     bool shouldClose();
     
+    void createWindowSurface(VkInstance Instance, VkSurfaceKHR* Surface);
+    
 private:
     
     void InitWindow();
@@ -48,4 +52,5 @@ private:
     GLFWwindow* Window;
     
 };
+
 }

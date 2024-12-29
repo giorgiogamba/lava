@@ -33,3 +33,7 @@
 
 # Xcode files
 .DS_Store
+
+# Application files
+vertex_shader.vert.spv
+fragment_shader.frag.spv
