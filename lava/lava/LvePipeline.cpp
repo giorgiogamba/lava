@@ -15,7 +15,83 @@ namespace Lve {
 
 LvePipelineConfigInfo LvePipeline::defaultPipelineConfigInfo(const uint32_t Width, const uint32_t Height)
 {
-    LvePipelineConfigInfo ConfigInfo;
+    LvePipelineConfigInfo ConfigInfo{};
+    
+    // Add Pipelines configurations
+    
+    // Input assembly
+    // Takes in input coordinates grouped in geometries, specified in topology
+    ConfigInfo.inputAssemblyInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+    ConfigInfo.inputAssemblyInfo.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+    ConfigInfo.inputAssemblyInfo.primitiveRestartEnable = VK_FALSE;
+    
+    // Viewport configuration
+    ConfigInfo.viewport.x = 0.f;
+    ConfigInfo.viewport.y = 0.f;
+    ConfigInfo.viewport.width = static_cast<float>(Width);
+    ConfigInfo.viewport.height = static_cast<float>(Height);
+    ConfigInfo.viewport.minDepth = 0.f;
+    ConfigInfo.viewport.maxDepth = 1.f;
+    
+    // Defines the rendered area
+    ConfigInfo.scissor.offset = {0, 0};
+    ConfigInfo.scissor.extent = {Width, Height};
+    
+    // Rasterization stage
+    ConfigInfo.rasterizationInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+    ConfigInfo.rasterizationInfo.depthClampEnable = VK_FALSE;
+    ConfigInfo.rasterizationInfo.rasterizerDiscardEnable = VK_FALSE;
+    
+    ConfigInfo.rasterizationInfo.polygonMode = VK_POLYGON_MODE_FILL;
+    ConfigInfo.rasterizationInfo.lineWidth = 1.f;
+    
+    ConfigInfo.rasterizationInfo.cullMode = VK_CULL_MODE_NONE;
+    ConfigInfo.rasterizationInfo.frontFace = VK_FRONT_FACE_CLOCKWISE;
+    
+    ConfigInfo.rasterizationInfo.depthBiasEnable = VK_FALSE;
+    ConfigInfo.rasterizationInfo.depthBiasConstantFactor = 0.f;
+    ConfigInfo.rasterizationInfo.depthBiasClamp = 0.f;
+    ConfigInfo.rasterizationInfo.depthBiasSlopeFactor = 0.f;
+    
+    // Multisample
+    // Avoids alising and jagging
+    ConfigInfo.multisampleInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+    ConfigInfo.multisampleInfo.sampleShadingEnable = VK_FALSE;
+    ConfigInfo.multisampleInfo.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+    ConfigInfo.multisampleInfo.minSampleShading = 1.f;
+    ConfigInfo.multisampleInfo.pSampleMask = nullptr;
+    ConfigInfo.multisampleInfo.alphaToCoverageEnable = VK_FALSE;
+    ConfigInfo.multisampleInfo.alphaToOneEnable = VK_FALSE;
+    
+    ConfigInfo.colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_A_BIT|VK_COLOR_COMPONENT_B_BIT|VK_COLOR_COMPONENT_R_BIT|VK_COLOR_COMPONENT_G_BIT;
+    ConfigInfo.colorBlendAttachment.blendEnable = VK_FALSE;
+    ConfigInfo.colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;
+    ConfigInfo.colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ZERO;
+    ConfigInfo.colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
+    ConfigInfo.colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
+    ConfigInfo.colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
+    ConfigInfo.colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
+    
+    ConfigInfo.colorBlendInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+    ConfigInfo.colorBlendInfo.logicOpEnable = VK_FALSE;
+    ConfigInfo.colorBlendInfo.logicOp = VK_LOGIC_OP_COPY;
+    ConfigInfo.colorBlendInfo.attachmentCount = 1;
+    ConfigInfo.colorBlendInfo.pAttachments = &ConfigInfo.colorBlendAttachment;
+    ConfigInfo.colorBlendInfo.blendConstants[0] = 0.f;
+    ConfigInfo.colorBlendInfo.blendConstants[1] = 0.f;
+    ConfigInfo.colorBlendInfo.blendConstants[2] = 0.f;
+    ConfigInfo.colorBlendInfo.blendConstants[3] = 0.f;
+    
+    ConfigInfo.depthStencilInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+    ConfigInfo.depthStencilInfo.depthTestEnable = VK_TRUE;
+    ConfigInfo.depthStencilInfo.depthWriteEnable = VK_TRUE;
+    ConfigInfo.depthStencilInfo.depthCompareOp = VK_COMPARE_OP_LESS;
+    ConfigInfo.depthStencilInfo.depthBoundsTestEnable = VK_FALSE;
+    ConfigInfo.depthStencilInfo.minDepthBounds = 0.f;
+    ConfigInfo.depthStencilInfo.maxDepthBounds = 1.f;
+    ConfigInfo.depthStencilInfo.stencilTestEnable = VK_FALSE;
+    ConfigInfo.depthStencilInfo.front = {};
+    ConfigInfo.depthStencilInfo.back = {};
     
     return ConfigInfo;
 }
