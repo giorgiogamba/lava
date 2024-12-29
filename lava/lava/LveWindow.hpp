@@ -41,6 +41,8 @@ public:
     
     void createWindowSurface(VkInstance Instance, VkSurfaceKHR* Surface);
     
+    VkExtent2D getExtent() const { return { static_cast<uint32_t>(Width), static_cast<uint32_t>(Heigth) }; }
+    
 private:
     
     void InitWindow();
