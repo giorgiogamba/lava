@@ -102,6 +102,13 @@ LvePipeline::LvePipeline(LveDevice& InDevice, const LvePipelineConfigInfo& confi
     createPipeline(configInfo, vertexShaderPath, fragmentShaderPath);
 }
 
+LvePipeline::~LvePipeline()
+{
+    vkDestroyShaderModule(Device.device(), vertexShaderModule, nullptr);
+    vkDestroyShaderModule(Device.device(), fragmentShaderModule, nullptr);
+    vkDestroyPipeline(Device.device(), Pipeline, nullptr);
+}
+
 std::vector<char> LvePipeline::readFile(const std::string& filePath)
 {
     // ate makes the file stream seek to the end immediately

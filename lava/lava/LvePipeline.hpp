@@ -45,7 +45,7 @@ class LvePipeline
 public:
     
     LvePipeline(LveDevice& InDevice, const LvePipelineConfigInfo& configInfo, const std::string& vertexShaderPath, const std::string& fragmentShaderPath);
-    ~LvePipeline(){};
+    ~LvePipeline();
     
     LvePipeline(const LvePipeline&) = delete;
     void operator=(const LvePipeline&) = delete;
