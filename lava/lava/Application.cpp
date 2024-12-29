@@ -9,6 +9,18 @@
 
 namespace Lve {
 
+Application::Application()
+{
+    CreatePipelineLayout();
+    CreatePipeline();
+    CreateCommandBuffers();
+}
+
+Application::~Application()
+{
+    vkDestroyPipelineLayout(Device.device(), PipelineLayout, nullptr);
+}
+
 void Application::Run()
 {
     while (!Window.shouldClose())
