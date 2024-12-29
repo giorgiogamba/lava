@@ -1,3 +1,17 @@
+// Swap chain
+// The swao chain is the action of swapping following buffers in order to show a video on screen
+// Tipically we use 2 frame buffers at least, swapped every time the screen refreshes itself
+// v-sync: moment when the screen starts drawing the next image (back buffer). Strictly tied to the screen's refresh rate
+// It is necessary to sync the sync with the screen because otherwise we get "tearing", which is the moment when on
+// screen you can see different frames at the same time
+// Generally eac frame buffer contains unique attachments, like the color buffer and the depth buffer which
+// are used to compose the image
+// Since the GPU frame computation is faster than the screen window show of an image, the GPU will need
+// to wait for the image to be show before starting working on the next back buffer (because it cannot
+// overwrite the memory). We can solve it with the triple buffer, which permits the GPU to always have
+// an image to work on. That's how the swap chain is created
+// There are also other types of sync that change the screen refresh rate to adapt to GPU
+
 #pragma once
 
 #include "LveDevice.hpp"
