@@ -168,13 +168,20 @@ void LvePipeline::createPipeline(const LvePipelineConfigInfo& configInfo, const 
     VertexInputInfo.pVertexAttributeDescriptions = nullptr;
     VertexInputInfo.pVertexBindingDescriptions = nullptr;
     
+    VkPipelineViewportStateCreateInfo ViewportInfo{};
+    ViewportInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+    ViewportInfo.viewportCount = 1;
+    ViewportInfo.pViewports = &configInfo.viewport;
+    ViewportInfo.scissorCount = 1;
+    ViewportInfo.pScissors = &configInfo.scissor;
+    
     VkGraphicsPipelineCreateInfo PipelineInfo{};
     PipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
     PipelineInfo.stageCount = 2;
     PipelineInfo.pStages = ShaderStages;
     PipelineInfo.pVertexInputState = &VertexInputInfo;
     PipelineInfo.pInputAssemblyState = &configInfo.inputAssemblyInfo;
-    PipelineInfo.pViewportState = &configInfo.viewportInfo;
+    PipelineInfo.pViewportState = &ViewportInfo;
     PipelineInfo.pRasterizationState = &configInfo.rasterizationInfo;
     PipelineInfo.pMultisampleState = &configInfo.multisampleInfo;
     PipelineInfo.pColorBlendState = &configInfo.colorBlendInfo;
