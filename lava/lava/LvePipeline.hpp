@@ -51,6 +51,8 @@ public:
     
     static LvePipelineConfigInfo defaultPipelineConfigInfo(const uint32_t Width, const uint32_t Height);
     
+    void Bind(VkCommandBuffer CommandBuffer);
+    
 private:
     
     static std::vector<char> readFile(const std::string& filePath);

@@ -12,6 +12,14 @@
 // an image to work on. That's how the swap chain is created
 // There are also other types of sync that change the screen refresh rate to adapt to GPU
 
+// Command Buffer
+// Necessary because in Vulkan w cannot execute commands directly with function calls
+// bu they need to be stored inside buffers
+// What we can do is to create the buffer with a list of commands and reuse them in multiple frames.
+// We create a command buffer for each frame of the swap chain. This way we can draw separately on each frame
+// with a different set of buffers
+// NOte that this is a very important different with OpenGL, which required to write commands at every frame
+
 #pragma once
 
 #include "LveDevice.hpp"

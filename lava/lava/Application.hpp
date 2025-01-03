@@ -43,7 +43,7 @@ private:
     void CreatePipeline();
     void CreateCommandBuffers();
     
-    void DrawFrame() {};
+    void DrawFrame();
     
     // #TODO remove this absolute path
     std::string absPathPrefix = "/Users/giorgiogamba/Documents/Projects/lava/lava/lava/";
