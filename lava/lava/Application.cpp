@@ -11,6 +11,7 @@ namespace Lve {
 
 Application::Application()
 {
+    LoadModels();
     CreatePipelineLayout();
     CreatePipeline();
     CreateCommandBuffers();
@@ -109,7 +110,9 @@ void Application::CreateCommandBuffers()
         vkCmdBeginRenderPass(CommandBuffers[i], &RenderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
         
         Pipeline->Bind(CommandBuffers[i]);
-        vkCmdDraw(CommandBuffers[i], 3, 1, 0, 0);
+        
+        Model->Bind(CommandBuffers[i]);
+        Model->Draw(CommandBuffers[i]);
         
         vkCmdEndRenderPass(CommandBuffers[i]);
         if (vkEndCommandBuffer(CommandBuffers[i]) !=  VK_SUCCESS)
@@ -136,6 +139,16 @@ void Application::DrawFrame()
     {
         throw new std::runtime_error("Failes to submit command buffers");
     }
+}
+
+void Application::LoadModels()
+{
+    std::vector<Vertex> Vertices =
+    { {{0.f, -0.5f}}
+    , {{0.5f, 0.5f}}
+    , {{-0.5f, 0.5f}}};
+    
+    Model = std::make_unique<LveModel>(Device, Vertices);
 }
 
 }
