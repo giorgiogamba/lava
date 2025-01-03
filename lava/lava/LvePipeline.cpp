@@ -96,6 +96,11 @@ LvePipelineConfigInfo LvePipeline::defaultPipelineConfigInfo(const uint32_t Widt
     return ConfigInfo;
 }
 
+void LvePipeline::Bind(VkCommandBuffer CommandBuffer)
+{
+    vkCmdBindPipeline(CommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, Pipeline);
+}
+
 LvePipeline::LvePipeline(LveDevice& InDevice, const LvePipelineConfigInfo& configInfo, const std::string& vertexShaderPath, const std::string& fragmentShaderPath)
 : Device(InDevice)
 {
