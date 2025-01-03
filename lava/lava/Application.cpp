@@ -29,6 +29,9 @@ void Application::Run()
         
         DrawFrame();
     }
+    
+    // Makes the CPU wait until all the GPU resources are freed
+    vkDeviceWaitIdle(Device.device());
 }
 
 void Application::CreatePipelineLayout()
