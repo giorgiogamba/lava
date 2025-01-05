@@ -2,10 +2,24 @@
 
 layout(location = 0) in vec2 position;
 
+// It is also possibile to pass data from vertex shader to fragment shader using the same pattern:
+// There must be a variable out of a certain type in vertex and a certain location
+// and another variable in of a certain type in the fragment shader at the same location
+// Since vertex shader is executed for each shader and fragment after interpolation, we need to combine data
+// using linear interpolation in order to perform conversion, where the coordinates x and y and in this case RGB
+// This is because Vulkan makes an interpolation using Barycentric coordinates of the values passing from
+// vertex to fragment shader, because each fragment has got a different position inside the triangle
+
+layout(location = 1) in vec3 color;
+
+layout(location = 0) out vec3 fragmentColor; // Also if again of location 0, there's no overlap between in and out variables
+
 // Executed for each vertex
 // Receives input from input assembler
 void main()
 {
     // OpenGL has position (0, 0) in the screen center, with (-1, -1) on top left
     gl_Position = vec4(position, 0.0, 1.0);
+    
+    fragmentColor = color;
 }
