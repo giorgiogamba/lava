@@ -55,14 +55,14 @@ LveModel::~LveModel()
 
 void LveModel::Bind(VkCommandBuffer& CommandBuffer)
 {
-    vkCmdDraw(CommandBuffer, VertexCount, 1, 0, 0);
+    VkBuffer Buffers[] = {VertexBuffer};
+    VkDeviceSize Offsets[] = {0};
+    vkCmdBindVertexBuffers(CommandBuffer, 0, 1, Buffers, Offsets);
 }
 
 void LveModel::Draw(VkCommandBuffer& CommandBuffer)
 {
-    VkBuffer Buffers[] = {VertexBuffer};
-    VkDeviceSize Offsets[] = {0};
-    vkCmdBindVertexBuffers(CommandBuffer, 0, 1, Buffers, Offsets);
+    vkCmdDraw(CommandBuffer, VertexCount, 1, 0, 0);
 }
 
 void LveModel::CreateVertexBuffers(const std::vector<Vertex>& Vertices)
