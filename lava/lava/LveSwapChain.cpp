@@ -22,8 +22,9 @@ LveSwapChain::LveSwapChain(LveDevice &deviceRef, VkExtent2D extent)
       createSyncObjects();
 }
 
-LveSwapChain::~LveSwapChain() {
-      for (auto imageView : swapChainImageViews) 
+LveSwapChain::~LveSwapChain()
+{
+      for (auto imageView : swapChainImageViews)
       {
           vkDestroyImageView(device.device(), imageView, nullptr);
       }
@@ -37,7 +38,7 @@ LveSwapChain::~LveSwapChain() {
 
       for (int i = 0; i < depthImages.size(); i++) 
       {
-          vkDestroyImageView(device.device(), depthImageViews[i], nullptr);
+            vkDestroyImageView(device.device(), depthImageViews[i], nullptr);
             vkDestroyImage(device.device(), depthImages[i], nullptr);
             vkFreeMemory(device.device(), depthImageMemorys[i], nullptr);
       }
