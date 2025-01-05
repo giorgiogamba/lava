@@ -33,6 +33,7 @@
 
 # Xcode files
 .DS_Store
+xcdebugger/
 
 # Application files
 vertex_shader.vert.spv

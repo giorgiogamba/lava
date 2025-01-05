@@ -19,6 +19,7 @@
 #include "LveWindow.hpp"
 #include "LvePipeline.hpp"
 #include "LveSwapChain.hpp"
+#include "LveModel.hpp"
 
 namespace Lve {
 
@@ -39,6 +40,7 @@ public:
     
 private:
     
+    void LoadModels();
     void CreatePipelineLayout();
     void CreatePipeline();
     void CreateCommandBuffers();
@@ -57,6 +59,8 @@ private:
     std::unique_ptr<LvePipeline> Pipeline;
     VkPipelineLayout PipelineLayout;
     std::vector<VkCommandBuffer> CommandBuffers;
+    
+    std::unique_ptr<LveModel> Model;
 };
 
 }

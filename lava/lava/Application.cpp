@@ -11,6 +11,7 @@ namespace Lve {
 
 Application::Application()
 {
+    LoadModels();
     CreatePipelineLayout();
     CreatePipeline();
     CreateCommandBuffers();
@@ -77,7 +78,7 @@ void Application::CreateCommandBuffers()
         throw new std::runtime_error("Failed whiel creating command buffer");
     }
     
-    // REcord draw commands to each buffer
+    // Record draw commands to each buffer
     for (int i = 0; i < CommandBuffers.size(); i++)
     {
         VkCommandBufferBeginInfo BeginInfo{};
@@ -109,7 +110,9 @@ void Application::CreateCommandBuffers()
         vkCmdBeginRenderPass(CommandBuffers[i], &RenderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
         
         Pipeline->Bind(CommandBuffers[i]);
-        vkCmdDraw(CommandBuffers[i], 3, 1, 0, 0);
+        
+        Model->Bind(CommandBuffers[i]);
+        Model->Draw(CommandBuffers[i]);
         
         vkCmdEndRenderPass(CommandBuffers[i]);
         if (vkEndCommandBuffer(CommandBuffers[i]) !=  VK_SUCCESS)
@@ -136,6 +139,17 @@ void Application::DrawFrame()
     {
         throw new std::runtime_error("Failes to submit command buffers");
     }
+}
+
+void Application::LoadModels()
+{
+    // Initializes position and color for each vertex
+    std::vector<Vertex> Vertices =
+    { {{0.f, -0.5f}, {1.f, 0.f, 0.f}}
+    , {{0.5f, 0.5f}, {0.f, 1.f, 0.f}}
+    , {{-0.5f, 0.5f}, {0.f, 0.f, 1.f}}};
+    
+    Model = std::make_unique<LveModel>(Device, Vertices);
 }
 
 }

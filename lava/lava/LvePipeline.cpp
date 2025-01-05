@@ -10,6 +10,7 @@
 
 #include "LvePipeline.hpp"
 #include "LveDevice.hpp"
+#include "LveModel.hpp"
 
 namespace Lve {
 
@@ -168,10 +169,14 @@ void LvePipeline::createPipeline(const LvePipelineConfigInfo& configInfo, const 
     
     VkPipelineVertexInputStateCreateInfo VertexInputInfo{};
     VertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-    VertexInputInfo.vertexAttributeDescriptionCount = 0;
-    VertexInputInfo.vertexBindingDescriptionCount = 0;
-    VertexInputInfo.pVertexAttributeDescriptions = nullptr;
-    VertexInputInfo.pVertexBindingDescriptions = nullptr;
+    
+    auto AttributeDescs = Vertex::GetAttributeDescs();
+    VertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(AttributeDescs.size());
+    VertexInputInfo.pVertexAttributeDescriptions = AttributeDescs.data();
+    
+    auto BindingDescs = Vertex::GetBindingDesc();
+    VertexInputInfo.vertexBindingDescriptionCount = static_cast<uint32_t>(BindingDescs.size());
+    VertexInputInfo.pVertexBindingDescriptions = BindingDescs.data();
     
     VkPipelineViewportStateCreateInfo ViewportInfo{};
     ViewportInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;

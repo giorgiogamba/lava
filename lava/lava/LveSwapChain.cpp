@@ -22,8 +22,9 @@ LveSwapChain::LveSwapChain(LveDevice &deviceRef, VkExtent2D extent)
       createSyncObjects();
 }
 
-LveSwapChain::~LveSwapChain() {
-      for (auto imageView : swapChainImageViews) 
+LveSwapChain::~LveSwapChain()
+{
+      for (auto imageView : swapChainImageViews)
       {
           vkDestroyImageView(device.device(), imageView, nullptr);
       }
@@ -37,7 +38,7 @@ LveSwapChain::~LveSwapChain() {
 
       for (int i = 0; i < depthImages.size(); i++) 
       {
-          vkDestroyImageView(device.device(), depthImageViews[i], nullptr);
+            vkDestroyImageView(device.device(), depthImageViews[i], nullptr);
             vkDestroyImage(device.device(), depthImages[i], nullptr);
             vkFreeMemory(device.device(), depthImageMemorys[i], nullptr);
       }
@@ -380,7 +381,7 @@ VkSurfaceFormatKHR LveSwapChain::chooseSwapSurfaceFormat(const std::vector<VkSur
 {
       for (const auto &availableFormat : availableFormats) 
       {
-            if (availableFormat.format == VK_FORMAT_B8G8R8A8_UNORM && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
+            if (availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
             {
                 return availableFormat;
             }
