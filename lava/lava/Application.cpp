@@ -78,7 +78,7 @@ void Application::CreateCommandBuffers()
         throw new std::runtime_error("Failed whiel creating command buffer");
     }
     
-    // REcord draw commands to each buffer
+    // Record draw commands to each buffer
     for (int i = 0; i < CommandBuffers.size(); i++)
     {
         VkCommandBufferBeginInfo BeginInfo{};
