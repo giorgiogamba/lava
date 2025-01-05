@@ -143,10 +143,11 @@ void Application::DrawFrame()
 
 void Application::LoadModels()
 {
+    // Initializes position and color for each vertex
     std::vector<Vertex> Vertices =
-    { {{0.f, -0.5f}}
-    , {{0.5f, 0.5f}}
-    , {{-0.5f, 0.5f}}};
+    { {{0.f, -0.5f}, {1.f, 0.f, 0.f}}
+    , {{0.5f, 0.5f}, {0.f, 1.f, 0.f}}
+    , {{-0.5f, 0.5f}, {0.f, 0.f, 1.f}}};
     
     Model = std::make_unique<LveModel>(Device, Vertices);
 }
