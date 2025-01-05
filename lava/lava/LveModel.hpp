@@ -46,9 +46,12 @@ namespace Lve
 
 #pragma region Types
 
+// Interleaved implementation which alternates position and color inside the same buffer
 struct Vertex
 {
     glm::vec2 position;
+    glm::vec3 color;
+    
     static std::vector<VkVertexInputBindingDescription> GetBindingDesc();
     static std::vector<VkVertexInputAttributeDescription> GetAttributeDescs();
 };
