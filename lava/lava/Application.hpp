@@ -47,6 +47,9 @@ private:
     
     void DrawFrame();
     
+    void RecreatSwapChain();
+    void RecordCommandBuffer(const int ImgIdx);
+    
     // #TODO remove this absolute path
     std::string absPathPrefix = "/Users/giorgiogamba/Documents/Projects/lava/lava/lava/";
     
@@ -54,7 +57,7 @@ private:
     
     LveDevice Device{Window};
     
-    LveSwapChain SwapChain{Device, Window.getExtent()};
+    std::unique_ptr<LveSwapChain> SwapChain;
     
     std::unique_ptr<LvePipeline> Pipeline;
     VkPipelineLayout PipelineLayout;
