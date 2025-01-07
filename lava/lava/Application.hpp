@@ -50,7 +50,7 @@ private:
     // #TODO remove this absolute path
     std::string absPathPrefix = "/Users/giorgiogamba/Documents/Projects/lava/lava/lava/";
     
-    LveWindow Window{WIDTH, HEIGTH, "TEST"};
+    LveWindow Window{"TEST", WIDTH, HEIGTH};
     
     LveDevice Device{Window};
     
