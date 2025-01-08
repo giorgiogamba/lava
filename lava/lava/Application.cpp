@@ -161,7 +161,7 @@ void Application::DrawFrame()
     RecordCommandBuffer(ImageIdx);
     
     // Provides commands to the device graphics queue (makes also sync)
-    VkResult SubmitResult = SwapChain->submitCommandBuffers(&CommandBuffers[ImageIdx], &ImageIdx);
+    Result = SwapChain->submitCommandBuffers(&CommandBuffers[ImageIdx], &ImageIdx);
     
     if (Result == VK_ERROR_OUT_OF_DATE_KHR || Result == VK_SUBOPTIMAL_KHR || Window.WasWindowResized())
     {
