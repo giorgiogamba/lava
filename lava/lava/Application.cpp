@@ -52,7 +52,11 @@ void Application::CreatePipelineLayout()
 
 void Application::CreatePipeline()
 {
-    LvePipelineConfigInfo PipelineConfigInfo = LvePipeline::defaultPipelineConfigInfo(SwapChain->width(), SwapChain->height());
+    assert(SwapChain && "Swap Chain is null");
+    assert(PipelineLayout && "Pipeline Layout is null");
+    
+    LvePipelineConfigInfo PipelineConfigInfo;
+    LvePipeline::defaultPipelineConfigInfo(PipelineConfigInfo);
     
     // Basically the render pass says to the graphics pipeline what kind of output to create
     // (meaning how color buffer, depth etc. are allocated in the frame buffer)
