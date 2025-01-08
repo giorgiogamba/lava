@@ -163,6 +163,7 @@ void Application::DrawFrame()
     uint32_t ImageIdx;
     VkResult Result = SwapChain->acquireNextImage(&ImageIdx);
     
+    // Checks if the swap chain is still valid after resizing and before drawing
     if (Result == VK_ERROR_OUT_OF_DATE_KHR)
     {
         RecreateSwapChain();
