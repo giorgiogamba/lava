@@ -125,7 +125,7 @@ void Application::RecordCommandBuffer(const int ImgIdx)
     std::array<VkClearValue, 2> clearValues{};
     clearValues[0].color = {0.f, 0.f, 0.f, 1.f};
     // We avoid clearValues[0].depthStencil because we organized depthbuffers so that in 0 we have color buffer and in 1 depthbuffer
-    clearValues[1].depthStencil =  {static_cast<uint32_t>(1.f), static_cast<uint32_t>(0.f)};
+    clearValues[1].depthStencil =  {1.f, 0};
     RenderPassBeginInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
     RenderPassBeginInfo.pClearValues = clearValues.data();
     
