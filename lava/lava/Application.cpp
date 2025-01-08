@@ -93,7 +93,22 @@ void Application::RecreateSwapChain()
     }
     
     vkDeviceWaitIdle(Device.device());
-    SwapChain = std::make_unique<LveSwapChain>(Device, Extent);
+    
+    if (!SwapChain)
+    {
+        SwapChain = std::make_unique<LveSwapChain>(Device, Extent);
+    }
+    else
+    {
+        SwapChain = std::make_unique<LveSwapChain>(Device, Extent, std::move(SwapChain));
+        
+        if (SwapChain->imageCount() != CommandBuffers.size())
+        {
+            freeCommandBuffers();
+            CreateCommandBuffers();
+        }
+    }
+    
     CreatePipeline();
 }
 
