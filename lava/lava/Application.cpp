@@ -93,6 +93,12 @@ void Application::RecreatSwapChain()
     CreatePipeline();
 }
 
+void Application::freeCommandBuffers()
+{
+  vkFreeCommandBuffers(Device.device(), Device.getCommandPool(), static_cast<uint32_t>(CommandBuffers.size()), CommandBuffers.data());
+  CommandBuffers.clear();
+}
+
 void Application::RecordCommandBuffer(const int ImgIdx)
 {
     VkCommandBufferBeginInfo BeginInfo{};

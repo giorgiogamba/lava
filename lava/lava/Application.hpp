@@ -45,6 +45,8 @@ private:
     void CreatePipeline();
     void CreateCommandBuffers();
     
+    void freeCommandBuffers();
+    
     void DrawFrame();
     
     void RecreatSwapChain();
