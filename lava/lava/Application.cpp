@@ -13,7 +13,7 @@ Application::Application()
 {
     LoadModels();
     CreatePipelineLayout();
-    RecreatSwapChain();
+    RecreateSwapChain();
     CreateCommandBuffers();
 }
 
@@ -79,7 +79,7 @@ void Application::CreateCommandBuffers()
     }
 }
 
-void Application::RecreatSwapChain()
+void Application::RecreateSwapChain()
 {
     auto Extent = Window.getExtent();
     while (Extent.width == 0 || Extent.height == 0)
@@ -149,7 +149,7 @@ void Application::DrawFrame()
     
     if (Result == VK_ERROR_OUT_OF_DATE_KHR)
     {
-        RecreatSwapChain();
+        RecreateSwapChain();
         return;
     }
     
@@ -166,13 +166,7 @@ void Application::DrawFrame()
     if (Result == VK_ERROR_OUT_OF_DATE_KHR || Result == VK_SUBOPTIMAL_KHR || Window.WasWindowResized())
     {
         Window.ResetWindowResizedStatus();
-        RecreatSwapChain();
-        return;
-    }
-    
-    if (SubmitResult != VK_SUCCESS)
-    {
-        throw new std::runtime_error("Failes to submit command buffers");
+        RecreateSwapChain();
     }
 }
 

@@ -49,7 +49,7 @@ private:
     
     void DrawFrame();
     
-    void RecreatSwapChain();
+    void RecreateSwapChain();
     void RecordCommandBuffer(const int ImgIdx);
     
     // #TODO remove this absolute path
