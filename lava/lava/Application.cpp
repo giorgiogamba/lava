@@ -129,6 +129,18 @@ void Application::RecordCommandBuffer(const int ImgIdx)
     // We cannot have a render pass that uses both primary and secondary buffers
     vkCmdBeginRenderPass(CommandBuffers[ImgIdx], &RenderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
     
+    VkViewport Viewport{};
+    Viewport.x = 0.0f;
+    Viewport.y = 0.0f;
+    Viewport.width = static_cast<float>(SwapChain->getSwapChainExtent().width);
+    Viewport.height = static_cast<float>(SwapChain->getSwapChainExtent().height);
+    Viewport.minDepth = 0.0f;
+    Viewport.maxDepth = 1.0f;
+    vkCmdSetViewport(CommandBuffers[ImgIdx], 0, 1, &Viewport);
+    
+    VkRect2D Scissor{{0, 0}, SwapChain->getSwapChainExtent()};
+    vkCmdSetScissor(CommandBuffers[ImgIdx], 0, 1, &Scissor);
+    
     Pipeline->Bind(CommandBuffers[ImgIdx]);
     
     Model->Bind(CommandBuffers[ImgIdx]);
