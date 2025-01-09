@@ -14,12 +14,20 @@ layout(location = 1) in vec3 color;
 
 layout(location = 0) out vec3 fragmentColor; // Also if again of location 0, there's no overlap between in and out variables
 
+layout(push_constant) uniform PushConstant
+{
+    vec2 offset;
+    vec3 color;
+} pushConstants;
+
+
 // Executed for each vertex
 // Receives input from input assembler
 void main()
 {
     // OpenGL has position (0, 0) in the screen center, with (-1, -1) on top left
-    gl_Position = vec4(position, 0.0, 1.0);
+    gl_Position = vec4(position + pushConstants.offset, 0.0, 1.0);
     
-    fragmentColor = color;
+    // Not used with push constants
+    //fragmentColor = color;
 }

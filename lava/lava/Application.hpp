@@ -23,8 +23,26 @@
 
 namespace Lve {
 
+#pragma region Constants
+
 static constexpr int WIDTH = 800;
 static constexpr int HEIGTH = 800;
+
+#pragma endregion
+
+#pragma region Types
+
+struct PushConstantData
+{
+    glm::vec2 offset;
+    
+    // We align the field becuase of the requirement made by Push Constants, which need to define
+    // multiples of N in size 2 (N, 2N, 4N, ...). In case of colors, they must be in 4N, which means
+    // that a padding between offset and color will be set in order to make the elements aligned
+    alignas(16) glm::vec3 color;
+};
+
+#pragma endregion
 
 class Application
 {

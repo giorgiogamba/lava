@@ -7,6 +7,10 @@
 
 #include "Application.hpp"
 
+#define GLM_FORCE_RADIANS // expects angles to be defined in radians
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+#include <glm/glm.hpp>
+
 namespace Lve {
 
 Application::Application()
@@ -36,13 +40,18 @@ void Application::Run()
 }
 
 void Application::CreatePipelineLayout()
-{
+{ 
+    VkPushConstantRange PushConstantRange{};
+    PushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
+    PushConstantRange.offset = 0;
+    PushConstantRange.size = sizeof(PushConstantRange);
+    
     VkPipelineLayoutCreateInfo PipelineLayoutInfo{};
     PipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
     PipelineLayoutInfo.setLayoutCount = 0;
     PipelineLayoutInfo.pSetLayouts = nullptr;
-    PipelineLayoutInfo.pushConstantRangeCount = 0;
-    PipelineLayoutInfo.pPushConstantRanges = nullptr;
+    PipelineLayoutInfo.pushConstantRangeCount = 1;
+    PipelineLayoutInfo.pPushConstantRanges = &PushConstantRange;
     
     if (vkCreatePipelineLayout(Device.device(), &PipelineLayoutInfo, nullptr, &PipelineLayout) != VK_SUCCESS)
     {
@@ -163,7 +172,17 @@ void Application::RecordCommandBuffer(const int ImgIdx)
     Pipeline->Bind(CommandBuffers[ImgIdx]);
     
     Model->Bind(CommandBuffers[ImgIdx]);
-    Model->Draw(CommandBuffers[ImgIdx]);
+    
+    for (int j = 0; j < 4; j ++)
+    {
+        PushConstantData PushConstant{};
+        PushConstant.offset = {0.f, -0.4f + j * 0.25f};
+        PushConstant.color = {0.f, 0.f, 0.2f + 0.2f * j};
+        
+        vkCmdPushConstants(CommandBuffers[ImgIdx], PipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstantData), &PushConstant);
+        
+        Model->Draw(CommandBuffers[ImgIdx]);
+    }
     
     vkCmdEndRenderPass(CommandBuffers[ImgIdx]);
     if (vkEndCommandBuffer(CommandBuffers[ImgIdx]) !=  VK_SUCCESS)

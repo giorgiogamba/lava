@@ -38,6 +38,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		F10836BF2D301DB400C58670 /* notes.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = notes.md; sourceTree = "<group>"; };
 		F120E95C2D1EC75A00A2BA17 /* LveWindow.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = LveWindow.cpp; sourceTree = "<group>"; };
 		F120E95D2D1EC75A00A2BA17 /* LveWindow.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = LveWindow.hpp; sourceTree = "<group>"; };
 		F120E95F2D1EC95100A2BA17 /* Application.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Application.cpp; sourceTree = "<group>"; };
@@ -120,6 +121,7 @@
 				F120E96A2D1EE6CB00A2BA17 /* LvePipeline.hpp */,
 				F17306222D2820ED00ADD48F /* LveModel.cpp */,
 				F17306232D2820ED00ADD48F /* LveModel.hpp */,
+				F10836BF2D301DB400C58670 /* notes.md */,
 			);
 			path = lava;
 			sourceTree = "<group>";
