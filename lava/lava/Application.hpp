@@ -23,8 +23,22 @@
 
 namespace Lve {
 
+#pragma region Constants
+
 static constexpr int WIDTH = 800;
 static constexpr int HEIGTH = 800;
+
+#pragma endregion
+
+#pragma region Types
+
+struct PushConstantData
+{
+    glm::vec2 offset;
+    glm::vec3 color;
+};
+
+#pragma endregion
 
 class Application
 {
