@@ -27,7 +27,7 @@ class LveWindow
     
 public:
     
-    LveWindow(const int InWidth, const int InHeigth, const std::string InName);
+    LveWindow(const std::string InName, const int InWidth, const int InHeigth);
     ~LveWindow();
     
     // Delete copy constructor and operator to avoid dangling pointers,
@@ -43,13 +43,20 @@ public:
     
     VkExtent2D getExtent() const { return { static_cast<uint32_t>(Width), static_cast<uint32_t>(Heigth) }; }
     
+    bool WasWindowResized() const { return bFrameBufferResized; }
+    void ResetWindowResizedStatus() { bFrameBufferResized = false; }
+    
 private:
     
     void InitWindow();
     
+    static void FrameBufferResizedCallback(GLFWwindow* InWindow, const int Width, const int Height);
+    
+    std::string Name;
+    
     int Width;
     int Heigth;
-    std::string Name;
+    bool bFrameBufferResized;
     
     GLFWwindow* Window;
     

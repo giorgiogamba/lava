@@ -16,6 +16,8 @@
 
 #include "LveDevice.hpp"
 
+#include <vulkan/vulkan.h>
+
 #endif /* LvePipeline_hpp */
 
 namespace Lve {
@@ -24,14 +26,22 @@ namespace Lve {
 
 struct LvePipelineConfigInfo
 {
+    LvePipelineConfigInfo() = default;
+    
+    LvePipelineConfigInfo(const LvePipelineConfigInfo&) = delete;
+    LvePipelineConfigInfo& operator=(LvePipelineConfigInfo&) = delete;
+    
+    VkPipelineViewportStateCreateInfo viewportInfo;
     VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo;
-    VkViewport viewport;
-    VkRect2D scissor;
     VkPipelineRasterizationStateCreateInfo rasterizationInfo;
     VkPipelineMultisampleStateCreateInfo multisampleInfo;
     VkPipelineColorBlendAttachmentState colorBlendAttachment;
     VkPipelineColorBlendStateCreateInfo colorBlendInfo;
     VkPipelineDepthStencilStateCreateInfo depthStencilInfo;
+    
+    // Use dynamic viewport so that dynamic pipeline is no longer dependent on swapchain dimension
+    std::vector<VkDynamicState> dynamicStateEnables;
+    VkPipelineDynamicStateCreateInfo dynamicStateInfo;
     VkPipelineLayout pipelineLayout = nullptr;
     VkRenderPass renderPass = nullptr;
     uint32_t subpass = 0;
@@ -47,9 +57,9 @@ public:
     ~LvePipeline();
     
     LvePipeline(const LvePipeline&) = delete;
-    void operator=(const LvePipeline&) = delete;
+    LvePipeline& operator=(const LvePipeline&) = delete;
     
-    static LvePipelineConfigInfo defaultPipelineConfigInfo(const uint32_t Width, const uint32_t Height);
+    static void defaultPipelineConfigInfo(LvePipelineConfigInfo& ConfigInfo);
     
     void Bind(VkCommandBuffer CommandBuffer);
     

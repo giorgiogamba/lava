@@ -9,12 +9,15 @@
 
 #include "LveWindow.hpp"
 
+#include <GLFW/glfw3.h>
+
 namespace Lve {
 
-LveWindow::LveWindow(const int InWidth, const int InHeigth, const std::string InName)
-: Width(InWidth)
+LveWindow::LveWindow(const std::string InName, const int InWidth, const int InHeigth)
+: Name(InName)
+, Width(InWidth)
 , Heigth(InHeigth)
-, Name(InName)
+, bFrameBufferResized(false)
 {
     InitWindow();
 }
@@ -48,9 +51,20 @@ void LveWindow::InitWindow()
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     
     // Avoid resizing
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
     
     Window = glfwCreateWindow(Width, Heigth, Name.c_str(), nullptr, nullptr);
+    
+    glfwSetWindowUserPointer(Window, this); // Sets to a custom pointer
+    glfwSetFramebufferSizeCallback(Window, FrameBufferResizedCallback);
+}
+
+void LveWindow::FrameBufferResizedCallback(GLFWwindow* InWindow, const int Width, const int Height)
+{
+    auto window = reinterpret_cast<LveWindow*>(glfwGetWindowUserPointer(InWindow));
+    window->bFrameBufferResized = true;
+    window->Width = Width;
+    window->Heigth = Height;
 }
 
 }

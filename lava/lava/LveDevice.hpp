@@ -38,8 +38,6 @@ class LveDevice
   ~LveDevice();
 
   // Not copyable or movable
-  LveDevice(const LveDevice &) = delete;
-  void operator=(const LveDevice &) = delete;
   LveDevice(LveDevice &&) = delete;
   LveDevice &operator=(LveDevice &&) = delete;
 
