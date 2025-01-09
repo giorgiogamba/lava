@@ -16,3 +16,7 @@ In order to achieve this result, we needed to define all the basic Vulkan config
 ## Second milestone reached
 Draw a triangle based on fragment interpolation
 ![Screenshot 2025-01-07 alle 21 10 55](https://github.com/user-attachments/assets/86f8a6dd-f550-4ca9-b06f-0397838a1589)
+
+## New step achieved
+Finally I developed push constants for multiple objects efficient draw. Here's the result
+![Screenshot 2025-01-09 alle 16 24 02](https://github.com/user-attachments/assets/2fb756bb-8fad-4ed6-9b58-15efcc700991)
