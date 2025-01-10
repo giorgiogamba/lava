@@ -7,18 +7,15 @@
 
 #pragma once
 
-#ifndef Application_hpp
-#define Application_hpp
-
+// System includes
 #include <stdio.h>
 #include <string>
 #include <memory>
 
-#endif /* Application_hpp */
-
+// Local Includes
 #include "LveWindow.hpp"
 #include "LvePipeline.hpp"
-#include "LveSwapChain.hpp"
+#include "LveRenderer.hpp"
 #include "LveGameObject.hpp"
 
 namespace Lve {
@@ -48,6 +45,9 @@ struct PushConstantData
 
 class Application
 {
+
+#pragma region Lifecycle
+    
 public:
     
     Application();
@@ -60,20 +60,6 @@ public:
     
 private:
     
-    void LoadGameObjects();
-    void CreatePipelineLayout();
-    void CreatePipeline();
-    void CreateCommandBuffers();
-    
-    void freeCommandBuffers();
-    
-    void DrawFrame();
-    
-    void RecreateSwapChain();
-    void RecordCommandBuffer(const int ImgIdx);
-    
-    void RenderGameObjects(VkCommandBuffer CommandBuffer);
-    
     // #TODO remove this absolute path
     std::string absPathPrefix = "/Users/giorgiogamba/Documents/Projects/lava/lava/lava/";
     
@@ -81,13 +67,36 @@ private:
     
     LveDevice Device{Window};
     
-    std::unique_ptr<LveSwapChain> SwapChain;
+    LveRenderer Renderer{Window, Device};
     
-    std::unique_ptr<LvePipeline> Pipeline;
-    VkPipelineLayout PipelineLayout;
-    std::vector<VkCommandBuffer> CommandBuffers;
+#pragma endregion
+    
+#pragma region GameObjects
+    
+private:
+    
+    void LoadGameObjects();
+    
+    void RenderGameObjects(VkCommandBuffer CommandBuffer);
     
     std::vector<LveGameObject> GameObjects;
+    
+#pragma endregion
+    
+#pragma region Pipeline
+    
+private:
+    
+    void CreatePipelineLayout();
+    
+    void CreatePipeline();
+    
+    std::unique_ptr<LvePipeline> Pipeline;
+    
+    VkPipelineLayout PipelineLayout;
+    
+#pragma endregion
+    
 };
 
 }
