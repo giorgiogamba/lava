@@ -19,7 +19,7 @@
 #include "LveWindow.hpp"
 #include "LvePipeline.hpp"
 #include "LveSwapChain.hpp"
-#include "LveModel.hpp"
+#include "LveGameObject.hpp"
 
 namespace Lve {
 
@@ -34,6 +34,8 @@ static constexpr int HEIGTH = 800;
 
 struct PushConstantData
 {
+    glm::mat2 transform{1.f};
+    
     glm::vec2 offset;
     
     // We align the field becuase of the requirement made by Push Constants, which need to define
@@ -58,7 +60,7 @@ public:
     
 private:
     
-    void LoadModels();
+    void LoadGameObjects();
     void CreatePipelineLayout();
     void CreatePipeline();
     void CreateCommandBuffers();
@@ -83,7 +85,7 @@ private:
     VkPipelineLayout PipelineLayout;
     std::vector<VkCommandBuffer> CommandBuffers;
     
-    std::unique_ptr<LveModel> Model;
+    std::vector<LveGameObject> GameObjects;
 };
 
 }

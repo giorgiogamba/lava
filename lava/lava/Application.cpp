@@ -15,7 +15,7 @@ namespace Lve {
 
 Application::Application()
 {
-    LoadModels();
+    LoadGameObjects();
     CreatePipelineLayout();
     RecreateSwapChain();
     CreateCommandBuffers();
@@ -221,7 +221,7 @@ void Application::DrawFrame()
     }
 }
 
-void Application::LoadModels()
+void Application::LoadGameObjects()
 {
     // Initializes position and color for each vertex
     std::vector<Vertex> Vertices =
@@ -229,7 +229,17 @@ void Application::LoadModels()
     , {{0.5f, 0.5f}, {0.f, 1.f, 0.f}}
     , {{-0.5f, 0.5f}, {0.f, 0.f, 1.f}}};
     
-    Model = std::make_unique<LveModel>(Device, Vertices);
+    // Just define a single model that is shared between multiple game objects
+    const std::shared_ptr<LveModel> Model = std::make_shared<LveModel>(Device, Vertices);
+    
+    LveGameObject Triangle = LveGameObject::CreateGameObject();
+    Triangle.SetModel(Model);
+    Triangle.SetColor({.1f, .8f, .1f});
+    
+    Triangle.Transform2D.Translation.x = .2f;
+    Triangle.Transform2D.Scale = {2.f, .5f};
+    
+    GameObjects.push_back(std::move(Triangle));
 }
 
 }
