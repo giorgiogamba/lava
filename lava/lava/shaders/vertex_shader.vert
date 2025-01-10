@@ -16,6 +16,7 @@ layout(location = 0) out vec3 fragmentColor; // Also if again of location 0, the
 
 layout(push_constant) uniform PushConstant
 {
+    mat2 transform;
     vec2 offset;
     vec3 color;
 } pushConstants;
@@ -26,7 +27,11 @@ layout(push_constant) uniform PushConstant
 void main()
 {
     // OpenGL has position (0, 0) in the screen center, with (-1, -1) on top left
-    gl_Position = vec4(position + pushConstants.offset, 0.0, 1.0);
+    
+    // pushConstants.transform * position means that, given triangle defined in a "general way"(normalized, model space)
+    // it receives a transform applied on it in the world space
+    
+    gl_Position = vec4(pushConstants.transform * position + pushConstants.offset, 0.0, 1.0);
     
     // Not used with push constants
     //fragmentColor = color;

@@ -10,12 +10,13 @@
 #define GLM_FORCE_RADIANS // expects angles to be defined in radians
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
+#include <glm/gtc/constants.hpp>
 
 namespace Lve {
 
 Application::Application()
 {
-    LoadModels();
+    LoadGameObjects();
     CreatePipelineLayout();
     RecreateSwapChain();
     CreateCommandBuffers();
@@ -169,25 +170,30 @@ void Application::RecordCommandBuffer(const int ImgIdx)
     VkRect2D Scissor{{0, 0}, SwapChain->getSwapChainExtent()};
     vkCmdSetScissor(CommandBuffers[ImgIdx], 0, 1, &Scissor);
     
-    Pipeline->Bind(CommandBuffers[ImgIdx]);
-    
-    Model->Bind(CommandBuffers[ImgIdx]);
-    
-    for (int j = 0; j < 4; j ++)
-    {
-        PushConstantData PushConstant{};
-        PushConstant.offset = {0.f, -0.4f + j * 0.25f};
-        PushConstant.color = {0.f, 0.f, 0.2f + 0.2f * j};
-        
-        vkCmdPushConstants(CommandBuffers[ImgIdx], PipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstantData), &PushConstant);
-        
-        Model->Draw(CommandBuffers[ImgIdx]);
-    }
+    RenderGameObjects(CommandBuffers[ImgIdx]);
     
     vkCmdEndRenderPass(CommandBuffers[ImgIdx]);
     if (vkEndCommandBuffer(CommandBuffers[ImgIdx]) !=  VK_SUCCESS)
     {
         throw std::runtime_error("Failed to end command buffer");
+    }
+}
+
+void Application::RenderGameObjects(VkCommandBuffer CommandBuffer)
+{
+    Pipeline->Bind(CommandBuffer);
+    
+    for (LveGameObject& GameObject : GameObjects)
+    {
+        PushConstantData PushConstant{};
+        PushConstant.offset = GameObject.Transform2D.Translation;
+        PushConstant.color = GameObject.GetColor();
+        PushConstant.transform = GameObject.Transform2D.mat2();
+        
+        vkCmdPushConstants(CommandBuffer, PipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstantData), &PushConstant);
+        
+        GameObject.GetModel()->Bind(CommandBuffer);
+        GameObject.GetModel()->Draw(CommandBuffer);
     }
 }
 
@@ -221,7 +227,7 @@ void Application::DrawFrame()
     }
 }
 
-void Application::LoadModels()
+void Application::LoadGameObjects()
 {
     // Initializes position and color for each vertex
     std::vector<Vertex> Vertices =
@@ -229,7 +235,18 @@ void Application::LoadModels()
     , {{0.5f, 0.5f}, {0.f, 1.f, 0.f}}
     , {{-0.5f, 0.5f}, {0.f, 0.f, 1.f}}};
     
-    Model = std::make_unique<LveModel>(Device, Vertices);
+    // Just define a single model that is shared between multiple game objects
+    const std::shared_ptr<LveModel> Model = std::make_shared<LveModel>(Device, Vertices);
+    
+    LveGameObject Triangle = LveGameObject::CreateGameObject();
+    Triangle.SetModel(Model);
+    Triangle.SetColor({.1f, .8f, .1f});
+    
+    Triangle.Transform2D.Translation.x = .2f;
+    Triangle.Transform2D.Scale = {2.f, .5f};
+    Triangle.Transform2D.RotationAngle = .25f * glm::two_pi<float>();
+    
+    GameObjects.push_back(std::move(Triangle));
 }
 
 }
