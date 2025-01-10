@@ -169,25 +169,30 @@ void Application::RecordCommandBuffer(const int ImgIdx)
     VkRect2D Scissor{{0, 0}, SwapChain->getSwapChainExtent()};
     vkCmdSetScissor(CommandBuffers[ImgIdx], 0, 1, &Scissor);
     
-    Pipeline->Bind(CommandBuffers[ImgIdx]);
-    
-    Model->Bind(CommandBuffers[ImgIdx]);
-    
-    for (int j = 0; j < 4; j ++)
-    {
-        PushConstantData PushConstant{};
-        PushConstant.offset = {0.f, -0.4f + j * 0.25f};
-        PushConstant.color = {0.f, 0.f, 0.2f + 0.2f * j};
-        
-        vkCmdPushConstants(CommandBuffers[ImgIdx], PipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstantData), &PushConstant);
-        
-        Model->Draw(CommandBuffers[ImgIdx]);
-    }
+    RenderGameObjects(CommandBuffers[ImgIdx]);
     
     vkCmdEndRenderPass(CommandBuffers[ImgIdx]);
     if (vkEndCommandBuffer(CommandBuffers[ImgIdx]) !=  VK_SUCCESS)
     {
         throw std::runtime_error("Failed to end command buffer");
+    }
+}
+
+void Application::RenderGameObjects(VkCommandBuffer CommandBuffer)
+{
+    Pipeline->Bind(CommandBuffer);
+    
+    for (LveGameObject& GameObject : GameObjects)
+    {
+        PushConstantData PushConstant{};
+        PushConstant.offset = GameObject.Transform2D.Translation;
+        PushConstant.color = GameObject.GetColor();
+        PushConstant.transform = GameObject.Transform2D.mat2();
+        
+        vkCmdPushConstants(CommandBuffer, PipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstantData), &PushConstant);
+        
+        GameObject.GetModel()->Bind(CommandBuffer);
+        GameObject.GetModel()->Draw(CommandBuffer);
     }
 }
 

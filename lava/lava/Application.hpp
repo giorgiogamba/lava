@@ -72,6 +72,8 @@ private:
     void RecreateSwapChain();
     void RecordCommandBuffer(const int ImgIdx);
     
+    void RenderGameObjects(VkCommandBuffer CommandBuffer);
+    
     // #TODO remove this absolute path
     std::string absPathPrefix = "/Users/giorgiogamba/Documents/Projects/lava/lava/lava/";
     
