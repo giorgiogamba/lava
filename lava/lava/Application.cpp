@@ -10,6 +10,7 @@
 #define GLM_FORCE_RADIANS // expects angles to be defined in radians
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
+#include <glm/gtc/constants.hpp>
 
 namespace Lve {
 
@@ -243,6 +244,7 @@ void Application::LoadGameObjects()
     
     Triangle.Transform2D.Translation.x = .2f;
     Triangle.Transform2D.Scale = {2.f, .5f};
+    Triangle.Transform2D.RotationAngle = .25f * glm::two_pi<float>();
     
     GameObjects.push_back(std::move(Triangle));
 }
