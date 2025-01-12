@@ -19,13 +19,10 @@ namespace Lve {
 Application::Application()
 {
     LoadGameObjects();
-    CreatePipelineLayout();
-    CreatePipeline();
 }
 
 Application::~Application()
 {
-    vkDestroyPipelineLayout(Device.device(), PipelineLayout, nullptr);
 }
 
 void Application::Run()
@@ -47,44 +44,6 @@ void Application::Run()
     
     // Makes the CPU wait until all the GPU resources are freed
     vkDeviceWaitIdle(Device.device());
-}
-
-#pragma endregion
-
-#pragma region Pipeline
-
-void Application::CreatePipelineLayout()
-{ 
-    VkPushConstantRange PushConstantRange{};
-    PushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
-    PushConstantRange.offset = 0;
-    PushConstantRange.size = sizeof(PushConstantRange);
-    
-    VkPipelineLayoutCreateInfo PipelineLayoutInfo{};
-    PipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-    PipelineLayoutInfo.setLayoutCount = 0;
-    PipelineLayoutInfo.pSetLayouts = nullptr;
-    PipelineLayoutInfo.pushConstantRangeCount = 1;
-    PipelineLayoutInfo.pPushConstantRanges = &PushConstantRange;
-    
-    if (vkCreatePipelineLayout(Device.device(), &PipelineLayoutInfo, nullptr, &PipelineLayout) != VK_SUCCESS)
-    {
-        throw std::runtime_error("Failed to create pipeline layout");
-    }
-}
-
-void Application::CreatePipeline()
-{
-    assert(PipelineLayout && "Pipeline Layout is null");
-    
-    LvePipelineConfigInfo PipelineConfigInfo;
-    LvePipeline::defaultPipelineConfigInfo(PipelineConfigInfo);
-    
-    // Basically the render pass says to the graphics pipeline what kind of output to create
-    // (meaning how color buffer, depth etc. are allocated in the frame buffer)
-    PipelineConfigInfo.renderPass = Renderer.GetSwapChainRenderPass();
-    PipelineConfigInfo.pipelineLayout = PipelineLayout;
-    Pipeline = std::make_unique<LvePipeline>(Device, PipelineConfigInfo, absPathPrefix+"shaders/vertex_shader.vert.spv", absPathPrefix+"shaders/fragment_shader.frag.spv");
 }
 
 #pragma endregion

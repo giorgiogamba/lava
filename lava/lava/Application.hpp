@@ -83,20 +83,6 @@ private:
     
 #pragma endregion
     
-#pragma region Pipeline
-    
-private:
-    
-    void CreatePipelineLayout();
-    
-    void CreatePipeline();
-    
-    std::unique_ptr<LvePipeline> Pipeline;
-    
-    VkPipelineLayout PipelineLayout;
-    
-#pragma endregion
-    
 };
 
 }
