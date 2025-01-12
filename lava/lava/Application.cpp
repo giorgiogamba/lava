@@ -12,6 +12,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
 
+#include "RenderSystem.hpp"
+
 namespace Lve {
 
 #pragma region Lifecycle
@@ -27,16 +29,18 @@ Application::~Application()
 
 void Application::Run()
 {
+    RenderSystem RS{Device, Renderer.GetSwapChainRenderPass()};
+    
     while (!Window.shouldClose())
     {
         glfwPollEvents();
         
-        if (VkCommandBuffer CommandBuffer = Renderer.StartDrawFrame())
+        if (auto CommandBuffer = Renderer.StartDrawFrame())
         {
             // We kept this operations divided in order to add other drawing elements in between
             
             Renderer.StartSwapChainRenderPass(CommandBuffer);
-            RenderGameObjects(CommandBuffer);
+            RS.RenderGameObjects(CommandBuffer, GameObjects);
             Renderer.EndSwapChainRenderPass(CommandBuffer);
             Renderer.EndDrawFrame();
         }
@@ -70,25 +74,6 @@ void Application::LoadGameObjects()
     Triangle.Transform2D.RotationAngle = .25f * glm::two_pi<float>();
     
     GameObjects.push_back(std::move(Triangle));
-}
-
-
-void Application::RenderGameObjects(VkCommandBuffer CommandBuffer)
-{
-    Pipeline->Bind(CommandBuffer);
-    
-    for (LveGameObject& GameObject : GameObjects)
-    {
-        PushConstantData PushConstant{};
-        PushConstant.offset = GameObject.Transform2D.Translation;
-        PushConstant.color = GameObject.GetColor();
-        PushConstant.transform = GameObject.Transform2D.mat2();
-        
-        vkCmdPushConstants(CommandBuffer, PipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstantData), &PushConstant);
-        
-        GameObject.GetModel()->Bind(CommandBuffer);
-        GameObject.GetModel()->Draw(CommandBuffer);
-    }
 }
 
 #pragma endregion

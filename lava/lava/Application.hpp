@@ -77,8 +77,6 @@ private:
     
     void LoadGameObjects();
     
-    void RenderGameObjects(VkCommandBuffer CommandBuffer);
-    
     std::vector<LveGameObject> GameObjects;
     
 #pragma endregion
