@@ -54,9 +54,12 @@ private:
     
     bool IsFrameInProgress() const { return bIsFrameStarted; }
     
-    uint32_t CurrImageIdx;
+    int GetFrameIdx() const;
     
-    bool bIsFrameStarted = false;
+    uint32_t CurrImageIdx;
+    int CurrFrameIdx; // Goes from 0 to MaxFramesInFlight
+    
+    bool bIsFrameStarted;
     
 #pragma endregion
     

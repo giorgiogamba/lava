@@ -15,6 +15,8 @@ namespace Lve
 LveRenderer::LveRenderer(LveWindow& InWindow, LveDevice& InDevice)
 : Window(InWindow)
 , Device(InDevice)
+, bIsFrameStarted(false)
+, CurrFrameIdx(0)
 {
     RecreateSwapChain();
     CreateCommandBuffers();
@@ -29,9 +31,15 @@ LveRenderer::~LveRenderer()
 
 #pragma region Frame drawing
 
+int LveRenderer::GetFrameIdx() const
+{
+    assert(bIsFrameStarted && "Frame not in progress");
+    return CurrFrameIdx;
+}
+
 VkCommandBuffer LveRenderer::StartDrawFrame()
 {
-    assert(!IsFrameInProgress() && "Frame already drawing");
+    assert(!bIsFrameStarted && "Frame already drawing");
     
     // Retrieve the information about the frame to draw next
     VkResult Result = SwapChain->acquireNextImage(&CurrImageIdx);
@@ -55,7 +63,7 @@ VkCommandBuffer LveRenderer::StartDrawFrame()
     VkCommandBufferBeginInfo BeginInfo{};
     BeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
     
-    if (vkBeginCommandBuffer(CommandBuffers[CurrImageIdx], &BeginInfo) != VK_SUCCESS)
+    if (vkBeginCommandBuffer(CurrCommandBuffer, &BeginInfo) != VK_SUCCESS)
     {
         throw new std::runtime_error("Failed to begin recording command buffer");
     }
@@ -84,6 +92,7 @@ void LveRenderer::EndDrawFrame()
     }
     
     bIsFrameStarted = false;
+    CurrFrameIdx = (CurrFrameIdx + 1) & LveSwapChain::MAX_FRAMES_IN_FLIGHT;
 }
 
 #pragma endregion
@@ -107,7 +116,13 @@ void LveRenderer::RecreateSwapChain()
     }
     else
     {
-        SwapChain = std::make_unique<LveSwapChain>(Device, Extent, std::move(SwapChain));
+        // Transfers information from current swap chain to old one
+        std::shared_ptr<LveSwapChain> OldSwapChain = std::move(SwapChain);
+        
+        SwapChain = std::make_unique<LveSwapChain>(Device, Extent, OldSwapChain);
+        
+        if (!OldSwapChain || !OldSwapChain->CompareSwapFormats(*SwapChain.get()))
+            throw std::runtime_error("Swap chain format has changed");
         
         if (SwapChain->imageCount() != CommandBuffers.size())
         {
@@ -172,15 +187,15 @@ void LveRenderer::EndSwapChainRenderPass(VkCommandBuffer& CommandBuffer)
 VkCommandBuffer LveRenderer::GetCurrentCommandBuffer() const
 {
     assert(IsFrameInProgress() && "The frame has not started");
-    assert((CommandBuffers.size() > CurrImageIdx && CurrImageIdx >= 0) && "Current Image Index is not valid");
+    //assert((CommandBuffers.size() > CurrImageIdx && CurrImageIdx >= 0) && "Current Image Index is not valid");
     
-    return CommandBuffers[CurrImageIdx];
+    return CommandBuffers[CurrFrameIdx];
 }
 
 void LveRenderer::CreateCommandBuffers()
 {
     // Create a number of buffers equal to the number of drawable frames
-    CommandBuffers.resize(SwapChain->imageCount());
+    CommandBuffers.resize(LveSwapChain::MAX_FRAMES_IN_FLIGHT);
     
     VkCommandBufferAllocateInfo AllocationInfo{};
     AllocationInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
