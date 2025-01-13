@@ -19,3 +19,21 @@ Push Constant Range:
 - stage flags -> which stage flags will have access
 - offset
 - size
+
+
+By now, the transforms have been represented by 2 matrices (rotation and scaling) and a offset (translation)
+We cannot represent the translation as a matrix itself because it cannot maintain the property that the
+object has origin in (0, 0). We can do it by using a matrix with 1 more space in both dimensions (we use 3x3 matrix for 2x2 transform)
+This is called homogeneous coordinate
+
+Note that if we put the third element to 1, then it is copied inside the resulting matrix -> AFFINE transformation
+
+The main disadvantage is that the translation is always applied as final step, because it is an offset in formula ax + by + c (linear transformation)
+
+We note that relative offsets and distances are affected by Linear Transformations -> this means that, it I compute the lenght of the side of a square,
+if I then scale the square, then the side won't be the same -> it changes
+At the same time, they are not affected by translations -> the side of a square remains the same also if I move it somewhere else
+
+To make this distinction, we use the third coordinate = 1 if we are representing a point
+We use 0 if we are representing a distance/offset
+
