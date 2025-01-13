@@ -30,7 +30,7 @@ std::vector<VkVertexInputAttributeDescription> Vertex::GetAttributeDescs()
     std::vector<VkVertexInputAttributeDescription> AttributeDescs(2);
     AttributeDescs[0].binding = 0;
     AttributeDescs[0].location = 0;                         // Matches shaders
-    AttributeDescs[0].format = VK_FORMAT_R32G32_SFLOAT;     // Also if a position, we use color coordinates
+    AttributeDescs[0].format = VK_FORMAT_R32G32B32_SFLOAT;  // Also if a position, we use color coordinates
     AttributeDescs[0].offset = 0;  // 0
     
     AttributeDescs[1].binding = 0;

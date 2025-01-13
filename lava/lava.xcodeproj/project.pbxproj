@@ -15,6 +15,7 @@
 		F17204232D317B9800AE08C9 /* LveRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F17204212D317B9800AE08C9 /* LveRenderer.cpp */; };
 		F17204262D31890E00AE08C9 /* RenderSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F17204242D31890E00AE08C9 /* RenderSystem.cpp */; };
 		F17306242D2820ED00ADD48F /* LveModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F17306222D2820ED00ADD48F /* LveModel.cpp */; };
+		F18B60222D3546C7000A0FF2 /* LveTypes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F18B60202D3546C7000A0FF2 /* LveTypes.cpp */; };
 		F19512DB2D1EA7FB00A4CD01 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F19512DA2D1EA7FB00A4CD01 /* main.cpp */; };
 		F19512EC2D1EAA5600A4CD01 /* libglfw.3.4.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F19512E22D1EA88B00A4CD01 /* libglfw.3.4.dylib */; };
 		F19512ED2D1EAAA400A4CD01 /* libvulkan.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F19512E62D1EA8A600A4CD01 /* libvulkan.1.dylib */; };
@@ -61,6 +62,8 @@
 		F17204252D31890E00AE08C9 /* RenderSystem.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = RenderSystem.hpp; sourceTree = "<group>"; };
 		F17306222D2820ED00ADD48F /* LveModel.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = LveModel.cpp; sourceTree = "<group>"; };
 		F17306232D2820ED00ADD48F /* LveModel.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = LveModel.hpp; sourceTree = "<group>"; };
+		F18B60202D3546C7000A0FF2 /* LveTypes.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = LveTypes.cpp; sourceTree = "<group>"; };
+		F18B60212D3546C7000A0FF2 /* LveTypes.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = LveTypes.hpp; sourceTree = "<group>"; };
 		F19512D72D1EA7FB00A4CD01 /* lava */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = lava; sourceTree = BUILT_PRODUCTS_DIR; };
 		F19512DA2D1EA7FB00A4CD01 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		F19512E22D1EA88B00A4CD01 /* libglfw.3.4.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.3.4.dylib; path = ../../../../../../usr/local/lib/libglfw.3.4.dylib; sourceTree = "<group>"; };
@@ -137,6 +140,8 @@
 				F17204222D317B9800AE08C9 /* LveRenderer.hpp */,
 				F17204242D31890E00AE08C9 /* RenderSystem.cpp */,
 				F17204252D31890E00AE08C9 /* RenderSystem.hpp */,
+				F18B60202D3546C7000A0FF2 /* LveTypes.cpp */,
+				F18B60212D3546C7000A0FF2 /* LveTypes.hpp */,
 			);
 			path = lava;
 			sourceTree = "<group>";
@@ -210,6 +215,7 @@
 			files = (
 				F17204262D31890E00AE08C9 /* RenderSystem.cpp in Sources */,
 				F15C2B342D302BC30058F147 /* LveGameObject.cpp in Sources */,
+				F18B60222D3546C7000A0FF2 /* LveTypes.cpp in Sources */,
 				F17204232D317B9800AE08C9 /* LveRenderer.cpp in Sources */,
 				F1E484FD2D21D4ED008D5197 /* LveSwapChain.cpp in Sources */,
 				F19512DB2D1EA7FB00A4CD01 /* main.cpp in Sources */,

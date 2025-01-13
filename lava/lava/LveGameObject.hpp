@@ -9,47 +9,10 @@
 
 #include "LveModel.hpp"
 
+#include "LveTypes.hpp"
+
 namespace Lve
 {
-
-/**
- 
- The transform matrix's columns represent the unit vectors of a point in the space. In this 2D Matrix, the first column represents i and the second j
- This means that, in order to represent the coordinates of a rotated unit vector, we can use cos and sin of the rotation angle to get the rotation of the model
- 
- */
-struct Transform2DComponent
-{
-    // Currently rotation is represented through an explicit offset application
-    glm::vec2 Translation{}; // Represents offsets up/down/left/right
-    glm::vec2 Scale{1.f};
-    float RotationAngle;
-    
-    glm::mat2 mat2() {
-    
-        // Computate Rotatio matrix
-        const float s = glm::sin(RotationAngle);
-        const float c = glm::cos(RotationAngle);
-        
-        // NOTE: Positive Y axis in Vulkan is pointing dowm
-        const glm::mat2 RotationMatrix
-        {
-            {c, s}, // Represents the (x, y) coordinates of the rotated basis vector i
-            {-s, c} // Represents the (x, y) coordinates of the rotated basis vector j
-        };
-        
-        // Defined col by col
-        const glm::mat2 ScaleMatrix
-        {
-            {Scale.x, 0.f},
-            {0.f, Scale.y}
-        };
-        
-        return RotationMatrix * ScaleMatrix;
-        
-        
-    }
-};
 
 // Represents eveything that is in game, with a set of properties
 class LveGameObject
@@ -81,7 +44,7 @@ public:
     glm::vec3 GetColor() const { return Color; }
     void SetColor(const glm::vec3& InColor) { Color = InColor; }
     
-    Transform2DComponent Transform2D{};
+    TransformComponent Transform{};
     
 private:
     
