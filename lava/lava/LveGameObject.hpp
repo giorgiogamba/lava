@@ -44,7 +44,7 @@ public:
     glm::vec3 GetColor() const { return Color; }
     void SetColor(const glm::vec3& InColor) { Color = InColor; }
     
-    Transform2DComponent Transform2D{};
+    TransformComponent Transform{};
     
 private:
     
