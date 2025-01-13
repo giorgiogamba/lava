@@ -37,3 +37,27 @@ At the same time, they are not affected by translations -> the side of a square 
 To make this distinction, we use the third coordinate = 1 if we are representing a point
 We use 0 if we are representing a distance/offset
 
+Elemental rotation: rotation about 1 axis of a 3D space
+Composing 3 elemental rotations, we can get every target position that we want
+
+Proper Euler Angles: 12 possible combinations of elemental rotations -> THE FIRST AND THIRD ROTATION ARE ABOUT THE SAME AXIS
+Tait-Bryan Angles: 12 possible combinations of elemental rotations around 3 different axis
+
+Every combination is equally valid to reach the desired target
+
+Quaternions: alternative way to represent rotations, instead of matrices. It permits to solve some problems:
+- Rotations concatenation is faster
+- easier to extract angle and rotation axis
+- easier interpolation
+- no Gimbal lock
+
+Intrinsic cs Estrinsic rotation
+Extrinsic rotations: axis X Y Z are not moving while the object is rotating
+Intrincis rotations: Axis are attached to the moving object and moving with it
+
+Rotations can be interpreted depending on the way we read axis: 
+Given YXZ, if reading from left to right then intrinsic, if reading from right to left then extrinsic.
+About intrinsic, this is true because we are doing a rotation around a first axis, then we apply the new rotation to the axis
+resulting from the previous operations, meaning that the axis are moving with the object
+About extrinsic, we are applying from right to left and thus we are using the fixed axis, with the rotation not applied on the result of the previous rotation
+
