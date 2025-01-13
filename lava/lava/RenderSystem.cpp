@@ -77,12 +77,15 @@ void RenderSystem::RenderGameObjects(VkCommandBuffer CommandBuffer, std::vector<
     
     for (LveGameObject& GameObject : GameObjects)
     {
-        PushConstantData PushConstant{};
-        PushConstant.offset = GameObject.Transform2D.Translation;
-        PushConstant.color = GameObject.GetColor();
-        PushConstant.transform = GameObject.Transform2D.mat2();
+        // Make the cube rotate
+        GameObject.Transform.Rotation.y = glm::mod(GameObject.Transform.Rotation.y + 0.01f, glm::two_pi<float>());
+        GameObject.Transform.Rotation.x = glm::mod(GameObject.Transform.Rotation.x + 0.005f, glm::two_pi<float>());
         
-        vkCmdPushConstants(CommandBuffer, PipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstantData), &PushConstant);
+        PushConstant3DData PushConstant{};
+        PushConstant.color = GameObject.GetColor();
+        PushConstant.transform = GameObject.Transform.mat4();
+        
+        vkCmdPushConstants(CommandBuffer, PipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant3DData), &PushConstant);
         
         GameObject.GetModel()->Bind(CommandBuffer);
         GameObject.GetModel()->Draw(CommandBuffer);

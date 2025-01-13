@@ -54,26 +54,75 @@ void Application::Run()
 
 #pragma region GameObjects
 
+// temporary helper function, creates a 1x1x1 cube centered at offset
+std::unique_ptr<LveModel> Application::createCubeModel(LveDevice& device, glm::vec3 offset) {
+  std::vector<Vertex> vertices{
+
+      // left face (white)
+      {{-.5f, -.5f, -.5f}, {.9f, .9f, .9f}},
+      {{-.5f, .5f, .5f}, {.9f, .9f, .9f}},
+      {{-.5f, -.5f, .5f}, {.9f, .9f, .9f}},
+      {{-.5f, -.5f, -.5f}, {.9f, .9f, .9f}},
+      {{-.5f, .5f, -.5f}, {.9f, .9f, .9f}},
+      {{-.5f, .5f, .5f}, {.9f, .9f, .9f}},
+
+      // right face (yellow)
+      {{.5f, -.5f, -.5f}, {.8f, .8f, .1f}},
+      {{.5f, .5f, .5f}, {.8f, .8f, .1f}},
+      {{.5f, -.5f, .5f}, {.8f, .8f, .1f}},
+      {{.5f, -.5f, -.5f}, {.8f, .8f, .1f}},
+      {{.5f, .5f, -.5f}, {.8f, .8f, .1f}},
+      {{.5f, .5f, .5f}, {.8f, .8f, .1f}},
+
+      // top face (orange, remember y axis points down)
+      {{-.5f, -.5f, -.5f}, {.9f, .6f, .1f}},
+      {{.5f, -.5f, .5f}, {.9f, .6f, .1f}},
+      {{-.5f, -.5f, .5f}, {.9f, .6f, .1f}},
+      {{-.5f, -.5f, -.5f}, {.9f, .6f, .1f}},
+      {{.5f, -.5f, -.5f}, {.9f, .6f, .1f}},
+      {{.5f, -.5f, .5f}, {.9f, .6f, .1f}},
+
+      // bottom face (red)
+      {{-.5f, .5f, -.5f}, {.8f, .1f, .1f}},
+      {{.5f, .5f, .5f}, {.8f, .1f, .1f}},
+      {{-.5f, .5f, .5f}, {.8f, .1f, .1f}},
+      {{-.5f, .5f, -.5f}, {.8f, .1f, .1f}},
+      {{.5f, .5f, -.5f}, {.8f, .1f, .1f}},
+      {{.5f, .5f, .5f}, {.8f, .1f, .1f}},
+
+      // nose face (blue)
+      {{-.5f, -.5f, 0.5f}, {.1f, .1f, .8f}},
+      {{.5f, .5f, 0.5f}, {.1f, .1f, .8f}},
+      {{-.5f, .5f, 0.5f}, {.1f, .1f, .8f}},
+      {{-.5f, -.5f, 0.5f}, {.1f, .1f, .8f}},
+      {{.5f, -.5f, 0.5f}, {.1f, .1f, .8f}},
+      {{.5f, .5f, 0.5f}, {.1f, .1f, .8f}},
+
+      // tail face (green)
+      {{-.5f, -.5f, -0.5f}, {.1f, .8f, .1f}},
+      {{.5f, .5f, -0.5f}, {.1f, .8f, .1f}},
+      {{-.5f, .5f, -0.5f}, {.1f, .8f, .1f}},
+      {{-.5f, -.5f, -0.5f}, {.1f, .8f, .1f}},
+      {{.5f, -.5f, -0.5f}, {.1f, .8f, .1f}},
+      {{.5f, .5f, -0.5f}, {.1f, .8f, .1f}},
+
+  };
+  for (auto& v : vertices) {
+    v.position += offset;
+  }
+  return std::make_unique<LveModel>(device, vertices);
+}
+
 void Application::LoadGameObjects()
 {
-    // Initializes position and color for each vertex
-    std::vector<Vertex> Vertices =
-    { {{0.f, -0.5f}, {1.f, 0.f, 0.f}}
-    , {{0.5f, 0.5f}, {0.f, 1.f, 0.f}}
-    , {{-0.5f, 0.5f}, {0.f, 0.f, 1.f}}};
+    const std::shared_ptr<LveModel> Model = createCubeModel(Device, {.0f, .0f, .0f});
+    LveGameObject Cube = LveGameObject::CreateGameObject();
+    Cube.SetModel(Model);
+    Cube.Transform.Translation = {.0f, .0f, .5f};
+    Cube.Transform.Scale = {.5f, .5f, .5f};
     
-    // Just define a single model that is shared between multiple game objects
-    const std::shared_ptr<LveModel> Model = std::make_shared<LveModel>(Device, Vertices);
-    
-    LveGameObject Triangle = LveGameObject::CreateGameObject();
-    Triangle.SetModel(Model);
-    Triangle.SetColor({.1f, .8f, .1f});
-    
-    Triangle.Transform2D.Translation.x = .2f;
-    Triangle.Transform2D.Scale = {2.f, .5f};
-    Triangle.Transform2D.RotationAngle = .25f * glm::two_pi<float>();
-    
-    GameObjects.push_back(std::move(Triangle));
+    GameObjects.push_back(std::move(Cube));
+        
 }
 
 #pragma endregion
