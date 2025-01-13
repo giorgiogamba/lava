@@ -9,12 +9,11 @@ layout(location = 0) out vec4 outColor;
 
 layout(push_constant) uniform PushConstant
 {
-    mat2 transform;
-    vec2 offset;
+    mat4 transform;
     vec3 color;
 } pushConstants;
 
 void main()
 {
-    outColor = vec4(pushConstants.color,  1.0);
+    outColor = vec4(fragmentColor,  1.0);
 }
