@@ -1,14 +1,13 @@
-VULKAN_SDK_PATH = /Users/giorgiogamba/VulkanSDK/1.3.296.0/macOS
-GLSLC = /Users/giorgiogamba/Documents/Projects/lava/lava/lava/compile.sh
+include environment
 
-CC_FLAGS = -std=c++17 -I /usr/local/include/ -I $(VULKAN_SDK_PATH)/include
-LD_FLAGS = -L /usr/local/lib/ -L $(VULKAN_SDK_PATH)/lib -lglfw.3 -lvulkan
-LD_FLAGS_EXT = -Wl, -rpath /usr/local/lib
+CC_FLAGS = -std=c++17 -I ${USER_PATHS}/include -I $(VULKAN_SDK_PATH)/include
+LD_FLAGS = -L ${USER_PATHS}/lib -L $(VULKAN_SDK_PATH)/lib -lglfw.3 -lvulkan
+LD_FLAGS_EXT = -Wl, -rpath ${USER_PATHS}/lib
 
-vertShaderSrc = $(shell find ./shaders -type f -name "*.vert")
+vertShaderSrc = $(shell find shaders -type f -name "*.vert")
 vertObjFiles = $(patsubst %.vert, %.vert.spv, $(vertShaderSrc))
 
-fragShaderSrc = $(shell find ./shaders -type f -name "*.frag")
+fragShaderSrc = $(shell find shaders -type f -name "*.frag")
 fragObjFiles = $(patsubst %.frag, %.frag.spv, $(fragShaderSrc))
 
 TARGET = a.out
