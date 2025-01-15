@@ -20,3 +20,10 @@ Draw a triangle based on fragment interpolation
 ## New step achieved
 Finally I developed push constants for multiple objects efficient draw. Here's the result
 ![Screenshot 2025-01-09 alle 16 24 02](https://github.com/user-attachments/assets/2fb756bb-8fad-4ed6-9b58-15efcc700991)
+
+## New milestone achieved
+Finally able to render 3D objects:
+
+https://github.com/user-attachments/assets/6d137dd6-0a12-4ec0-b1c0-8f27ca9da831
+
+
