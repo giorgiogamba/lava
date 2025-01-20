@@ -85,7 +85,7 @@ void RenderSystem::RenderGameObjects(VkCommandBuffer CommandBuffer, std::vector<
         PushConstant.color = GameObject.GetColor();
         
         // Applies perspective
-        PushConstant.transform = Camera.GetProjectionMat() * GameObject.Transform.mat4();
+        PushConstant.transform = ProjectionView * GameObject.Transform.mat4();
         
         vkCmdPushConstants(CommandBuffer, PipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant3DData), &PushConstant);
         
