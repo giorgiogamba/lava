@@ -13,6 +13,7 @@
 #include <glm/gtc/constants.hpp>
 
 #include "RenderSystem.hpp"
+#include "LveCamera.hpp"
 
 namespace Lve {
 
@@ -30,17 +31,22 @@ Application::~Application()
 void Application::Run()
 {
     RenderSystem RS{Device, Renderer.GetSwapChainRenderPass()};
+    LveCamera Camera{};
     
     while (!Window.shouldClose())
     {
         glfwPollEvents();
+        
+        // We compute projection at every frame so that the view volume aspect ratio is always updated with the window
+        const float aspectRatio = Renderer.GetAspectRatio();
+        Camera.SetOrthoProjection(-aspectRatio, aspectRatio, -1.f, 1.f, -1.f, 1.f);
         
         if (auto CommandBuffer = Renderer.StartDrawFrame())
         {
             // We kept this operations divided in order to add other drawing elements in between
             
             Renderer.StartSwapChainRenderPass(CommandBuffer);
-            RS.RenderGameObjects(CommandBuffer, GameObjects);
+            RS.RenderGameObjects(CommandBuffer, GameObjects, Camera);
             Renderer.EndSwapChainRenderPass(CommandBuffer);
             Renderer.EndDrawFrame();
         }
