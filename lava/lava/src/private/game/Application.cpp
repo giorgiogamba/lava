@@ -33,13 +33,17 @@ void Application::Run()
     RenderSystem RS{Device, Renderer.GetSwapChainRenderPass()};
     LveCamera Camera{};
     
+    Camera.SetViewDirection(glm::vec3(0.f), glm::vec3(0.5f, 0.f, 1.f));
+    Camera.SetViewTarget(glm::vec3(-1.f, -2.f, 2.f), glm::vec3(0.f, 0.f, 2.5f));
+    
     while (!Window.shouldClose())
     {
         glfwPollEvents();
         
         // We compute projection at every frame so that the view volume aspect ratio is always updated with the window
         const float aspectRatio = Renderer.GetAspectRatio();
-        Camera.SetOrthoProjection(-aspectRatio, aspectRatio, -1.f, 1.f, -1.f, 1.f);
+        //Camera.SetOrthoProjection(-aspectRatio, aspectRatio, -1.f, 1.f, -1.f, 1.f);
+        Camera.SetPerspectiveProjection(glm::radians(50.f), aspectRatio, 0.1f, 10.f);
         
         if (auto CommandBuffer = Renderer.StartDrawFrame())
         {
@@ -128,7 +132,7 @@ void Application::LoadGameObjects()
     // Vulkan Canonical View Volume: X(-1, 1) Y(-1, 1) Z(0, 1)
     // where +X is to the right, +Y is to the botton and +Z is in the opposite way respect to the user
     // We translate the cube to the middle of the canonical view volume so that it is not cut by scissors when rotating
-    Cube.Transform.Translation = {.0f, .0f, .5f};
+    Cube.Transform.Translation = {.0f, .0f, 2.5f};
     Cube.Transform.Scale = {.5f, .5f, .5f};
     
     GameObjects.push_back(std::move(Cube));
