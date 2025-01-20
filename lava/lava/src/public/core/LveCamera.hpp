@@ -14,6 +14,13 @@
 namespace Lve
 {
 
+/*
+ Camera Transform: composed by 2 steps:
+ 1. Makes the camera move to the origin -> translation
+ 2. Orient the camera to negative Z -> rotation
+ 
+ Basically it is like the objects are moving according to the camera frustum
+ */
 class LveCamera
 {
 public:
