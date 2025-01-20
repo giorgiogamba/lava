@@ -75,6 +75,8 @@ void RenderSystem::RenderGameObjects(VkCommandBuffer CommandBuffer, std::vector<
 {
     Pipeline->Bind(CommandBuffer);
     
+    auto ProjectionView = Camera.GetProjectionMat() * Camera.GetViewMat();
+    
     for (LveGameObject& GameObject : GameObjects)
     {
         // Make the cube rotate
