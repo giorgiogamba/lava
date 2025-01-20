@@ -118,6 +118,10 @@ void Application::LoadGameObjects()
     const std::shared_ptr<LveModel> Model = createCubeModel(Device, {.0f, .0f, .0f});
     LveGameObject Cube = LveGameObject::CreateGameObject();
     Cube.SetModel(Model);
+    
+    // Vulkan Canonical View Volume: X(-1, 1) Y(-1, 1) Z(0, 1)
+    // where +X is to the right, +Y is to the botton and +Z is in the opposite way respect to the user
+    // We translate the cube to the middle of the canonical view volume so that it is not cut by scissors when rotating
     Cube.Transform.Translation = {.0f, .0f, .5f};
     Cube.Transform.Scale = {.5f, .5f, .5f};
     
