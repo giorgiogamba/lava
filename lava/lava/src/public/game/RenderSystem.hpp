@@ -23,6 +23,7 @@
 // Local Includes
 #include "LvePipeline.hpp"
 #include "LveGameObject.hpp"
+#include "LveCamera.hpp"
 
 namespace Lve {
 
@@ -52,7 +53,8 @@ private:
     
 public:
 
-    void RenderGameObjects(VkCommandBuffer CommandBuffer, std::vector<LveGameObject>& GameObjects);
+    // Camera passed in argument in order to be shared between various systems
+    void RenderGameObjects(VkCommandBuffer CommandBuffer, std::vector<LveGameObject>& GameObjects, const LveCamera& Camera);
     
 #pragma endregion
     

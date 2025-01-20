@@ -71,9 +71,11 @@ void RenderSystem::CreatePipeline(VkRenderPass& RenderPass)
 #pragma region GameObjects
 
 
-void RenderSystem::RenderGameObjects(VkCommandBuffer CommandBuffer, std::vector<LveGameObject>& GameObjects)
+void RenderSystem::RenderGameObjects(VkCommandBuffer CommandBuffer, std::vector<LveGameObject>& GameObjects, const LveCamera& Camera)
 {
     Pipeline->Bind(CommandBuffer);
+    
+    auto ProjectionView = Camera.GetProjectionMat() * Camera.GetViewMat();
     
     for (LveGameObject& GameObject : GameObjects)
     {
@@ -83,7 +85,9 @@ void RenderSystem::RenderGameObjects(VkCommandBuffer CommandBuffer, std::vector<
         
         PushConstant3DData PushConstant{};
         PushConstant.color = GameObject.GetColor();
-        PushConstant.transform = GameObject.Transform.mat4();
+        
+        // Applies perspective
+        PushConstant.transform = ProjectionView * GameObject.Transform.mat4();
         
         vkCmdPushConstants(CommandBuffer, PipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant3DData), &PushConstant);
         
