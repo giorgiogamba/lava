@@ -159,6 +159,11 @@ void LveRenderer::StartSwapChainRenderPass(VkCommandBuffer& CommandBuffer)
     // We cannot have a render pass that uses both primary and secondary buffers
     vkCmdBeginRenderPass(CommandBuffer, &RenderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
     
+    // Viewport Transform
+    // Basically a postprocess viewport applied to the vertex shader output
+    // If of fixed size, then the objects will change acconrding to the window size
+    // this because the XY dimensions of the viewing volume are stretched in order
+    // to fit the viewport dimensions
     VkViewport Viewport{};
     Viewport.x = 0.0f;
     Viewport.y = 0.0f;

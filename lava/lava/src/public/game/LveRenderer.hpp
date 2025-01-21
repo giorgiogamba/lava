@@ -72,6 +72,8 @@ public:
     
     VkRenderPass GetSwapChainRenderPass() const { return SwapChain->getRenderPass(); }
     
+    float GetAspectRatio() const { return SwapChain->extentAspectRatio(); }
+    
 private:
     
     void RecreateSwapChain();

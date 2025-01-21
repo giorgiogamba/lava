@@ -61,3 +61,9 @@ About intrinsic, this is true because we are doing a rotation around a first axi
 resulting from the previous operations, meaning that the axis are moving with the object
 About extrinsic, we are applying from right to left and thus we are using the fixed axis, with the rotation not applied on the result of the previous rotation
 
+
+Othographic projection: generalization of a view volume: axis aligned bounding box, with any location and any scale
+Defined by 6 planes: near/far, top/bottom, left/right
+The challenge is to convert this box to the vulkan canonical view volume: we scale and translate
+Ofc the implementation depends on the axis adopted and their direction
+
