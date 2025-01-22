@@ -45,6 +45,7 @@ std::vector<VkVertexInputAttributeDescription> Vertex::GetAttributeDescs()
 
 LveModel::LveModel(LveDevice& InDevice, const Builder& Builder)
     : Device(InDevice)
+    , bHasIndexBuffer(false)
 {
     CreateVertexBuffers(Builder.Vertices);
     CreateIndexBuffers(Builder.Indices);
