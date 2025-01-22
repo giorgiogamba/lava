@@ -149,6 +149,7 @@ void LveModel::CreateIndexBuffers(const std::vector<uint32_t>& Indices)
     
     VkDeviceSize BufferSize = sizeof(Indices[0]) * IndexCount;
     
+    // We define a staging buffer so that we can define a device local memory directly on GPU and get higher performance
     VkBuffer StagingBuffer;
     VkDeviceMemory StagingBufferMemory;
     
