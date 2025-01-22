@@ -79,9 +79,15 @@ public:
     
 private:
     
+    LveDevice& Device;
+    
+#pragma region Vertex Buffer
+
+private:
+    
     void CreateVertexBuffers(const std::vector<Vertex>& Vertices);
     
-    LveDevice& Device;
+    bool bHasIndexBuffer;
     
     VkBuffer VertexBuffer;
     VkDeviceMemory VertexBufferMemory;
