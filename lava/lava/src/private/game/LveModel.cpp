@@ -93,4 +93,37 @@ void LveModel::CreateVertexBuffers(const std::vector<Vertex>& Vertices)
     vkUnmapMemory(Device.device(), VertexBufferMemory);
 }
 
+#pragma endregion
+
+#pragma region Indices
+
+void LveModel::CreateIndexBuffers(const std::vector<uint32_t>& Indices)
+{
+    IndexCount = static_cast<uint32_t>(Indices.size());
+    
+    bHasIndexBuffer = IndexCount > 0;
+    if (!bHasIndexBuffer)
+        return;
+    
+    // Compute the total number of bytes required to store the current model
+    const VkDeviceSize BufferSize = sizeof(Indices[0]) * IndexCount;
+    
+    // Visible makes the memory visible to the GPU, Coherent keeps the host and device memory regions consistent to each others
+    Device.createBuffer(BufferSize, VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, IndexBuffer, IndexBufferMemory);
+    
+    // Creates a reference on the CPU of the data allocated in the GPU.
+    // When it is updated (when someone writes in it), it creates a copy on the GPU
+    void* data;
+    vkMapMemory(Device.device(), IndexBufferMemory, 0, BufferSize, 0, &data);
+    
+    // Copies vertices data to the host map memory region. Since we set the Coherent bit to true, then since
+    // the host memory is updated, then the device memory is updated consequently
+    memcpy(data, Indices.data(), static_cast<size_t>(BufferSize));
+    
+    // Since we don't need data information on the host (CPU), we clear it so that we have it only on GPU
+    vkUnmapMemory(Device.device(), IndexBufferMemory);
+}
+
+#pragma endregion
+
 }

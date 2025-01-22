@@ -87,6 +87,20 @@ private:
     VkDeviceMemory VertexBufferMemory;
     uint32_t VertexCount;
     
+#pragma endregion
+    
+#pragma region Index Buffer
+    
+private:
+    
+    void CreateIndexBuffers(const std::vector<uint32_t>& Indices);
+    
+    VkBuffer IndexBuffer;
+    VkDeviceMemory IndexBufferMemory;
+    uint32_t IndexCount;
+    
+#pragma endregion
+    
 };
 
 }
