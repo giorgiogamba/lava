@@ -57,6 +57,12 @@ LveModel::~LveModel()
     // https://www.youtube.com/redirect?event=video_description&redir_token=QUFFLUhqbU5VUnJqS2c1YWJJTE5oV1c0TjNCSUFyUEtud3xBQ3Jtc0ttZzBQWXJsZWJZcVZzRUlSeDFzV0Y1NkhVam1NdVZQUXJnclllcWY1VVI0eklDcFFGbUFhWGFzaFJDSTlDQkFZZ0F0d0RqMmVjdkF2enFJTFFtRTY2U1FPLS1aeUEwUWZSQ25rcEpfeTAta0xMZi1CNA&q=http%3A%2F%2Fkylehalladay.com%2Fblog%2Ftutorial%2F2017%2F12%2F13%2FCustom-Allocators-Vulkan.html&v=mnKp501RXDc
     vkDestroyBuffer(Device.device(), VertexBuffer, nullptr);
     vkFreeMemory(Device.device(), VertexBufferMemory, nullptr);
+    
+    if (bHasIndexBuffer)
+    {
+        vkDestroyBuffer(Device.device(), IndexBuffer, nullptr);
+        vkFreeMemory(Device.device(), IndexBufferMemory, nullptr);
+    }
 }
 
 void LveModel::Bind(VkCommandBuffer& CommandBuffer)
