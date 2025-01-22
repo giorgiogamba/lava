@@ -55,6 +55,13 @@ struct Vertex
     static std::vector<VkVertexInputBindingDescription> GetBindingDesc();
     static std::vector<VkVertexInputAttributeDescription> GetAttributeDescs();
 };
+
+struct Builder
+{
+    std::vector<Vertex> Vertices{};
+    std::vector<uint32_t> Indices{};
+};
+
 #pragma endregion
 
 class LveModel
