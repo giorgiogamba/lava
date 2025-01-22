@@ -64,12 +64,29 @@ void LveModel::Bind(VkCommandBuffer& CommandBuffer)
     VkBuffer Buffers[] = {VertexBuffer};
     VkDeviceSize Offsets[] = {0};
     vkCmdBindVertexBuffers(CommandBuffer, 0, 1, Buffers, Offsets);
+    
+    if (bHasIndexBuffer)
+    {
+        // 32bit index type for huge storing
+        vkCmdBindIndexBuffer(CommandBuffer, IndexBuffer, 0, VK_INDEX_TYPE_UINT32);
+    }
 }
 
 void LveModel::Draw(VkCommandBuffer& CommandBuffer)
 {
-    vkCmdDraw(CommandBuffer, VertexCount, 1, 0, 0);
+    if (bHasIndexBuffer)
+    {
+        // Index drawing
+        vkCmdDrawIndexed(CommandBuffer, IndexCount, 1, 0, 0, 0);
+    }
+    else
+    {
+        // Vertex drawing
+        vkCmdDraw(CommandBuffer, VertexCount, 1, 0, 0);
+    }
 }
+
+#pragma region Vertices
 
 void LveModel::CreateVertexBuffers(const std::vector<Vertex>& Vertices)
 {
