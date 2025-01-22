@@ -43,10 +43,12 @@ std::vector<VkVertexInputAttributeDescription> Vertex::GetAttributeDescs()
 
 #pragma endregion
 
-LveModel::LveModel(LveDevice& InDevice, const std::vector<Vertex>& InVertices)
+LveModel::LveModel(LveDevice& InDevice, const Builder& Builder)
     : Device(InDevice)
+    , bHasIndexBuffer(false)
 {
-    CreateVertexBuffers(InVertices);
+    CreateVertexBuffers(Builder.Vertices);
+    CreateIndexBuffers(Builder.Indices);
 }
 
 LveModel::~LveModel()
@@ -54,8 +56,13 @@ LveModel::~LveModel()
     // NOTE: When creating complex scenes, we will run into allocation problems, thus it will be convenient to add
     // a memory allocator like the one defined in
     // https://www.youtube.com/redirect?event=video_description&redir_token=QUFFLUhqbU5VUnJqS2c1YWJJTE5oV1c0TjNCSUFyUEtud3xBQ3Jtc0ttZzBQWXJsZWJZcVZzRUlSeDFzV0Y1NkhVam1NdVZQUXJnclllcWY1VVI0eklDcFFGbUFhWGFzaFJDSTlDQkFZZ0F0d0RqMmVjdkF2enFJTFFtRTY2U1FPLS1aeUEwUWZSQ25rcEpfeTAta0xMZi1CNA&q=http%3A%2F%2Fkylehalladay.com%2Fblog%2Ftutorial%2F2017%2F12%2F13%2FCustom-Allocators-Vulkan.html&v=mnKp501RXDc
-    vkDestroyBuffer(Device.device(), VertexBuffer, nullptr);
-    vkFreeMemory(Device.device(), VertexBufferMemory, nullptr);
+    
+    ClearBufferAndMemory(VertexBuffer, VertexBufferMemory);
+    
+    if (bHasIndexBuffer)
+    {
+        ClearBufferAndMemory(IndexBuffer, IndexBufferMemory);
+    }
 }
 
 void LveModel::Bind(VkCommandBuffer& CommandBuffer)
@@ -63,12 +70,35 @@ void LveModel::Bind(VkCommandBuffer& CommandBuffer)
     VkBuffer Buffers[] = {VertexBuffer};
     VkDeviceSize Offsets[] = {0};
     vkCmdBindVertexBuffers(CommandBuffer, 0, 1, Buffers, Offsets);
+    
+    if (bHasIndexBuffer)
+    {
+        // 32bit index type for huge storing
+        vkCmdBindIndexBuffer(CommandBuffer, IndexBuffer, 0, VK_INDEX_TYPE_UINT32);
+    }
 }
 
 void LveModel::Draw(VkCommandBuffer& CommandBuffer)
 {
-    vkCmdDraw(CommandBuffer, VertexCount, 1, 0, 0);
+    if (bHasIndexBuffer)
+    {
+        // Index drawing
+        vkCmdDrawIndexed(CommandBuffer, IndexCount, 1, 0, 0, 0);
+    }
+    else
+    {
+        // Vertex drawing
+        vkCmdDraw(CommandBuffer, VertexCount, 1, 0, 0);
+    }
 }
+
+void LveModel::ClearBufferAndMemory(VkBuffer& Buffer, VkDeviceMemory& Memory)
+{
+    vkDestroyBuffer(Device.device(), Buffer, nullptr);
+    vkFreeMemory(Device.device(), Memory, nullptr);
+}
+
+#pragma region Vertices
 
 void LveModel::CreateVertexBuffers(const std::vector<Vertex>& Vertices)
 {
@@ -79,17 +109,73 @@ void LveModel::CreateVertexBuffers(const std::vector<Vertex>& Vertices)
     // Compute the total number of bytes required to store the current model
     const VkDeviceSize BufferSize = sizeof(Vertices[0]) * VertexCount;
     
+    VkBuffer StagingBuffer;
+    VkDeviceMemory StagingBufferMemory;
+    
+    // We define the buffer as a source location for a memory transfer operation
     // Visible makes the memory visible to the CPU, Coherent keeps the host and device memory regions consistent to each others
-    Device.createBuffer(BufferSize, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, VertexBuffer, VertexBufferMemory);
+    Device.createBuffer(BufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, StagingBuffer, StagingBufferMemory);
     
+    // Creates a reference on the CPU of the data allocated in the GPU.
+    // When it is updated (when someone writes in it), it creates a copy on the GPU
     void* data;
-    vkMapMemory(Device.device(), VertexBufferMemory, 0, BufferSize, 0, &data);
+    vkMapMemory(Device.device(), StagingBufferMemory, 0, BufferSize, 0, &data);
     
-    // copies vertices data to the host map memory region. Since we set the Coherent bit to true, then since
+    // Copies vertices data to the host map memory region. Since we set the Coherent bit to true, then since
     // the host memory is updated, then the device memory is updated consequently
     memcpy(data, Vertices.data(), static_cast<size_t>(BufferSize));
     
-    vkUnmapMemory(Device.device(), VertexBufferMemory);
+    // Since we don't need data information on the host (CPU), we clear it so that we have it only on GPU
+    vkUnmapMemory(Device.device(), StagingBufferMemory);
+    
+    Device.createBuffer(BufferSize, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, VertexBuffer, VertexBufferMemory);
+    
+    Device.copyBuffer(StagingBuffer, VertexBuffer, BufferSize);
+    
+    ClearBufferAndMemory(StagingBuffer, StagingBufferMemory);
 }
+
+#pragma endregion
+
+#pragma region Indices
+
+void LveModel::CreateIndexBuffers(const std::vector<uint32_t>& Indices)
+{
+    IndexCount = static_cast<uint32_t>(Indices.size());
+    
+    bHasIndexBuffer = IndexCount > 0;
+    if (!bHasIndexBuffer)
+        return;
+    
+    VkDeviceSize BufferSize = sizeof(Indices[0]) * IndexCount;
+    
+    // We define a staging buffer so that we can define a device local memory directly on GPU and get higher performance
+    VkBuffer StagingBuffer;
+    VkDeviceMemory StagingBufferMemory;
+    
+    // We define the buffer as a source location for a memory transfer operation
+    // Visible makes the memory visible to the CPU, Coherent keeps the host and device memory regions consistent to each others
+    Device.createBuffer(BufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, StagingBuffer, StagingBufferMemory);
+    
+    // Creates a reference on the CPU of the data allocated in the GPU.
+    // When it is updated (when someone writes in it), it creates a copy on the GPU
+    void* data;
+    vkMapMemory(Device.device(), StagingBufferMemory, 0, BufferSize, 0, &data);
+    
+    // Copies vertices data to the host map memory region. Since we set the Coherent bit to true, then since
+    // the host memory is updated, then the device memory is updated consequently
+    memcpy(data, Indices.data(), static_cast<size_t>(BufferSize));
+    
+    // Since we don't need data information on the host (CPU), we clear it so that we have it only on GPU
+    vkUnmapMemory(Device.device(), StagingBufferMemory);
+    
+    Device.createBuffer(BufferSize, VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, IndexBuffer, IndexBufferMemory);
+    
+    Device.copyBuffer(StagingBuffer, IndexBuffer, BufferSize);
+    
+    ClearBufferAndMemory(StagingBuffer, StagingBufferMemory);
+}
+
+#pragma endregion
 
 }
