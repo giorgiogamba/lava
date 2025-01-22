@@ -79,10 +79,6 @@ void RenderSystem::RenderGameObjects(VkCommandBuffer CommandBuffer, std::vector<
     
     for (LveGameObject& GameObject : GameObjects)
     {
-        // Make the cube rotate
-        GameObject.Transform.Rotation.y = glm::mod(GameObject.Transform.Rotation.y + 0.01f, glm::two_pi<float>());
-        GameObject.Transform.Rotation.x = glm::mod(GameObject.Transform.Rotation.x + 0.005f, glm::two_pi<float>());
-        
         PushConstant3DData PushConstant{};
         PushConstant.color = GameObject.GetColor();
         

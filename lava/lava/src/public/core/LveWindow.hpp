@@ -46,6 +46,8 @@ public:
     bool WasWindowResized() const { return bFrameBufferResized; }
     void ResetWindowResizedStatus() { bFrameBufferResized = false; }
     
+    GLFWwindow* GetGLFWwindow() const { return Window; }
+    
 private:
     
     void InitWindow();

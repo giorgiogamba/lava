@@ -55,13 +55,20 @@ struct Vertex
     static std::vector<VkVertexInputBindingDescription> GetBindingDesc();
     static std::vector<VkVertexInputAttributeDescription> GetAttributeDescs();
 };
+
+struct Builder
+{
+    std::vector<Vertex> Vertices{};
+    std::vector<uint32_t> Indices{};
+};
+
 #pragma endregion
 
 class LveModel
 {
 public:
     
-    LveModel(LveDevice& InDevice, const std::vector<Vertex>& InVertices);
+    LveModel(LveDevice& InDevice, const Builder& Builder);
     ~LveModel();
     
     LveModel(const LveModel&) = delete;
@@ -72,13 +79,35 @@ public:
     
 private:
     
+    LveDevice& Device;
+    
+    void ClearBufferAndMemory(VkBuffer& Buffer, VkDeviceMemory& Memory);
+    
+#pragma region Vertex Buffer
+
+private:
+    
     void CreateVertexBuffers(const std::vector<Vertex>& Vertices);
     
-    LveDevice& Device;
+    bool bHasIndexBuffer;
     
     VkBuffer VertexBuffer;
     VkDeviceMemory VertexBufferMemory;
     uint32_t VertexCount;
+    
+#pragma endregion
+    
+#pragma region Index Buffer
+    
+private:
+    
+    void CreateIndexBuffers(const std::vector<uint32_t>& Indices);
+    
+    VkBuffer IndexBuffer;
+    VkDeviceMemory IndexBufferMemory;
+    uint32_t IndexCount;
+    
+#pragma endregion
     
 };
 
