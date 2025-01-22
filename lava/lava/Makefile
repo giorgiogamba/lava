@@ -1,6 +1,10 @@
 include environment
 
-CC_FLAGS = -std=c++17 -I ${USER_PATHS}/include -I $(VULKAN_SDK_PATH)/include
+MAIN_DIR = src
+SRC_DIR = src/private
+INC_DIR = src/public
+
+CC_FLAGS = -std=c++17 -I $(INC_DIR) -I ${USER_PATHS}/include -I $(VULKAN_SDK_PATH)/include
 LD_FLAGS = -L ${USER_PATHS}/lib -L $(VULKAN_SDK_PATH)/lib -lglfw.3 -lvulkan
 LD_FLAGS_EXT = -Wl, -rpath ${USER_PATHS}/lib
 
@@ -12,8 +16,8 @@ fragObjFiles = $(patsubst %.frag, %.frag.spv, $(fragShaderSrc))
 
 TARGET = a.out
 $(TARGET): $(vertObjFiles) $(fragObjFiles)
-$(TARGET): *.cpp *.hpp
-	g++ $(CC_FLAGS) -o ${TARGET} *.cpp $(LD_FLAGS) $(LD_FLAGS_EXT)
+$(TARGET): $(SRC_DIR)/*.cpp $(INC_DIR)/*.hpp
+	g++ $(CC_FLAGS) -o ${TARGET} $(MAIN_DIR)/*.cpp $(SRC_DIR)/*.cpp $(LD_FLAGS) $(LD_FLAGS_EXT)
 
 %.spv: %
 	${GLSLC} $< -o $@
