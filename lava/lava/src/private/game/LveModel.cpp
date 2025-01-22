@@ -56,13 +56,12 @@ LveModel::~LveModel()
     // NOTE: When creating complex scenes, we will run into allocation problems, thus it will be convenient to add
     // a memory allocator like the one defined in
     // https://www.youtube.com/redirect?event=video_description&redir_token=QUFFLUhqbU5VUnJqS2c1YWJJTE5oV1c0TjNCSUFyUEtud3xBQ3Jtc0ttZzBQWXJsZWJZcVZzRUlSeDFzV0Y1NkhVam1NdVZQUXJnclllcWY1VVI0eklDcFFGbUFhWGFzaFJDSTlDQkFZZ0F0d0RqMmVjdkF2enFJTFFtRTY2U1FPLS1aeUEwUWZSQ25rcEpfeTAta0xMZi1CNA&q=http%3A%2F%2Fkylehalladay.com%2Fblog%2Ftutorial%2F2017%2F12%2F13%2FCustom-Allocators-Vulkan.html&v=mnKp501RXDc
-    vkDestroyBuffer(Device.device(), VertexBuffer, nullptr);
-    vkFreeMemory(Device.device(), VertexBufferMemory, nullptr);
+    
+    ClearBufferAndMemory(VertexBuffer, VertexBufferMemory);
     
     if (bHasIndexBuffer)
     {
-        vkDestroyBuffer(Device.device(), IndexBuffer, nullptr);
-        vkFreeMemory(Device.device(), IndexBufferMemory, nullptr);
+        ClearBufferAndMemory(IndexBuffer, IndexBufferMemory);
     }
 }
 
@@ -91,6 +90,12 @@ void LveModel::Draw(VkCommandBuffer& CommandBuffer)
         // Vertex drawing
         vkCmdDraw(CommandBuffer, VertexCount, 1, 0, 0);
     }
+}
+
+void LveModel::ClearBufferAndMemory(VkBuffer& Buffer, VkDeviceMemory& Memory)
+{
+    vkDestroyBuffer(Device.device(), Buffer, nullptr);
+    vkFreeMemory(Device.device(), Memory, nullptr);
 }
 
 #pragma region Vertices
@@ -127,9 +132,7 @@ void LveModel::CreateVertexBuffers(const std::vector<Vertex>& Vertices)
     
     Device.copyBuffer(StagingBuffer, VertexBuffer, BufferSize);
     
-    vkDestroyBuffer(Device.device(), StagingBuffer, nullptr);
-    vkFreeMemory(Device.device(), StagingBufferMemory, nullptr);
-
+    ClearBufferAndMemory(StagingBuffer, StagingBufferMemory);
 }
 
 #pragma endregion
@@ -169,8 +172,7 @@ void LveModel::CreateIndexBuffers(const std::vector<uint32_t>& Indices)
     
     Device.copyBuffer(StagingBuffer, IndexBuffer, BufferSize);
     
-    vkDestroyBuffer(Device.device(), StagingBuffer, nullptr);
-    vkFreeMemory(Device.device(), StagingBufferMemory, nullptr);
+    ClearBufferAndMemory(StagingBuffer, StagingBufferMemory);
 }
 
 #pragma endregion
