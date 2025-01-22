@@ -11,6 +11,7 @@
 		F120E9612D1EC95100A2BA17 /* Application.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F120E95F2D1EC95100A2BA17 /* Application.cpp */; };
 		F120E96B2D1EE6CB00A2BA17 /* LvePipeline.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F120E9692D1EE6CB00A2BA17 /* LvePipeline.cpp */; };
 		F120E96E2D1EF5BE00A2BA17 /* LveDevice.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F120E96D2D1EF5BE00A2BA17 /* LveDevice.cpp */; };
+		F13DA0AC2D4025F400DC56C3 /* KeyboardMovementController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F13DA0AA2D4025F400DC56C3 /* KeyboardMovementController.cpp */; };
 		F15C2B342D302BC30058F147 /* LveGameObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F15C2B322D302BC30058F147 /* LveGameObject.cpp */; };
 		F17204232D317B9800AE08C9 /* LveRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F17204212D317B9800AE08C9 /* LveRenderer.cpp */; };
 		F17204262D31890E00AE08C9 /* RenderSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F17204242D31890E00AE08C9 /* RenderSystem.cpp */; };
@@ -55,6 +56,8 @@
 		F120E96A2D1EE6CB00A2BA17 /* LvePipeline.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = LvePipeline.hpp; sourceTree = "<group>"; };
 		F120E96C2D1EF5BE00A2BA17 /* LveDevice.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = LveDevice.hpp; sourceTree = "<group>"; };
 		F120E96D2D1EF5BE00A2BA17 /* LveDevice.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LveDevice.cpp; sourceTree = "<group>"; };
+		F13DA0AA2D4025F400DC56C3 /* KeyboardMovementController.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = KeyboardMovementController.cpp; sourceTree = "<group>"; };
+		F13DA0AB2D4025F400DC56C3 /* KeyboardMovementController.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = KeyboardMovementController.hpp; sourceTree = "<group>"; };
 		F15C2B322D302BC30058F147 /* LveGameObject.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = LveGameObject.cpp; sourceTree = "<group>"; };
 		F15C2B332D302BC30058F147 /* LveGameObject.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = LveGameObject.hpp; sourceTree = "<group>"; };
 		F17204212D317B9800AE08C9 /* LveRenderer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = LveRenderer.cpp; sourceTree = "<group>"; };
@@ -166,6 +169,7 @@
 			isa = PBXGroup;
 			children = (
 				F120E95F2D1EC95100A2BA17 /* Application.cpp */,
+				F13DA0AA2D4025F400DC56C3 /* KeyboardMovementController.cpp */,
 				F15C2B322D302BC30058F147 /* LveGameObject.cpp */,
 				F17204242D31890E00AE08C9 /* RenderSystem.cpp */,
 				F17204212D317B9800AE08C9 /* LveRenderer.cpp */,
@@ -213,6 +217,7 @@
 				F17204252D31890E00AE08C9 /* RenderSystem.hpp */,
 				F17204222D317B9800AE08C9 /* LveRenderer.hpp */,
 				F17306232D2820ED00ADD48F /* LveModel.hpp */,
+				F13DA0AB2D4025F400DC56C3 /* KeyboardMovementController.hpp */,
 			);
 			path = game;
 			sourceTree = "<group>";
@@ -279,6 +284,7 @@
 				F18B60222D3546C7000A0FF2 /* LveTypes.cpp in Sources */,
 				F17204232D317B9800AE08C9 /* LveRenderer.cpp in Sources */,
 				F1E484FD2D21D4ED008D5197 /* LveSwapChain.cpp in Sources */,
+				F13DA0AC2D4025F400DC56C3 /* KeyboardMovementController.cpp in Sources */,
 				F19512DB2D1EA7FB00A4CD01 /* main.cpp in Sources */,
 				F18FD6162D3EB03B00B417FB /* LveCamera.cpp in Sources */,
 				F120E96B2D1EE6CB00A2BA17 /* LvePipeline.cpp in Sources */,

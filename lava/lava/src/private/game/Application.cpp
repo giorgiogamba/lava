@@ -12,8 +12,11 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
 
+#include <chrono>
+
 #include "RenderSystem.hpp"
 #include "LveCamera.hpp"
+#include "KeyboardMovementController.hpp"
 
 namespace Lve {
 
@@ -36,9 +39,28 @@ void Application::Run()
     Camera.SetViewDirection(glm::vec3(0.f), glm::vec3(0.5f, 0.f, 1.f));
     Camera.SetViewTarget(glm::vec3(-1.f, -2.f, 2.f), glm::vec3(0.f, 0.f, 2.5f));
     
+    // Saves camera sate
+    LveGameObject ViewerObject = LveGameObject::CreateGameObject();
+    
+    KeyboardMovementController CameraController{};
+    
+    auto CurrentTime = std::chrono::high_resolution_clock::now();
+    
     while (!Window.shouldClose())
     {
+        // Blocking action
         glfwPollEvents();
+        
+        auto NewTime = std::chrono::high_resolution_clock::now();
+        
+        // 1 means 1 second, 0.5 means half-second
+        const float DeltaTime = std::chrono::duration<float, std::chrono::seconds::period>(NewTime - CurrentTime).count();
+        CurrentTime = NewTime;
+        
+        // Eventually limit the DeltaTime to a max value in order to work while resizing the window
+        
+        CameraController.MoveInPlaneXZ(Window.GetGLFWwindow(), DeltaTime, ViewerObject);
+        Camera.SetViewYX(ViewerObject.Transform.Translation, ViewerObject.Transform.Rotation);
         
         // We compute projection at every frame so that the view volume aspect ratio is always updated with the window
         const float aspectRatio = Renderer.GetAspectRatio();
