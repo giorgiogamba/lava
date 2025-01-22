@@ -425,7 +425,7 @@ VkPresentModeKHR LveSwapChain::chooseSwapPresentMode(const std::vector<VkPresent
     //   }
     // }
 
-    // We sync the
+    // We sync the spwa chain update with the screen update. This means that the game will go faster on faster screens
     std::cout << "Present mode: V-Sync" << std::endl;
     return VK_PRESENT_MODE_FIFO_KHR;
 }
