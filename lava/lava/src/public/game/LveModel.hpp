@@ -81,6 +81,8 @@ private:
     
     LveDevice& Device;
     
+    void ClearBufferAndMemory(VkBuffer& Buffer, VkDeviceMemory& Memory);
+    
 #pragma region Vertex Buffer
 
 private:
