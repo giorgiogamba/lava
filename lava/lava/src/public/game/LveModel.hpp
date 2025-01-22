@@ -68,7 +68,7 @@ class LveModel
 {
 public:
     
-    LveModel(LveDevice& InDevice, const std::vector<Vertex>& InVertices);
+    LveModel(LveDevice& InDevice, const Builder& Builder);
     ~LveModel();
     
     LveModel(const LveModel&) = delete;

@@ -43,10 +43,11 @@ std::vector<VkVertexInputAttributeDescription> Vertex::GetAttributeDescs()
 
 #pragma endregion
 
-LveModel::LveModel(LveDevice& InDevice, const std::vector<Vertex>& InVertices)
+LveModel::LveModel(LveDevice& InDevice, const Builder& Builder)
     : Device(InDevice)
 {
-    CreateVertexBuffers(InVertices);
+    CreateVertexBuffers(Builder.Vertices);
+    CreateIndexBuffers(Builder.Indices);
 }
 
 LveModel::~LveModel()
