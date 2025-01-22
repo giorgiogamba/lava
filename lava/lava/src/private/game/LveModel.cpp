@@ -104,17 +104,32 @@ void LveModel::CreateVertexBuffers(const std::vector<Vertex>& Vertices)
     // Compute the total number of bytes required to store the current model
     const VkDeviceSize BufferSize = sizeof(Vertices[0]) * VertexCount;
     
+    VkBuffer StagingBuffer;
+    VkDeviceMemory StagingBufferMemory;
+    
+    // We define the buffer as a source location for a memory transfer operation
     // Visible makes the memory visible to the CPU, Coherent keeps the host and device memory regions consistent to each others
-    Device.createBuffer(BufferSize, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, VertexBuffer, VertexBufferMemory);
+    Device.createBuffer(BufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, StagingBuffer, StagingBufferMemory);
     
+    // Creates a reference on the CPU of the data allocated in the GPU.
+    // When it is updated (when someone writes in it), it creates a copy on the GPU
     void* data;
-    vkMapMemory(Device.device(), VertexBufferMemory, 0, BufferSize, 0, &data);
+    vkMapMemory(Device.device(), StagingBufferMemory, 0, BufferSize, 0, &data);
     
-    // copies vertices data to the host map memory region. Since we set the Coherent bit to true, then since
+    // Copies vertices data to the host map memory region. Since we set the Coherent bit to true, then since
     // the host memory is updated, then the device memory is updated consequently
     memcpy(data, Vertices.data(), static_cast<size_t>(BufferSize));
     
-    vkUnmapMemory(Device.device(), VertexBufferMemory);
+    // Since we don't need data information on the host (CPU), we clear it so that we have it only on GPU
+    vkUnmapMemory(Device.device(), StagingBufferMemory);
+    
+    Device.createBuffer(BufferSize, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, VertexBuffer, VertexBufferMemory);
+    
+    Device.copyBuffer(StagingBuffer, VertexBuffer, BufferSize);
+    
+    vkDestroyBuffer(Device.device(), StagingBuffer, nullptr);
+    vkFreeMemory(Device.device(), StagingBufferMemory, nullptr);
+
 }
 
 #pragma endregion
@@ -129,23 +144,33 @@ void LveModel::CreateIndexBuffers(const std::vector<uint32_t>& Indices)
     if (!bHasIndexBuffer)
         return;
     
-    // Compute the total number of bytes required to store the current model
-    const VkDeviceSize BufferSize = sizeof(Indices[0]) * IndexCount;
+    VkDeviceSize BufferSize = sizeof(Indices[0]) * IndexCount;
     
-    // Visible makes the memory visible to the GPU, Coherent keeps the host and device memory regions consistent to each others
-    Device.createBuffer(BufferSize, VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, IndexBuffer, IndexBufferMemory);
+    VkBuffer StagingBuffer;
+    VkDeviceMemory StagingBufferMemory;
+    
+    // We define the buffer as a source location for a memory transfer operation
+    // Visible makes the memory visible to the CPU, Coherent keeps the host and device memory regions consistent to each others
+    Device.createBuffer(BufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, StagingBuffer, StagingBufferMemory);
     
     // Creates a reference on the CPU of the data allocated in the GPU.
     // When it is updated (when someone writes in it), it creates a copy on the GPU
     void* data;
-    vkMapMemory(Device.device(), IndexBufferMemory, 0, BufferSize, 0, &data);
+    vkMapMemory(Device.device(), StagingBufferMemory, 0, BufferSize, 0, &data);
     
     // Copies vertices data to the host map memory region. Since we set the Coherent bit to true, then since
     // the host memory is updated, then the device memory is updated consequently
     memcpy(data, Indices.data(), static_cast<size_t>(BufferSize));
     
     // Since we don't need data information on the host (CPU), we clear it so that we have it only on GPU
-    vkUnmapMemory(Device.device(), IndexBufferMemory);
+    vkUnmapMemory(Device.device(), StagingBufferMemory);
+    
+    Device.createBuffer(BufferSize, VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, IndexBuffer, IndexBufferMemory);
+    
+    Device.copyBuffer(StagingBuffer, IndexBuffer, BufferSize);
+    
+    vkDestroyBuffer(Device.device(), StagingBuffer, nullptr);
+    vkFreeMemory(Device.device(), StagingBufferMemory, nullptr);
 }
 
 #pragma endregion
