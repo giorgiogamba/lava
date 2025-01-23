@@ -12,6 +12,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
 
+#include <iostream>
+#include <filesystem>
+
 namespace Lve {
 
 #pragma region Lifecycle
@@ -63,7 +66,9 @@ void RenderSystem::CreatePipeline(VkRenderPass& RenderPass)
     // (meaning how color buffer, depth etc. are allocated in the frame buffer)
     PipelineConfigInfo.renderPass = RenderPass;
     PipelineConfigInfo.pipelineLayout = PipelineLayout;
-    Pipeline = std::make_unique<LvePipeline>(Device, PipelineConfigInfo, absPathPrefix+"shaders/vertex_shader.vert.spv", absPathPrefix+"shaders/fragment_shader.frag.spv");
+    const std::filesystem::path vertexShaderAbsPath = std::filesystem::absolute("shaders/vertex_shader.vert.spv");
+    const std::filesystem::path fragmentShaderAbsPath = std::filesystem::absolute("shaders/fragment_shader.frag.spv");
+    Pipeline = std::make_unique<LvePipeline>(Device, PipelineConfigInfo, vertexShaderAbsPath, fragmentShaderAbsPath);
 }
 
 #pragma endregion
