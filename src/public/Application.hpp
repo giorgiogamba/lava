@@ -62,9 +62,6 @@ private:
     
     std::unique_ptr<LveModel> createCubeModel(LveDevice& device, glm::vec3 offset);
     
-    // #TODO remove this absolute path
-    std::string absPathPrefix = "/Users/giorgiogamba/Documents/Projects/lava/";
-    
     LveWindow Window{"TEST", WIDTH, HEIGTH};
     
     LveDevice Device{Window};

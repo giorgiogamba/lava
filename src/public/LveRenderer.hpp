@@ -34,9 +34,6 @@ public:
     
 private:
     
-    // #TODO remove this absolute path
-    std::string absPathPrefix = "/Users/giorgiogamba/Documents/Projects/lava/";
-    
     LveWindow& Window;
     
     LveDevice& Device;
