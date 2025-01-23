@@ -7,18 +7,13 @@
 
 #pragma once
 
-#ifndef LavaPipeline_hpp
-#define LavaPipeline_hpp
-
 #include <stdio.h>
 #include <string>
 #include <vector>
 
-#include "LavaDevice.hpp"
-
 #include <vulkan/vulkan.h>
 
-#endif /* LavaPipeline_hpp */
+#include "LavaDevice.hpp"
 
 namespace lava {
 

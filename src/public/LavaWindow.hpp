@@ -7,17 +7,11 @@
 
 #pragma once
 
-#ifndef LavaWindow_hpp
-#define LavaWindow_hpp
-
 #include <stdio.h>
-
-#endif /* LavaWindow_hpp */
+#include <string>
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
-
-#include <string>
 
 namespace lava
 {

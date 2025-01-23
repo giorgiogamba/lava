@@ -7,9 +7,6 @@
 
 #pragma once
 
-#ifndef LavaModel_hpp
-#define LavaModel_hpp
-
 #include <stdio.h>
 #include <vector>
 
@@ -18,8 +15,6 @@
 #include <glm/glm.hpp>
 
 #include "LavaDevice.hpp"
-
-#endif /* LavaModel_hpp */
 
 // Vertex Buffer
 
