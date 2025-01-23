@@ -55,6 +55,8 @@ struct Vertex
 
 struct Builder
 {
+void LoadModel(const std::string& Filename);
+
     std::vector<Vertex> Vertices{};
     std::vector<uint32_t> Indices{};
 };

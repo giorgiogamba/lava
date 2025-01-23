@@ -41,6 +41,88 @@ std::vector<VkVertexInputAttributeDescription> Vertex::GetAttributeDescs()
     return AttributeDescs;
 }
 
+void Builder::LoadModel(const std::string& Filename)
+{
+    tinyobj::attrib_t Attrib;
+    std::vector<tinyobj::shape_t> Shapes;
+    std::vector<tinyobj::material_t> Materials;
+    std::string Warning;
+    std::string Error;
+
+    if (!tinyobj::LoadObj(&Attrib, &Shapes, &Materials, &Warning, &Error, Filename.c_str()))
+    {
+        throw std::runtime_error(Warning + Error);
+    }
+
+    // Object loading succeded
+    Vertices.clear();
+    Indices.clear();
+
+    for (const auto& Shape : Shapes)
+    {
+        for (const auto& Index : Shape.mesh.indices)
+        {
+            Vertex V{};
+            
+            // Suppose wa have faces defined as vertexIdx/normalIdx/uvIdx
+
+            if (Index.vertex_index >= 0)
+            {
+                // Suppose each vertex is a vec3, then each component is in following positions
+                // with offset 0, 1 and 2 starting from the vertex index
+                const size_t startingIdx = 3 * Index.vertex_index;
+                V.position =
+                {
+                    Attrib.vertices[startingIdx],
+                    Attrib.vertices[startingIdx + 1], 
+                    Attrib.vertices[startingIdx + 2]
+                };        
+
+
+                // Supposed the provided file owns colors after vertices positions
+                auto colorIdx = 3 * Index.vertex_index + 2;
+                if (colorIdx < Attrib.colors.size())
+                {
+                    V.color =
+                    {
+                        Attrib.colors[startingIdx - 2],
+                        Attrib.colors[startingIdx - 1], 
+                        Attrib.colors[startingIdx]
+                    };
+                }
+                else
+                {
+                    // Set default color
+                    V.color = {1.f, 0.f, 0.f};
+                }
+            }
+
+            if (Index.normal_index >= 0)
+            {
+                const size_t startingIdx = 3 * Index.normal_index;
+                V.normal =
+                {
+                    Attrib.normals[startingIdx],
+                    Attrib.normals[startingIdx + 1], 
+                    Attrib.normals[startingIdx + 2]
+                };                
+            }
+
+            if (Index.texcoord_index >= 0)
+            {
+                const size_t startingIdx = 2 * Index.texcoord_index;
+                V.uv =
+                {
+                    Attrib.texcoords[startingIdx],
+                    Attrib.texcoords[startingIdx + 1]
+                };    
+            }
+
+            Vertices.push_back(V);
+        }
+    }
+}
+
 #pragma endregion
 
 LavaModel::LavaModel(LavaDevice& InDevice, const Builder& Builder)
