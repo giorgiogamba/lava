@@ -9,6 +9,7 @@
 
 #include <stdio.h>
 #include <vector>
+#include <memory>
 
 #define GLM_FORCE_RADIANS // expects angles to be defined in radians
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -72,6 +73,8 @@ public:
     
     LavaModel(const LavaModel&) = delete;
     LavaModel& operator=(const LavaModel&) = delete;
+
+    static std::unique_ptr<LavaModel> CreateModelFromFile(LavaDevice& Device, const std::string& Filepath);
     
     void Bind(VkCommandBuffer& CommandBuffer);
     void Draw(VkCommandBuffer& CommandBuffer);

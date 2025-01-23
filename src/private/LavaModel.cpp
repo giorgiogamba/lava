@@ -8,6 +8,11 @@
 #include "LavaModel.hpp"
 
 #include <assert.h>
+#include <iostream>
+#include <vector>
+
+#define TINYOBJLOADER_IMPLEMENTATION
+#include "TinyObjLoader.h"
 
 namespace lava
 {
@@ -145,6 +150,16 @@ LavaModel::~LavaModel()
     {
         ClearBufferAndMemory(IndexBuffer, IndexBufferMemory);
     }
+}
+
+std::unique_ptr<LavaModel> LavaModel::CreateModelFromFile(LavaDevice& Device, const std::string& Filepath)
+{
+    Builder ModelBuilder{};
+    ModelBuilder.LoadModel(Filepath);
+
+    std::cout << "Vertex count: " << ModelBuilder.Vertices.size() << std::endl;
+
+    return std::make_unique<LavaModel>(Device, ModelBuilder);
 }
 
 void LavaModel::Bind(VkCommandBuffer& CommandBuffer)
