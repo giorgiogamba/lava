@@ -7,7 +7,7 @@
 
 #include "KeyboardMovementController.hpp"
 
-namespace Lava
+namespace lava
 {
 
 KeyboardMovementController::KeyboardMovementController()

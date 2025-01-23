@@ -9,7 +9,7 @@
 
 #include <assert.h>
 
-namespace Lava
+namespace lava
 {
 
 #pragma region Types

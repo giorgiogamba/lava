@@ -18,7 +18,7 @@
 #include "LavaRenderer.hpp"
 #include "LavaGameObject.hpp"
 
-namespace Lava {
+namespace lava {
 
 #pragma region Constants
 

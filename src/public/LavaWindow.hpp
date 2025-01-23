@@ -19,7 +19,7 @@
 
 #include <string>
 
-namespace Lava
+namespace lava
 {
 
 class LavaWindow

@@ -31,7 +31,7 @@
 #include <string>
 #include <vector>
 
-namespace Lava {
+namespace lava {
 
 class LavaSwapChain {
     

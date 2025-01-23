@@ -12,7 +12,7 @@
 #include "LavaDevice.hpp"
 #include "LavaModel.hpp"
 
-namespace Lava {
+namespace lava {
 
 void LavaPipeline::defaultPipelineConfigInfo(LavaPipelineConfigInfo& ConfigInfo)
 {

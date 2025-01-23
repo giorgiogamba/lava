@@ -17,7 +17,7 @@
 #include "LavaWindow.hpp"
 #include "LavaSwapChain.hpp"
 
-namespace Lava {
+namespace lava {
 
 class LavaRenderer
 {

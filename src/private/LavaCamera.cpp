@@ -10,7 +10,7 @@
 #include <cassert>
 #include <limits>
 
-namespace Lava
+namespace lava
 {
 
 void LavaCamera::SetOrthoProjection(const float left, const float right, const float top, const float bottom, const float near, const float far)

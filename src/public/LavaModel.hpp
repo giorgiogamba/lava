@@ -41,7 +41,7 @@
 
 // Usually che single interleaved bnding in the best one but with the right algorithm
 
-namespace Lava
+namespace lava
 {
 
 #pragma region Types

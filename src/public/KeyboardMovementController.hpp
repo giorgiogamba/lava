@@ -10,7 +10,7 @@
 #include "LavaGameObject.hpp"
 #include "LavaWindow.hpp"
 
-namespace Lava
+namespace lava
 {
 
 #pragma region Types

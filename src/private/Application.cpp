@@ -18,7 +18,7 @@
 #include "LavaCamera.hpp"
 #include "KeyboardMovementController.hpp"
 
-namespace Lava {
+namespace lava {
 
 #pragma region Lifecycle
 

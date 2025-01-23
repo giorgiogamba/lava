@@ -9,7 +9,7 @@
 #include <set>
 #include <stdexcept>
 
-namespace Lava {
+namespace lava {
 
 LavaSwapChain::LavaSwapChain(LavaDevice &deviceRef, VkExtent2D extent)
     : device{deviceRef}

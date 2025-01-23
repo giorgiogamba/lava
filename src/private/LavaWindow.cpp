@@ -11,7 +11,7 @@
 
 #include <GLFW/glfw3.h>
 
-namespace Lava {
+namespace lava {
 
 LavaWindow::LavaWindow(const std::string InName, const int InWidth, const int InHeigth)
 : Name(InName)

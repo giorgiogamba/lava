@@ -15,7 +15,7 @@
 #include <iostream>
 #include <filesystem>
 
-namespace Lava {
+namespace lava {
 
 #pragma region Lifecycle
 

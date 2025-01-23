@@ -25,7 +25,7 @@
 #include "LavaGameObject.hpp"
 #include "LavaCamera.hpp"
 
-namespace Lava {
+namespace lava {
 
 class RenderSystem
 {

@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-namespace Lava {
+namespace lava {
 
 struct SwapChainSupportDetails
 {

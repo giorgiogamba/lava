@@ -20,7 +20,7 @@
 
 #endif /* LavaPipeline_hpp */
 
-namespace Lava {
+namespace lava {
 
 #pragma region Types
 

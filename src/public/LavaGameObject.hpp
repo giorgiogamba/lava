@@ -11,7 +11,7 @@
 
 #include "LavaTypes.hpp"
 
-namespace Lava
+namespace lava
 {
 
 // Represents eveything that is in game, with a set of properties
