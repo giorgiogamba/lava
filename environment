@@ -1,8 +1,8 @@
 # Where the Vulkan SDK is located. Must end after version and OS, like "../1.3.296.0/macOS"
-VULKAN_SDK_PATH = 
+VULKAN_SDK_PATH = /Users/giorgiogamba/VulkanSDK/1.3.296.0/macOS
 
 # Where GLSLC program is located. Must have .exe at the end if Windows
-GLSLC = 
+GLSLC = /Users/giorgiogamba/VulkanSDK/1.3.296.0/macOS/bin/glslc
 
 # Where GLFW is located
-USER_PATHS = 
+USER_PATHS = /usr/local
