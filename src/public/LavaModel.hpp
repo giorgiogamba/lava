@@ -44,11 +44,13 @@ namespace lava
 // Interleaved implementation which alternates position and color inside the same buffer
 struct Vertex
 {
-    glm::vec3 position;
-    glm::vec3 color;
-    
-    static std::vector<VkVertexInputBindingDescription> GetBindingDesc();
+        static std::vector<VkVertexInputBindingDescription> GetBindingDesc();
     static std::vector<VkVertexInputAttributeDescription> GetAttributeDescs();
+
+    glm::vec3 position{};
+    glm::vec3 color{};
+    glm::vec3 normal{};
+    glm::vec2 uv{};
 };
 
 struct Builder
