@@ -1,5 +1,5 @@
 //
-//  LveWindow.cpp
+//  LavaWindow.cpp
 //  lava
 //
 //  Created by Giorgio Gamba on 27/12/24.
@@ -7,13 +7,13 @@
 
 #include <stdexcept>
 
-#include "LveWindow.hpp"
+#include "LavaWindow.hpp"
 
 #include <GLFW/glfw3.h>
 
-namespace Lve {
+namespace lava {
 
-LveWindow::LveWindow(const std::string InName, const int InWidth, const int InHeigth)
+LavaWindow::LavaWindow(const std::string InName, const int InWidth, const int InHeigth)
 : Name(InName)
 , Width(InWidth)
 , Heigth(InHeigth)
@@ -22,18 +22,18 @@ LveWindow::LveWindow(const std::string InName, const int InWidth, const int InHe
     InitWindow();
 }
 
-LveWindow::~LveWindow()
+LavaWindow::~LavaWindow()
 {
     glfwDestroyWindow(Window);
     glfwTerminate();
 }
 
-bool LveWindow::shouldClose()
+bool LavaWindow::shouldClose()
 {
     return glfwWindowShouldClose(Window);
 }
 
-void LveWindow::createWindowSurface(VkInstance Instance, VkSurfaceKHR* Surface)
+void LavaWindow::createWindowSurface(VkInstance Instance, VkSurfaceKHR* Surface)
 {
     if (glfwCreateWindowSurface(Instance, Window, nullptr, Surface) != VK_SUCCESS)
     {
@@ -42,7 +42,7 @@ void LveWindow::createWindowSurface(VkInstance Instance, VkSurfaceKHR* Surface)
     
 }
 
-void LveWindow::InitWindow()
+void LavaWindow::InitWindow()
 {
     // Initialize library
     glfwInit();
@@ -59,9 +59,9 @@ void LveWindow::InitWindow()
     glfwSetFramebufferSizeCallback(Window, FrameBufferResizedCallback);
 }
 
-void LveWindow::FrameBufferResizedCallback(GLFWwindow* InWindow, const int Width, const int Height)
+void LavaWindow::FrameBufferResizedCallback(GLFWwindow* InWindow, const int Width, const int Height)
 {
-    auto window = reinterpret_cast<LveWindow*>(glfwGetWindowUserPointer(InWindow));
+    auto window = reinterpret_cast<LavaWindow*>(glfwGetWindowUserPointer(InWindow));
     window->bFrameBufferResized = true;
     window->Width = Width;
     window->Heigth = Height;

@@ -1,5 +1,5 @@
 //
-//  LveWindow.hpp
+//  LavaWindow.hpp
 //  lava
 //
 //  Created by Giorgio Gamba on 27/12/24.
@@ -7,35 +7,29 @@
 
 #pragma once
 
-#ifndef LveWindow_hpp
-#define LveWindow_hpp
-
 #include <stdio.h>
-
-#endif /* LveWindow_hpp */
+#include <string>
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
-#include <string>
-
-namespace Lve
+namespace lava
 {
 
-class LveWindow
+class LavaWindow
 {
     
 public:
     
-    LveWindow(const std::string InName, const int InWidth, const int InHeigth);
-    ~LveWindow();
+    LavaWindow(const std::string InName, const int InWidth, const int InHeigth);
+    ~LavaWindow();
     
     // Delete copy constructor and operator to avoid dangling pointers,
-    // becase we are usign pointers to GLFWwindow, which means that if we make a copy the LveWindow
+    // becase we are usign pointers to GLFWwindow, which means that if we make a copy the LavaWindow
     // and we delete one of them, we will also delete with Window pointer and thus
-    // the remaining LveWindow will have a dangling pointer
-    LveWindow(const LveWindow&) = delete;
-    LveWindow& operator=(const LveWindow&) = delete;
+    // the remaining LavaWindow will have a dangling pointer
+    LavaWindow(const LavaWindow&) = delete;
+    LavaWindow& operator=(const LavaWindow&) = delete;
     
     bool shouldClose();
     

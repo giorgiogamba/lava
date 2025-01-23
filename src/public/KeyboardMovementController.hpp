@@ -7,10 +7,10 @@
 
 #pragma once
 
-#include "LveGameObject.hpp"
-#include "LveWindow.hpp"
+#include "LavaGameObject.hpp"
+#include "LavaWindow.hpp"
 
-namespace Lve
+namespace lava
 {
 
 #pragma region Types
@@ -38,7 +38,7 @@ public:
     
     KeyboardMovementController();
     
-    void MoveInPlaneXZ(GLFWwindow* Window, const float DeltaTime, LveGameObject& GameObject);
+    void MoveInPlaneXZ(GLFWwindow* Window, const float DeltaTime, LavaGameObject& GameObject);
     
     KeyMappings Keys{};
     

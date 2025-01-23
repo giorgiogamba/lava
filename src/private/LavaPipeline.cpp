@@ -1,5 +1,5 @@
 //
-//  LvePipeline.cpp
+//  LavaPipeline.cpp
 //  lava
 //
 //  Created by Giorgio Gamba on 27/12/24.
@@ -8,13 +8,13 @@
 #include <fstream>
 #include <iostream>
 
-#include "LvePipeline.hpp"
-#include "LveDevice.hpp"
-#include "LveModel.hpp"
+#include "LavaPipeline.hpp"
+#include "LavaDevice.hpp"
+#include "LavaModel.hpp"
 
-namespace Lve {
+namespace lava {
 
-void LvePipeline::defaultPipelineConfigInfo(LvePipelineConfigInfo& ConfigInfo)
+void LavaPipeline::defaultPipelineConfigInfo(LavaPipelineConfigInfo& ConfigInfo)
 {
     // Input assembly
     // Takes in input coordinates grouped in geometries, specified in topology
@@ -98,25 +98,25 @@ void LvePipeline::defaultPipelineConfigInfo(LvePipelineConfigInfo& ConfigInfo)
     ConfigInfo.dynamicStateInfo.pNext = nullptr;
 }
 
-void LvePipeline::Bind(VkCommandBuffer CommandBuffer)
+void LavaPipeline::Bind(VkCommandBuffer CommandBuffer)
 {
     vkCmdBindPipeline(CommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, Pipeline);
 }
 
-LvePipeline::LvePipeline(LveDevice& InDevice, const LvePipelineConfigInfo& configInfo, const std::string& vertexShaderPath, const std::string& fragmentShaderPath)
+LavaPipeline::LavaPipeline(LavaDevice& InDevice, const LavaPipelineConfigInfo& configInfo, const std::string& vertexShaderPath, const std::string& fragmentShaderPath)
 : Device(InDevice)
 {
     createPipeline(configInfo, vertexShaderPath, fragmentShaderPath);
 }
 
-LvePipeline::~LvePipeline()
+LavaPipeline::~LavaPipeline()
 {
     vkDestroyShaderModule(Device.device(), vertexShaderModule, nullptr);
     vkDestroyShaderModule(Device.device(), fragmentShaderModule, nullptr);
     vkDestroyPipeline(Device.device(), Pipeline, nullptr);
 }
 
-std::vector<char> LvePipeline::readFile(const std::string& filePath)
+std::vector<char> LavaPipeline::readFile(const std::string& filePath)
 {
     // ate makes the file stream seek to the end immediately
     // binary makes the file read as binary (because we already compiled it)
@@ -138,7 +138,7 @@ std::vector<char> LvePipeline::readFile(const std::string& filePath)
     return buffer;
 }
 
-void LvePipeline::createPipeline(const LvePipelineConfigInfo& configInfo, const std::string& vertexShaderPath, const std::string& fragmentShaderPath)
+void LavaPipeline::createPipeline(const LavaPipelineConfigInfo& configInfo, const std::string& vertexShaderPath, const std::string& fragmentShaderPath)
 {   
     const std::vector<char>& vertexShaderCode = readFile(vertexShaderPath);
     const std::vector<char>& fragmentShaderCode = readFile(fragmentShaderPath);
@@ -208,7 +208,7 @@ void LvePipeline::createPipeline(const LvePipelineConfigInfo& configInfo, const 
     }
 }
 
-void LvePipeline::createShaderModule(const std::vector<char>& code, VkShaderModule* Module)
+void LavaPipeline::createShaderModule(const std::vector<char>& code, VkShaderModule* Module)
 {
     VkShaderModuleCreateInfo createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;

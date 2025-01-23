@@ -15,11 +15,11 @@
 #include <iostream>
 #include <filesystem>
 
-namespace Lve {
+namespace lava {
 
 #pragma region Lifecycle
 
-RenderSystem::RenderSystem(LveDevice& InDevice, VkRenderPass InRenderPass)
+RenderSystem::RenderSystem(LavaDevice& InDevice, VkRenderPass InRenderPass)
 : Device(InDevice)
 {
     CreatePipelineLayout();
@@ -59,8 +59,8 @@ void RenderSystem::CreatePipeline(VkRenderPass& RenderPass)
 {
     assert(PipelineLayout && "Pipeline Layout is null");
     
-    LvePipelineConfigInfo PipelineConfigInfo;
-    LvePipeline::defaultPipelineConfigInfo(PipelineConfigInfo);
+    LavaPipelineConfigInfo PipelineConfigInfo;
+    LavaPipeline::defaultPipelineConfigInfo(PipelineConfigInfo);
     
     // Basically the render pass says to the graphics pipeline what kind of output to create
     // (meaning how color buffer, depth etc. are allocated in the frame buffer)
@@ -68,7 +68,7 @@ void RenderSystem::CreatePipeline(VkRenderPass& RenderPass)
     PipelineConfigInfo.pipelineLayout = PipelineLayout;
     const std::filesystem::path vertexShaderAbsPath = std::filesystem::absolute("shaders/vertex_shader.vert.spv");
     const std::filesystem::path fragmentShaderAbsPath = std::filesystem::absolute("shaders/fragment_shader.frag.spv");
-    Pipeline = std::make_unique<LvePipeline>(Device, PipelineConfigInfo, vertexShaderAbsPath, fragmentShaderAbsPath);
+    Pipeline = std::make_unique<LavaPipeline>(Device, PipelineConfigInfo, vertexShaderAbsPath, fragmentShaderAbsPath);
 }
 
 #pragma endregion
@@ -76,13 +76,13 @@ void RenderSystem::CreatePipeline(VkRenderPass& RenderPass)
 #pragma region GameObjects
 
 
-void RenderSystem::RenderGameObjects(VkCommandBuffer CommandBuffer, std::vector<LveGameObject>& GameObjects, const LveCamera& Camera)
+void RenderSystem::RenderGameObjects(VkCommandBuffer CommandBuffer, std::vector<LavaGameObject>& GameObjects, const LavaCamera& Camera)
 {
     Pipeline->Bind(CommandBuffer);
     
     auto ProjectionView = Camera.GetProjectionMat() * Camera.GetViewMat();
     
-    for (LveGameObject& GameObject : GameObjects)
+    for (LavaGameObject& GameObject : GameObjects)
     {
         PushConstant3DData PushConstant{};
         PushConstant.color = GameObject.GetColor();

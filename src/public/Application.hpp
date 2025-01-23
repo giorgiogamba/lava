@@ -13,12 +13,12 @@
 #include <memory>
 
 // Local Includes
-#include "LveWindow.hpp"
-#include "LvePipeline.hpp"
-#include "LveRenderer.hpp"
-#include "LveGameObject.hpp"
+#include "LavaWindow.hpp"
+#include "LavaPipeline.hpp"
+#include "LavaRenderer.hpp"
+#include "LavaGameObject.hpp"
 
-namespace Lve {
+namespace lava {
 
 #pragma region Constants
 
@@ -60,13 +60,13 @@ public:
     
 private:
     
-    std::unique_ptr<LveModel> createCubeModel(LveDevice& device, glm::vec3 offset);
+    std::unique_ptr<LavaModel> createCubeModel(LavaDevice& device, glm::vec3 offset);
     
-    LveWindow Window{"TEST", WIDTH, HEIGTH};
+    LavaWindow Window{"TEST", WIDTH, HEIGTH};
     
-    LveDevice Device{Window};
+    LavaDevice Device{Window};
     
-    LveRenderer Renderer{Window, Device};
+    LavaRenderer Renderer{Window, Device};
     
 #pragma endregion
     
@@ -76,7 +76,7 @@ private:
     
     void LoadGameObjects();
     
-    std::vector<LveGameObject> GameObjects;
+    std::vector<LavaGameObject> GameObjects;
     
 #pragma endregion
     

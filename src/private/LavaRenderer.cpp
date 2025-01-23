@@ -1,18 +1,18 @@
 //
-//  LveRenderer.cpp
+//  LavaRenderer.cpp
 //  lava
 //
 //  Created by Giorgio Gamba on 10/01/25.
 //
 
-#include "LveRenderer.hpp"
+#include "LavaRenderer.hpp"
 
-namespace Lve
+namespace lava
 {
 
 #pragma region Lifecycle
 
-LveRenderer::LveRenderer(LveWindow& InWindow, LveDevice& InDevice)
+LavaRenderer::LavaRenderer(LavaWindow& InWindow, LavaDevice& InDevice)
 : Window(InWindow)
 , Device(InDevice)
 , bIsFrameStarted(false)
@@ -22,7 +22,7 @@ LveRenderer::LveRenderer(LveWindow& InWindow, LveDevice& InDevice)
     CreateCommandBuffers();
 }
 
-LveRenderer::~LveRenderer()
+LavaRenderer::~LavaRenderer()
 {
     freeCommandBuffers();
 }
@@ -31,13 +31,13 @@ LveRenderer::~LveRenderer()
 
 #pragma region Frame drawing
 
-int LveRenderer::GetFrameIdx() const
+int LavaRenderer::GetFrameIdx() const
 {
     assert(bIsFrameStarted && "Frame not in progress");
     return CurrFrameIdx;
 }
 
-VkCommandBuffer LveRenderer::StartDrawFrame()
+VkCommandBuffer LavaRenderer::StartDrawFrame()
 {
     assert(!bIsFrameStarted && "Frame already drawing");
     
@@ -71,7 +71,7 @@ VkCommandBuffer LveRenderer::StartDrawFrame()
     return CurrCommandBuffer;
 }
 
-void LveRenderer::EndDrawFrame()
+void LavaRenderer::EndDrawFrame()
 {
     assert(IsFrameInProgress() && "No frame is currently drawing");
     
@@ -92,14 +92,14 @@ void LveRenderer::EndDrawFrame()
     }
     
     bIsFrameStarted = false;
-    CurrFrameIdx = (CurrFrameIdx + 1) & LveSwapChain::MAX_FRAMES_IN_FLIGHT;
+    CurrFrameIdx = (CurrFrameIdx + 1) & LavaSwapChain::MAX_FRAMES_IN_FLIGHT;
 }
 
 #pragma endregion
 
 #pragma region Swap Chain
 
-void LveRenderer::RecreateSwapChain()
+void LavaRenderer::RecreateSwapChain()
 {
     auto Extent = Window.getExtent();
     while (Extent.width == 0 || Extent.height == 0)
@@ -112,14 +112,14 @@ void LveRenderer::RecreateSwapChain()
     
     if (!SwapChain)
     {
-        SwapChain = std::make_unique<LveSwapChain>(Device, Extent);
+        SwapChain = std::make_unique<LavaSwapChain>(Device, Extent);
     }
     else
     {
         // Transfers information from current swap chain to old one
-        std::shared_ptr<LveSwapChain> OldSwapChain = std::move(SwapChain);
+        std::shared_ptr<LavaSwapChain> OldSwapChain = std::move(SwapChain);
         
-        SwapChain = std::make_unique<LveSwapChain>(Device, Extent, OldSwapChain);
+        SwapChain = std::make_unique<LavaSwapChain>(Device, Extent, OldSwapChain);
         
         if (!OldSwapChain || !OldSwapChain->CompareSwapFormats(*SwapChain.get()))
             throw std::runtime_error("Swap chain format has changed");
@@ -134,7 +134,7 @@ void LveRenderer::RecreateSwapChain()
     // #TODO to fix
 }
 
-void LveRenderer::StartSwapChainRenderPass(VkCommandBuffer& CommandBuffer)
+void LavaRenderer::StartSwapChainRenderPass(VkCommandBuffer& CommandBuffer)
 {
     assert(bIsFrameStarted && "no frame is currently drawing");
     assert(CommandBuffer == GetCurrentCommandBuffer() && "Can't render on a different frame");
@@ -177,7 +177,7 @@ void LveRenderer::StartSwapChainRenderPass(VkCommandBuffer& CommandBuffer)
     vkCmdSetScissor(CommandBuffer, 0, 1, &Scissor);
 }
 
-void LveRenderer::EndSwapChainRenderPass(VkCommandBuffer& CommandBuffer)
+void LavaRenderer::EndSwapChainRenderPass(VkCommandBuffer& CommandBuffer)
 {
     assert(bIsFrameStarted && "no frame is currently drawing");
     assert(CommandBuffer == GetCurrentCommandBuffer() && "Can't render on a different frame");
@@ -189,7 +189,7 @@ void LveRenderer::EndSwapChainRenderPass(VkCommandBuffer& CommandBuffer)
 
 #pragma region Command Buffers
 
-VkCommandBuffer LveRenderer::GetCurrentCommandBuffer() const
+VkCommandBuffer LavaRenderer::GetCurrentCommandBuffer() const
 {
     assert(IsFrameInProgress() && "The frame has not started");
     //assert((CommandBuffers.size() > CurrImageIdx && CurrImageIdx >= 0) && "Current Image Index is not valid");
@@ -197,10 +197,10 @@ VkCommandBuffer LveRenderer::GetCurrentCommandBuffer() const
     return CommandBuffers[CurrFrameIdx];
 }
 
-void LveRenderer::CreateCommandBuffers()
+void LavaRenderer::CreateCommandBuffers()
 {
     // Create a number of buffers equal to the number of drawable frames
-    CommandBuffers.resize(LveSwapChain::MAX_FRAMES_IN_FLIGHT);
+    CommandBuffers.resize(LavaSwapChain::MAX_FRAMES_IN_FLIGHT);
     
     VkCommandBufferAllocateInfo AllocationInfo{};
     AllocationInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -215,7 +215,7 @@ void LveRenderer::CreateCommandBuffers()
     }
 }
 
-void LveRenderer::freeCommandBuffers()
+void LavaRenderer::freeCommandBuffers()
 {
     vkFreeCommandBuffers(Device.device(), Device.getCommandPool(), static_cast<uint32_t>(CommandBuffers.size()), CommandBuffers.data());
     CommandBuffers.clear();

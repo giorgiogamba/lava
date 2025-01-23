@@ -1,4 +1,4 @@
-#include "LveDevice.hpp"
+#include "LavaDevice.hpp"
 
 // std headers
 #include <cstring>
@@ -6,7 +6,7 @@
 #include <set>
 #include <unordered_set>
 
-namespace Lve {
+namespace lava {
 
 // local callback functions
 static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
@@ -54,7 +54,7 @@ void DestroyDebugUtilsMessengerEXT(
 }
 
 // class member functions
-LveDevice::LveDevice(LveWindow &window) : window{window}
+LavaDevice::LavaDevice(LavaWindow &window) : window{window}
 {
     
     // Creates Vulkan instance
@@ -64,7 +64,7 @@ LveDevice::LveDevice(LveWindow &window) : window{window}
     // To be removed in Release configuration
     setupDebugMessenger();
     
-    // Surface creates connection between our LveWindow and Vulkan drawings
+    // Surface creates connection between our LavaWindow and Vulkan drawings
     createSurface();
     
     // Gets graphics device
@@ -76,7 +76,7 @@ LveDevice::LveDevice(LveWindow &window) : window{window}
     createCommandPool();
 }
 
-LveDevice::~LveDevice()
+LavaDevice::~LavaDevice()
 {
   vkDestroyCommandPool(device_, commandPool, nullptr);
   vkDestroyDevice(device_, nullptr);
@@ -90,7 +90,7 @@ LveDevice::~LveDevice()
     vkDestroyInstance(instance, nullptr);
 }
 
-void LveDevice::createInstance()
+void LavaDevice::createInstance()
 {
     if (enableValidationLayers && !checkValidationLayerSupport())
     {
@@ -137,7 +137,7 @@ void LveDevice::createInstance()
     hasGflwRequiredInstanceExtensions();
 }
 
-void LveDevice::pickPhysicalDevice() {
+void LavaDevice::pickPhysicalDevice() {
     uint32_t deviceCount = 0;
     vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
     if (deviceCount == 0)
@@ -166,7 +166,7 @@ void LveDevice::pickPhysicalDevice() {
     std::cout << "physical device: " << properties.deviceName << std::endl;
 }
 
-void LveDevice::createLogicalDevice()
+void LavaDevice::createLogicalDevice()
 {
     QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
 
@@ -218,7 +218,7 @@ void LveDevice::createLogicalDevice()
     vkGetDeviceQueue(device_, indices.presentFamily, 0, &presentQueue_);
 }
 
-void LveDevice::createCommandPool()
+void LavaDevice::createCommandPool()
 {
       QueueFamilyIndices queueFamilyIndices = findPhysicalQueueFamilies();
 
@@ -234,12 +234,12 @@ void LveDevice::createCommandPool()
       }
 }
 
-void LveDevice::createSurface()
+void LavaDevice::createSurface()
 {
     window.createWindowSurface(instance, &surface_);
 }
 
-bool LveDevice::isDeviceSuitable(VkPhysicalDevice device)
+bool LavaDevice::isDeviceSuitable(VkPhysicalDevice device)
 {
       QueueFamilyIndices indices = findQueueFamilies(device);
 
@@ -258,7 +258,7 @@ bool LveDevice::isDeviceSuitable(VkPhysicalDevice device)
       return indices.isComplete() && extensionsSupported && swapChainAdequate && supportedFeatures.samplerAnisotropy;
 }
 
-void LveDevice::populateDebugMessengerCreateInfo(
+void LavaDevice::populateDebugMessengerCreateInfo(
         VkDebugUtilsMessengerCreateInfoEXT &createInfo)
 {
       createInfo = {};
@@ -272,7 +272,7 @@ void LveDevice::populateDebugMessengerCreateInfo(
       createInfo.pUserData = nullptr;  // Optional
 }
 
-void LveDevice::setupDebugMessenger()
+void LavaDevice::setupDebugMessenger()
 {
       if (!enableValidationLayers)
           return;
@@ -285,7 +285,7 @@ void LveDevice::setupDebugMessenger()
       }
 }
 
-bool LveDevice::checkValidationLayerSupport()
+bool LavaDevice::checkValidationLayerSupport()
 {
       uint32_t layerCount;
       vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
@@ -315,7 +315,7 @@ bool LveDevice::checkValidationLayerSupport()
       return true;
 }
 
-std::vector<const char *> LveDevice::getRequiredExtensions()
+std::vector<const char *> LavaDevice::getRequiredExtensions()
 {
       uint32_t glfwExtensionCount = 0;
       const char **glfwExtensions;
@@ -332,7 +332,7 @@ std::vector<const char *> LveDevice::getRequiredExtensions()
       return extensions;
 }
 
-void LveDevice::hasGflwRequiredInstanceExtensions()
+void LavaDevice::hasGflwRequiredInstanceExtensions()
 {
       uint32_t extensionCount = 0;
       vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
@@ -359,7 +359,7 @@ void LveDevice::hasGflwRequiredInstanceExtensions()
       }
 }
 
-bool LveDevice::checkDeviceExtensionSupport(VkPhysicalDevice device)
+bool LavaDevice::checkDeviceExtensionSupport(VkPhysicalDevice device)
 {
       uint32_t extensionCount;
       vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
@@ -381,7 +381,7 @@ bool LveDevice::checkDeviceExtensionSupport(VkPhysicalDevice device)
       return requiredExtensions.empty();
 }
 
-QueueFamilyIndices LveDevice::findQueueFamilies(VkPhysicalDevice device) {
+QueueFamilyIndices LavaDevice::findQueueFamilies(VkPhysicalDevice device) {
       QueueFamilyIndices indices;
 
       uint32_t queueFamilyCount = 0;
@@ -418,7 +418,7 @@ QueueFamilyIndices LveDevice::findQueueFamilies(VkPhysicalDevice device) {
         return indices;
 }
 
-SwapChainSupportDetails LveDevice::querySwapChainSupport(VkPhysicalDevice device) {
+SwapChainSupportDetails LavaDevice::querySwapChainSupport(VkPhysicalDevice device) {
       SwapChainSupportDetails details;
       vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface_, &details.capabilities);
 
@@ -445,7 +445,7 @@ SwapChainSupportDetails LveDevice::querySwapChainSupport(VkPhysicalDevice device
       return details;
 }
 
-VkFormat LveDevice::findSupportedFormat(
+VkFormat LavaDevice::findSupportedFormat(
     const std::vector<VkFormat> &candidates, VkImageTiling tiling, VkFormatFeatureFlags features)
 {
       for (VkFormat format : candidates)
@@ -466,7 +466,7 @@ VkFormat LveDevice::findSupportedFormat(
       throw std::runtime_error("failed to find supported format!");
 }
 
-uint32_t LveDevice::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties)
+uint32_t LavaDevice::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties)
 {
       VkPhysicalDeviceMemoryProperties memProperties;
       vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memProperties);
@@ -481,7 +481,7 @@ uint32_t LveDevice::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags pr
       throw std::runtime_error("failed to find suitable memory type!");
 }
 
-void LveDevice::createBuffer(
+void LavaDevice::createBuffer(
     VkDeviceSize size,
     VkBufferUsageFlags usage,
     VkMemoryPropertyFlags properties,
@@ -515,7 +515,7 @@ void LveDevice::createBuffer(
       vkBindBufferMemory(device_, buffer, bufferMemory, 0);
 }
 
-VkCommandBuffer LveDevice::beginSingleTimeCommands()
+VkCommandBuffer LavaDevice::beginSingleTimeCommands()
 {
       VkCommandBufferAllocateInfo allocInfo{};
       allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -534,7 +534,7 @@ VkCommandBuffer LveDevice::beginSingleTimeCommands()
       return commandBuffer;
 }
 
-void LveDevice::endSingleTimeCommands(VkCommandBuffer commandBuffer)
+void LavaDevice::endSingleTimeCommands(VkCommandBuffer commandBuffer)
 {
       vkEndCommandBuffer(commandBuffer);
 
@@ -549,7 +549,7 @@ void LveDevice::endSingleTimeCommands(VkCommandBuffer commandBuffer)
       vkFreeCommandBuffers(device_, commandPool, 1, &commandBuffer);
 }
 
-void LveDevice::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size)
+void LavaDevice::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size)
 {
       VkCommandBuffer commandBuffer = beginSingleTimeCommands();
 
@@ -562,7 +562,7 @@ void LveDevice::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize 
       endSingleTimeCommands(commandBuffer);
 }
 
-void LveDevice::copyBufferToImage(
+void LavaDevice::copyBufferToImage(
     VkBuffer buffer, VkImage image, uint32_t width, uint32_t height, uint32_t layerCount)
 {
       VkCommandBuffer commandBuffer = beginSingleTimeCommands();
@@ -590,7 +590,7 @@ void LveDevice::copyBufferToImage(
       endSingleTimeCommands(commandBuffer);
 }
 
-void LveDevice::createImageWithInfo(
+void LavaDevice::createImageWithInfo(
     const VkImageCreateInfo &imageInfo,
     VkMemoryPropertyFlags properties,
     VkImage &image,

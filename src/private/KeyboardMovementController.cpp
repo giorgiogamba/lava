@@ -7,7 +7,7 @@
 
 #include "KeyboardMovementController.hpp"
 
-namespace Lve
+namespace lava
 {
 
 KeyboardMovementController::KeyboardMovementController()
@@ -15,7 +15,7 @@ KeyboardMovementController::KeyboardMovementController()
     , LookSpeed(1.5f)
 {}
 
-void KeyboardMovementController::MoveInPlaneXZ(GLFWwindow* Window, const float DeltaTime, LveGameObject& GameObject)
+void KeyboardMovementController::MoveInPlaneXZ(GLFWwindow* Window, const float DeltaTime, LavaGameObject& GameObject)
 {
     glm::vec3 Rotate{0.f}; // Stores the current rotation inputs
     UpdateRotationViewTransform(Window, Rotate);

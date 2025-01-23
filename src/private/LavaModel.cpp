@@ -1,15 +1,15 @@
 //
-//  LveModel.cpp
+//  LavaModel.cpp
 //  lava
 //
 //  Created by Giorgio Gamba on 03/01/25.
 //
 
-#include "LveModel.hpp"
+#include "LavaModel.hpp"
 
 #include <assert.h>
 
-namespace Lve
+namespace lava
 {
 
 #pragma region Types
@@ -43,7 +43,7 @@ std::vector<VkVertexInputAttributeDescription> Vertex::GetAttributeDescs()
 
 #pragma endregion
 
-LveModel::LveModel(LveDevice& InDevice, const Builder& Builder)
+LavaModel::LavaModel(LavaDevice& InDevice, const Builder& Builder)
     : Device(InDevice)
     , bHasIndexBuffer(false)
 {
@@ -51,7 +51,7 @@ LveModel::LveModel(LveDevice& InDevice, const Builder& Builder)
     CreateIndexBuffers(Builder.Indices);
 }
 
-LveModel::~LveModel()
+LavaModel::~LavaModel()
 {
     // NOTE: When creating complex scenes, we will run into allocation problems, thus it will be convenient to add
     // a memory allocator like the one defined in
@@ -65,7 +65,7 @@ LveModel::~LveModel()
     }
 }
 
-void LveModel::Bind(VkCommandBuffer& CommandBuffer)
+void LavaModel::Bind(VkCommandBuffer& CommandBuffer)
 {
     VkBuffer Buffers[] = {VertexBuffer};
     VkDeviceSize Offsets[] = {0};
@@ -78,7 +78,7 @@ void LveModel::Bind(VkCommandBuffer& CommandBuffer)
     }
 }
 
-void LveModel::Draw(VkCommandBuffer& CommandBuffer)
+void LavaModel::Draw(VkCommandBuffer& CommandBuffer)
 {
     if (bHasIndexBuffer)
     {
@@ -92,7 +92,7 @@ void LveModel::Draw(VkCommandBuffer& CommandBuffer)
     }
 }
 
-void LveModel::ClearBufferAndMemory(VkBuffer& Buffer, VkDeviceMemory& Memory)
+void LavaModel::ClearBufferAndMemory(VkBuffer& Buffer, VkDeviceMemory& Memory)
 {
     vkDestroyBuffer(Device.device(), Buffer, nullptr);
     vkFreeMemory(Device.device(), Memory, nullptr);
@@ -100,7 +100,7 @@ void LveModel::ClearBufferAndMemory(VkBuffer& Buffer, VkDeviceMemory& Memory)
 
 #pragma region Vertices
 
-void LveModel::CreateVertexBuffers(const std::vector<Vertex>& Vertices)
+void LavaModel::CreateVertexBuffers(const std::vector<Vertex>& Vertices)
 {
     VertexCount = static_cast<uint32_t>(Vertices.size());
     // We check to have at least 3 elements, meaning that the model represents a triangle
@@ -139,7 +139,7 @@ void LveModel::CreateVertexBuffers(const std::vector<Vertex>& Vertices)
 
 #pragma region Indices
 
-void LveModel::CreateIndexBuffers(const std::vector<uint32_t>& Indices)
+void LavaModel::CreateIndexBuffers(const std::vector<uint32_t>& Indices)
 {
     IndexCount = static_cast<uint32_t>(Indices.size());
     

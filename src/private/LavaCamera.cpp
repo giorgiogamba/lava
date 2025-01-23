@@ -1,19 +1,19 @@
 //
-//  LveCamera.cpp
+//  LavaCamera.cpp
 //  lava
 //
 //  Created by Giorgio Gamba on 20/01/25.
 //
 
-#include "LveCamera.hpp"
+#include "LavaCamera.hpp"
 
 #include <cassert>
 #include <limits>
 
-namespace Lve
+namespace lava
 {
 
-void LveCamera::SetOrthoProjection(const float left, const float right, const float top, const float bottom, const float near, const float far)
+void LavaCamera::SetOrthoProjection(const float left, const float right, const float top, const float bottom, const float near, const float far)
 {
     ProjectionMat = glm::mat4{1.f};
     ProjectionMat[0][0] = 2.f / (right - left);
@@ -24,7 +24,7 @@ void LveCamera::SetOrthoProjection(const float left, const float right, const fl
     ProjectionMat[3][2] = -near / (far - near);
 }
 
-void LveCamera::SetPerspectiveProjection(const float fov, const float aspectRatio, const float near, const float far)
+void LavaCamera::SetPerspectiveProjection(const float fov, const float aspectRatio, const float near, const float far)
 {
     // Check arguments validity
     assert(glm::abs(aspectRatio - std::numeric_limits<float>::epsilon()) > 0.f);
@@ -39,7 +39,7 @@ void LveCamera::SetPerspectiveProjection(const float fov, const float aspectRati
     ProjectionMat[3][2] = -(far * near) / (far - near);
  }
 
-void LveCamera::SetViewDirection(const glm::vec3& Position, const glm::vec3& FrontDirection, const glm::vec3& UpDirection /*= glm::vec3{0.f, -1.f, 0.f}*/)
+void LavaCamera::SetViewDirection(const glm::vec3& Position, const glm::vec3& FrontDirection, const glm::vec3& UpDirection /*= glm::vec3{0.f, -1.f, 0.f}*/)
 {
     // Create ortho normal basis: 3 vectors orthogonal to each other that define camera orientation in space
     // Together they define the rotation matrix of the camera
@@ -50,13 +50,13 @@ void LveCamera::SetViewDirection(const glm::vec3& Position, const glm::vec3& Fro
     PopulateViewMatrix(Position, u, v, w);
 }
 
-void LveCamera::SetViewTarget(const glm::vec3& Position, const glm::vec3& Target, const glm::vec3& UpDirection /*= glm::vec3{0.f, -1.f, 0.f}*/)
+void LavaCamera::SetViewTarget(const glm::vec3& Position, const glm::vec3& Target, const glm::vec3& UpDirection /*= glm::vec3{0.f, -1.f, 0.f}*/)
 {
     // Target - Position represents the vector that points from Position to Target
     SetViewDirection(Position, Target - Position, UpDirection);
 }
 
-void LveCamera::SetViewYX(glm::vec3 Position, glm::vec3 Rotation)
+void LavaCamera::SetViewYX(glm::vec3 Position, glm::vec3 Rotation)
 {
     // To build View Matrix we combine Rotation matrix INVERSE and translation back to the origin
     // We use ivnerse rotation because we want to move the camera direction back to the canonical direction -> opposite of model transform
@@ -76,7 +76,7 @@ void LveCamera::SetViewYX(glm::vec3 Position, glm::vec3 Rotation)
     PopulateViewMatrix(Position, u, v, w);
 }
 
-void LveCamera::PopulateViewMatrix(const glm::vec3 Position, const glm::vec3& u, const glm::vec3& v, const glm::vec3& w)
+void LavaCamera::PopulateViewMatrix(const glm::vec3 Position, const glm::vec3& u, const glm::vec3& v, const glm::vec3& w)
 {
     ViewMatrix = glm::mat4{1.f};
     ViewMatrix[0][0] = u.x;

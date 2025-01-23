@@ -1,4 +1,4 @@
-#include "LveSwapChain.hpp"
+#include "LavaSwapChain.hpp"
 
 // std
 #include <array>
@@ -9,16 +9,16 @@
 #include <set>
 #include <stdexcept>
 
-namespace Lve {
+namespace lava {
 
-LveSwapChain::LveSwapChain(LveDevice &deviceRef, VkExtent2D extent)
+LavaSwapChain::LavaSwapChain(LavaDevice &deviceRef, VkExtent2D extent)
     : device{deviceRef}
     , windowExtent{extent}
 {
     Init();
 }
 
-LveSwapChain::LveSwapChain(LveDevice &deviceRef, VkExtent2D extent, std::shared_ptr<LveSwapChain> PreviousSwapChain)
+LavaSwapChain::LavaSwapChain(LavaDevice &deviceRef, VkExtent2D extent, std::shared_ptr<LavaSwapChain> PreviousSwapChain)
     : device{deviceRef}
     , windowExtent{extent}
     , OldSwapChain(PreviousSwapChain)
@@ -28,7 +28,7 @@ LveSwapChain::LveSwapChain(LveDevice &deviceRef, VkExtent2D extent, std::shared_
     OldSwapChain = nullptr;
 }
 
-void LveSwapChain::Init()
+void LavaSwapChain::Init()
 {
     createSwapChain();
     createImageViews();
@@ -38,7 +38,7 @@ void LveSwapChain::Init()
     createSyncObjects();
 }
 
-LveSwapChain::~LveSwapChain()
+LavaSwapChain::~LavaSwapChain()
 {
     for (auto imageView : swapChainImageViews)
     {
@@ -75,7 +75,7 @@ LveSwapChain::~LveSwapChain()
     }
 }
 
-VkResult LveSwapChain::acquireNextImage(uint32_t *imageIndex) 
+VkResult LavaSwapChain::acquireNextImage(uint32_t *imageIndex) 
 {
     vkWaitForFences(
         device.device(),
@@ -95,7 +95,7 @@ VkResult LveSwapChain::acquireNextImage(uint32_t *imageIndex)
     return result;
 }
 
-VkResult LveSwapChain::submitCommandBuffers(const VkCommandBuffer *buffers, uint32_t *imageIndex) 
+VkResult LavaSwapChain::submitCommandBuffers(const VkCommandBuffer *buffers, uint32_t *imageIndex) 
 {
     if (imagesInFlight[*imageIndex] != VK_NULL_HANDLE)
     {
@@ -144,7 +144,7 @@ VkResult LveSwapChain::submitCommandBuffers(const VkCommandBuffer *buffers, uint
     return result;
 }
 
-void LveSwapChain::createSwapChain() 
+void LavaSwapChain::createSwapChain() 
 {
     SwapChainSupportDetails swapChainSupport = device.getSwapChainSupport();
 
@@ -210,7 +210,7 @@ void LveSwapChain::createSwapChain()
     swapChainExtent = extent;
 }
 
-void LveSwapChain::createImageViews() 
+void LavaSwapChain::createImageViews() 
 {
     swapChainImageViews.resize(swapChainImages.size());
     for (size_t i = 0; i < swapChainImages.size(); i++)
@@ -233,7 +233,7 @@ void LveSwapChain::createImageViews()
     }
 }
 
-void LveSwapChain::createRenderPass()
+void LavaSwapChain::createRenderPass()
 {
     VkAttachmentDescription depthAttachment{};
     depthAttachment.format = findDepthFormat();
@@ -293,7 +293,7 @@ void LveSwapChain::createRenderPass()
     }
 }
 
-void LveSwapChain::createFramebuffers()
+void LavaSwapChain::createFramebuffers()
 {
     swapChainFramebuffers.resize(imageCount());
     for (size_t i = 0; i < imageCount(); i++)
@@ -317,7 +317,7 @@ void LveSwapChain::createFramebuffers()
     }
 }
 
-void LveSwapChain::createDepthResources()
+void LavaSwapChain::createDepthResources()
 {
     VkFormat depthFormat = findDepthFormat();
     swapChainDepthFormat = depthFormat;
@@ -368,7 +368,7 @@ void LveSwapChain::createDepthResources()
     }
 }
 
-void LveSwapChain::createSyncObjects()
+void LavaSwapChain::createSyncObjects()
 {
     imageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
     renderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
@@ -393,7 +393,7 @@ void LveSwapChain::createSyncObjects()
     }
 }
 
-VkSurfaceFormatKHR LveSwapChain::chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &availableFormats)
+VkSurfaceFormatKHR LavaSwapChain::chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &availableFormats)
 {
     for (const auto &availableFormat : availableFormats)
     {
@@ -406,7 +406,7 @@ VkSurfaceFormatKHR LveSwapChain::chooseSwapSurfaceFormat(const std::vector<VkSur
     return availableFormats[0];
 }
 
-VkPresentModeKHR LveSwapChain::chooseSwapPresentMode(const std::vector<VkPresentModeKHR> &availablePresentModes)
+VkPresentModeKHR LavaSwapChain::chooseSwapPresentMode(const std::vector<VkPresentModeKHR> &availablePresentModes)
 {
     for (const auto &availablePresentMode : availablePresentModes)
     {
@@ -430,7 +430,7 @@ VkPresentModeKHR LveSwapChain::chooseSwapPresentMode(const std::vector<VkPresent
     return VK_PRESENT_MODE_FIFO_KHR;
 }
 
-VkExtent2D LveSwapChain::chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities)
+VkExtent2D LavaSwapChain::chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities)
 {
     if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max())
     {
@@ -446,7 +446,7 @@ VkExtent2D LveSwapChain::chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabi
       }
 }
 
-VkFormat LveSwapChain::findDepthFormat()
+VkFormat LavaSwapChain::findDepthFormat()
 {
     return device.findSupportedFormat(
         {VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT},

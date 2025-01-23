@@ -1,5 +1,5 @@
 //
-//  LveRenderer.hpp
+//  LavaRenderer.hpp
 //  lava
 //
 //  Created by Giorgio Gamba on 27/12/24.
@@ -14,29 +14,29 @@
 #include <cassert>
 
 // Local includes
-#include "LveWindow.hpp"
-#include "LveSwapChain.hpp"
+#include "LavaWindow.hpp"
+#include "LavaSwapChain.hpp"
 
-namespace Lve {
+namespace lava {
 
-class LveRenderer
+class LavaRenderer
 {
     
 #pragma region Lifecycle
     
 public:
     
-    LveRenderer(LveWindow& InWindow, LveDevice& InDevice);
-    ~LveRenderer();
+    LavaRenderer(LavaWindow& InWindow, LavaDevice& InDevice);
+    ~LavaRenderer();
     
-    LveRenderer(const LveRenderer&) = delete;
-    LveRenderer& operator=(const LveRenderer&) = delete;
+    LavaRenderer(const LavaRenderer&) = delete;
+    LavaRenderer& operator=(const LavaRenderer&) = delete;
     
 private:
     
-    LveWindow& Window;
+    LavaWindow& Window;
     
-    LveDevice& Device;
+    LavaDevice& Device;
     
 #pragma endregion
     
@@ -75,7 +75,7 @@ private:
     
     void RecreateSwapChain();
     
-    std::unique_ptr<LveSwapChain> SwapChain;
+    std::unique_ptr<LavaSwapChain> SwapChain;
     
 #pragma endregion
     

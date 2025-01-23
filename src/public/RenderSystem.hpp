@@ -21,11 +21,11 @@
 #include <memory>
 
 // Local Includes
-#include "LvePipeline.hpp"
-#include "LveGameObject.hpp"
-#include "LveCamera.hpp"
+#include "LavaPipeline.hpp"
+#include "LavaGameObject.hpp"
+#include "LavaCamera.hpp"
 
-namespace Lve {
+namespace lava {
 
 class RenderSystem
 {
@@ -34,7 +34,7 @@ class RenderSystem
     
 public:
     
-    RenderSystem(LveDevice& InDevice, VkRenderPass InRenderPass);
+    RenderSystem(LavaDevice& InDevice, VkRenderPass InRenderPass);
     ~RenderSystem();
     
     RenderSystem(const RenderSystem&) = delete;
@@ -45,7 +45,7 @@ private:
     // #TODO remove this absolute path
     std::string absPathPrefix = "/Users/giorgiogamba/Documents/Projects/lava/";
     
-    LveDevice& Device;
+    LavaDevice& Device;
     
 #pragma endregion
     
@@ -54,7 +54,7 @@ private:
 public:
 
     // Camera passed in argument in order to be shared between various systems
-    void RenderGameObjects(VkCommandBuffer CommandBuffer, std::vector<LveGameObject>& GameObjects, const LveCamera& Camera);
+    void RenderGameObjects(VkCommandBuffer CommandBuffer, std::vector<LavaGameObject>& GameObjects, const LavaCamera& Camera);
     
 #pragma endregion
     
@@ -66,7 +66,7 @@ private:
     
     void CreatePipeline(VkRenderPass& RenderPass);
     
-    std::unique_ptr<LvePipeline> Pipeline;
+    std::unique_ptr<LavaPipeline> Pipeline;
     
     VkPipelineLayout PipelineLayout;
     
