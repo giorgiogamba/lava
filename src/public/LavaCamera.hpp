@@ -1,5 +1,5 @@
 //
-//  LveCamera.hpp
+//  LavaCamera.hpp
 //  lava
 //
 //  Created by Giorgio Gamba on 20/01/25.
@@ -11,7 +11,7 @@
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
 
-namespace Lve
+namespace Lava
 {
 
 /*
@@ -21,7 +21,7 @@ namespace Lve
  
  Basically it is like the objects are moving according to the camera frustum
  */
-class LveCamera
+class LavaCamera
 {
 public:
     

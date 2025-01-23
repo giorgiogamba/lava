@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "LveDevice.hpp"
+#include "LavaDevice.hpp"
 
 // vulkan headers
 #include <vulkan/vulkan.h>
@@ -31,20 +31,20 @@
 #include <string>
 #include <vector>
 
-namespace Lve {
+namespace Lava {
 
-class LveSwapChain {
+class LavaSwapChain {
     
 public:
     
     static constexpr int MAX_FRAMES_IN_FLIGHT = 2;
 
-    LveSwapChain(LveDevice &deviceRef, VkExtent2D windowExtent);
-    LveSwapChain(LveDevice &deviceRef, VkExtent2D windowExtent, std::shared_ptr<LveSwapChain> PreviousSwapChain);
-    ~LveSwapChain();
+    LavaSwapChain(LavaDevice &deviceRef, VkExtent2D windowExtent);
+    LavaSwapChain(LavaDevice &deviceRef, VkExtent2D windowExtent, std::shared_ptr<LavaSwapChain> PreviousSwapChain);
+    ~LavaSwapChain();
 
-    LveSwapChain(const LveSwapChain &) = delete;
-    LveSwapChain& operator=(const LveSwapChain &) = delete;
+    LavaSwapChain(const LavaSwapChain &) = delete;
+    LavaSwapChain& operator=(const LavaSwapChain &) = delete;
     
     VkFramebuffer getFrameBuffer(int index) { return swapChainFramebuffers[index]; }
     VkRenderPass getRenderPass() { return renderPass; }
@@ -61,7 +61,7 @@ public:
     VkResult acquireNextImage(uint32_t *imageIndex);
     VkResult submitCommandBuffers(const VkCommandBuffer *buffers, uint32_t *imageIndex);
     
-    bool CompareSwapFormats(const LveSwapChain& Other) const
+    bool CompareSwapFormats(const LavaSwapChain& Other) const
     {
         return Other.swapChainDepthFormat == swapChainDepthFormat && Other.swapChainImageFormat == swapChainImageFormat;
     }
@@ -93,11 +93,11 @@ private:
     std::vector<VkImage> swapChainImages;
     std::vector<VkImageView> swapChainImageViews;
 
-    LveDevice &device;
+    LavaDevice &device;
     VkExtent2D windowExtent;
 
     VkSwapchainKHR swapChain;
-    std::shared_ptr<LveSwapChain> OldSwapChain;
+    std::shared_ptr<LavaSwapChain> OldSwapChain;
 
     std::vector<VkSemaphore> imageAvailableSemaphores;
     std::vector<VkSemaphore> renderFinishedSemaphores;

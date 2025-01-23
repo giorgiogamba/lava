@@ -1,5 +1,5 @@
 //
-//  LvePipeline.hpp
+//  LavaPipeline.hpp
 //  lava
 //
 //  Created by Giorgio Gamba on 27/12/24.
@@ -7,29 +7,29 @@
 
 #pragma once
 
-#ifndef LvePipeline_hpp
-#define LvePipeline_hpp
+#ifndef LavaPipeline_hpp
+#define LavaPipeline_hpp
 
 #include <stdio.h>
 #include <string>
 #include <vector>
 
-#include "LveDevice.hpp"
+#include "LavaDevice.hpp"
 
 #include <vulkan/vulkan.h>
 
-#endif /* LvePipeline_hpp */
+#endif /* LavaPipeline_hpp */
 
-namespace Lve {
+namespace Lava {
 
 #pragma region Types
 
-struct LvePipelineConfigInfo
+struct LavaPipelineConfigInfo
 {
-    LvePipelineConfigInfo() = default;
+    LavaPipelineConfigInfo() = default;
     
-    LvePipelineConfigInfo(const LvePipelineConfigInfo&) = delete;
-    LvePipelineConfigInfo& operator=(LvePipelineConfigInfo&) = delete;
+    LavaPipelineConfigInfo(const LavaPipelineConfigInfo&) = delete;
+    LavaPipelineConfigInfo& operator=(LavaPipelineConfigInfo&) = delete;
     
     VkPipelineViewportStateCreateInfo viewportInfo;
     VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo;
@@ -49,17 +49,17 @@ struct LvePipelineConfigInfo
 
 #pragma endregion
 
-class LvePipeline
+class LavaPipeline
 {
 public:
     
-    LvePipeline(LveDevice& InDevice, const LvePipelineConfigInfo& configInfo, const std::string& vertexShaderPath, const std::string& fragmentShaderPath);
-    ~LvePipeline();
+    LavaPipeline(LavaDevice& InDevice, const LavaPipelineConfigInfo& configInfo, const std::string& vertexShaderPath, const std::string& fragmentShaderPath);
+    ~LavaPipeline();
     
-    LvePipeline(const LvePipeline&) = delete;
-    LvePipeline& operator=(const LvePipeline&) = delete;
+    LavaPipeline(const LavaPipeline&) = delete;
+    LavaPipeline& operator=(const LavaPipeline&) = delete;
     
-    static void defaultPipelineConfigInfo(LvePipelineConfigInfo& ConfigInfo);
+    static void defaultPipelineConfigInfo(LavaPipelineConfigInfo& ConfigInfo);
     
     void Bind(VkCommandBuffer CommandBuffer);
     
@@ -67,12 +67,12 @@ private:
     
     static std::vector<char> readFile(const std::string& filePath);
     
-    void createPipeline(const LvePipelineConfigInfo& configInfo, const std::string& vertexShaderPath, const std::string& fragmentShaderPath);
+    void createPipeline(const LavaPipelineConfigInfo& configInfo, const std::string& vertexShaderPath, const std::string& fragmentShaderPath);
     
     void createShaderModule(const std::vector<char>& code, VkShaderModule* Module);
     
     // UNsafe
-    LveDevice& Device;
+    LavaDevice& Device;
     VkPipeline Pipeline;
     VkShaderModule vertexShaderModule;
     VkShaderModule fragmentShaderModule;

@@ -1,12 +1,12 @@
 #pragma once
 
-#include "LveWindow.hpp"
+#include "LavaWindow.hpp"
 
 // std lib headers
 #include <string>
 #include <vector>
 
-namespace Lve {
+namespace Lava {
 
 struct SwapChainSupportDetails
 {
@@ -24,7 +24,7 @@ struct QueueFamilyIndices
   bool isComplete() { return graphicsFamilyHasValue && presentFamilyHasValue; }
 };
 
-class LveDevice
+class LavaDevice
 {
     
  public:
@@ -34,12 +34,12 @@ class LveDevice
   const bool enableValidationLayers = true;
 #endif
 
-  LveDevice(LveWindow &window);
-  ~LveDevice();
+  LavaDevice(LavaWindow &window);
+  ~LavaDevice();
 
   // Not copyable or movable
-  LveDevice(LveDevice &&) = delete;
-  LveDevice &operator=(LveDevice &&) = delete;
+  LavaDevice(LavaDevice &&) = delete;
+  LavaDevice &operator=(LavaDevice &&) = delete;
 
   VkCommandPool getCommandPool() { return commandPool; }
   VkDevice device() { return device_; }
@@ -96,7 +96,7 @@ class LveDevice
   VkInstance instance;
   VkDebugUtilsMessengerEXT debugMessenger;
   VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
-  LveWindow &window;
+  LavaWindow &window;
   VkCommandPool commandPool;
 
   VkDevice device_;

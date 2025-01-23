@@ -1,5 +1,5 @@
 //
-//  LveModel.hpp
+//  LavaModel.hpp
 //  lava
 //
 //  Created by Giorgio Gamba on 03/01/25.
@@ -7,8 +7,8 @@
 
 #pragma once
 
-#ifndef LveModel_hpp
-#define LveModel_hpp
+#ifndef LavaModel_hpp
+#define LavaModel_hpp
 
 #include <stdio.h>
 #include <vector>
@@ -17,9 +17,9 @@
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
 
-#include "LveDevice.hpp"
+#include "LavaDevice.hpp"
 
-#endif /* LveModel_hpp */
+#endif /* LavaModel_hpp */
 
 // Vertex Buffer
 
@@ -41,7 +41,7 @@
 
 // Usually che single interleaved bnding in the best one but with the right algorithm
 
-namespace Lve
+namespace Lava
 {
 
 #pragma region Types
@@ -64,22 +64,22 @@ struct Builder
 
 #pragma endregion
 
-class LveModel
+class LavaModel
 {
 public:
     
-    LveModel(LveDevice& InDevice, const Builder& Builder);
-    ~LveModel();
+    LavaModel(LavaDevice& InDevice, const Builder& Builder);
+    ~LavaModel();
     
-    LveModel(const LveModel&) = delete;
-    LveModel& operator=(const LveModel&) = delete;
+    LavaModel(const LavaModel&) = delete;
+    LavaModel& operator=(const LavaModel&) = delete;
     
     void Bind(VkCommandBuffer& CommandBuffer);
     void Draw(VkCommandBuffer& CommandBuffer);
     
 private:
     
-    LveDevice& Device;
+    LavaDevice& Device;
     
     void ClearBufferAndMemory(VkBuffer& Buffer, VkDeviceMemory& Memory);
     

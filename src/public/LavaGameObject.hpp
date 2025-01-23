@@ -7,39 +7,39 @@
 
 #pragma once
 
-#include "LveModel.hpp"
+#include "LavaModel.hpp"
 
-#include "LveTypes.hpp"
+#include "LavaTypes.hpp"
 
-namespace Lve
+namespace Lava
 {
 
 // Represents eveything that is in game, with a set of properties
-class LveGameObject
+class LavaGameObject
 {
     
 public:
     
     using id_t = unsigned int;
     
-    static LveGameObject CreateGameObject()
+    static LavaGameObject CreateGameObject()
     {
         static id_t CurrentId = 0; // Keeps track of all the built game objs
-        return LveGameObject{CurrentId++};
+        return LavaGameObject{CurrentId++};
     }
     
     // Remove copy operators
-    LveGameObject(LveGameObject&) = delete;
-    LveGameObject& operator=(LveGameObject&) = delete;
+    LavaGameObject(LavaGameObject&) = delete;
+    LavaGameObject& operator=(LavaGameObject&) = delete;
     
     // Add move operators
-    LveGameObject(LveGameObject&&) = default;
-    LveGameObject& operator=(LveGameObject&&) = default;
+    LavaGameObject(LavaGameObject&&) = default;
+    LavaGameObject& operator=(LavaGameObject&&) = default;
     
     id_t GetId() const { return Id; }
     
-    std::shared_ptr<LveModel> GetModel() const { return Model; }
-    void SetModel(const std::shared_ptr<LveModel>& InModel) { Model = InModel; }
+    std::shared_ptr<LavaModel> GetModel() const { return Model; }
+    void SetModel(const std::shared_ptr<LavaModel>& InModel) { Model = InModel; }
     
     glm::vec3 GetColor() const { return Color; }
     void SetColor(const glm::vec3& InColor) { Color = InColor; }
@@ -48,13 +48,13 @@ public:
     
 private:
     
-    LveGameObject(id_t ObjectId)
+    LavaGameObject(id_t ObjectId)
     : Id{ObjectId}
     {}
     
     id_t Id;
     
-    std::shared_ptr<LveModel> Model{};
+    std::shared_ptr<LavaModel> Model{};
     glm::vec3 Color{};
     
 };

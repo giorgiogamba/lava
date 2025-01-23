@@ -7,7 +7,7 @@
 int main()
 {
     
-    Lve::Application App;
+    Lava::Application App;
     
     try
     {
