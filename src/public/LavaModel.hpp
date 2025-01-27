@@ -52,6 +52,14 @@ struct Vertex
     glm::vec3 color{};
     glm::vec3 normal{};
     glm::vec2 uv{};
+
+    inline bool operator==(const Vertex& Other) const
+    {
+        return position == Other.position
+            && color == Other.color
+            && normal == Other.normal
+            && uv == Other.uv;
+    }
 };
 
 struct Builder
