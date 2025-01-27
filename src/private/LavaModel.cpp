@@ -10,9 +10,31 @@
 #include <assert.h>
 #include <iostream>
 #include <vector>
+#include <unordered_map>
 
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "TinyObjLoader.h"
+
+#include "LavaUtils.hpp"
+
+// Enable has functionality for glm::vec3
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/hash.hpp>
+
+namespace std
+{
+    template<>
+    struct hash<lava::Vertex>
+    {
+        // Used to insert Vertex elements inside a map
+        size_t operator()(const lava::Vertex& Vertex) const
+        {
+            size_t Seed = 0;
+            lava::HashCombine(Seed, Vertex.position, Vertex.color, Vertex.normal, Vertex.uv);
+            return Seed;
+        }
+    };
+}
 
 namespace lava
 {
@@ -72,6 +94,8 @@ void Builder::LoadModel(const std::string& Filename)
     // Object loading succeded
     Vertices.clear();
     Indices.clear();
+
+    std::unordered_map<Vertex, uint32_t> UniqueVertices;
 
     for (const auto& Shape : Shapes)
     {
@@ -133,7 +157,16 @@ void Builder::LoadModel(const std::string& Filename)
                 };    
             }
 
-            Vertices.push_back(V);
+            if (UniqueVertices.count(V) == 0)
+            {
+                // If the Vertex V is not contained inside the map. We keep track of its position inside the Vertices vector
+                // by keeping track of how many vertices there currently are inside the vector
+                UniqueVertices[V] = static_cast<uint32_t>(Vertices.size());
+                Vertices.push_back(V);
+            }
+
+            // The index of the vertex is its position inside the Vertices array, stored in the UniqueVertices map
+            Indices.push_back(UniqueVertices[V]);
         }
     }
 }
