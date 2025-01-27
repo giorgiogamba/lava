@@ -101,7 +101,7 @@ void Application::LoadGameObjects()
     GameObject.Transform.Translation = {.0f, .0f, 2.5f};
     GameObject.Transform.Scale = {.5f, .5f, .5f};
     
-    GameObjects.push_back(std::move(Cube));
+    GameObjects.push_back(std::move(GameObject));
 }
 
 #pragma endregion
