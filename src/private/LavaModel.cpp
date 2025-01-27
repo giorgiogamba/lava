@@ -8,6 +8,33 @@
 #include "LavaModel.hpp"
 
 #include <assert.h>
+#include <iostream>
+#include <vector>
+#include <unordered_map>
+
+#define TINYOBJLOADER_IMPLEMENTATION
+#include "TinyObjLoader.h"
+
+#include "LavaUtils.hpp"
+
+// Enable has functionality for glm::vec3
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/hash.hpp>
+
+namespace std
+{
+    template<>
+    struct hash<lava::Vertex>
+    {
+        // Used to insert Vertex elements inside a map
+        size_t operator()(const lava::Vertex& Vertex) const
+        {
+            size_t Seed = 0;
+            lava::HashCombine(Seed, Vertex.position, Vertex.color, Vertex.normal, Vertex.uv);
+            return Seed;
+        }
+    };
+}
 
 namespace lava
 {
@@ -37,8 +64,111 @@ std::vector<VkVertexInputAttributeDescription> Vertex::GetAttributeDescs()
     AttributeDescs[1].location = 1;                          // Matches shaders
     AttributeDescs[1].format = VK_FORMAT_R32G32B32_SFLOAT;
     AttributeDescs[1].offset = offsetof(Vertex, color);
+
+    //AttributeDescs[2].binding = 0;
+    //AttributeDescs[2].location = 2;                          // Matches shaders
+    //AttributeDescs[2].format = VK_FORMAT_R32G32B32_SFLOAT;
+    //AttributeDescs[2].offset = offsetof(Vertex, normal);
+
+    //AttributeDescs[3].binding = 0;
+    //AttributeDescs[3].location = 1;                          // Matches shaders
+    //AttributeDescs[3].format = VK_FORMAT_R32G32_SFLOAT;
+    //AttributeDescs[3].offset = offsetof(Vertex, uv);
     
     return AttributeDescs;
+}
+
+void Builder::LoadModel(const std::string& Filename)
+{
+    tinyobj::attrib_t Attrib;
+    std::vector<tinyobj::shape_t> Shapes;
+    std::vector<tinyobj::material_t> Materials;
+    std::string Warning;
+    std::string Error;
+
+    if (!tinyobj::LoadObj(&Attrib, &Shapes, &Materials, &Warning, &Error, Filename.c_str()))
+    {
+        throw std::runtime_error(Warning + Error);
+    }
+
+    // Object loading succeded
+    Vertices.clear();
+    Indices.clear();
+
+    std::unordered_map<Vertex, uint32_t> UniqueVertices;
+
+    for (const auto& Shape : Shapes)
+    {
+        for (const auto& Index : Shape.mesh.indices)
+        {
+            Vertex V{};
+            
+            // Suppose wa have faces defined as vertexIdx/normalIdx/uvIdx
+
+            if (Index.vertex_index >= 0)
+            {
+                // Suppose each vertex is a vec3, then each component is in following positions
+                // with offset 0, 1 and 2 starting from the vertex index
+                const size_t startingIdx = 3 * Index.vertex_index;
+                V.position =
+                {
+                    Attrib.vertices[startingIdx],
+                    Attrib.vertices[startingIdx + 1], 
+                    Attrib.vertices[startingIdx + 2]
+                };        
+
+
+                // Supposed the provided file owns colors after vertices positions
+                auto colorIdx = 3 * Index.vertex_index + 2;
+                if (colorIdx < Attrib.colors.size())
+                {
+                    V.color =
+                    {
+                        Attrib.colors[startingIdx - 2],
+                        Attrib.colors[startingIdx - 1], 
+                        Attrib.colors[startingIdx]
+                    };
+                }
+                else
+                {
+                    // Set default color
+                    V.color = {1.f, 0.f, 0.f};
+                }
+            }
+
+            if (Index.normal_index >= 0)
+            {
+                const size_t startingIdx = 3 * Index.normal_index;
+                V.normal =
+                {
+                    Attrib.normals[startingIdx],
+                    Attrib.normals[startingIdx + 1], 
+                    Attrib.normals[startingIdx + 2]
+                };                
+            }
+
+            if (Index.texcoord_index >= 0)
+            {
+                const size_t startingIdx = 2 * Index.texcoord_index;
+                V.uv =
+                {
+                    Attrib.texcoords[startingIdx],
+                    Attrib.texcoords[startingIdx + 1]
+                };    
+            }
+
+            if (UniqueVertices.count(V) == 0)
+            {
+                // If the Vertex V is not contained inside the map. We keep track of its position inside the Vertices vector
+                // by keeping track of how many vertices there currently are inside the vector
+                UniqueVertices[V] = static_cast<uint32_t>(Vertices.size());
+                Vertices.push_back(V);
+            }
+
+            // The index of the vertex is its position inside the Vertices array, stored in the UniqueVertices map
+            Indices.push_back(UniqueVertices[V]);
+        }
+    }
 }
 
 #pragma endregion
@@ -63,6 +193,16 @@ LavaModel::~LavaModel()
     {
         ClearBufferAndMemory(IndexBuffer, IndexBufferMemory);
     }
+}
+
+std::unique_ptr<LavaModel> LavaModel::CreateModelFromFile(LavaDevice& Device, const std::string& Filepath)
+{
+    Builder ModelBuilder{};
+    ModelBuilder.LoadModel(Filepath);
+
+    std::cout << "Vertex count: " << ModelBuilder.Vertices.size() << std::endl;
+
+    return std::make_unique<LavaModel>(Device, ModelBuilder);
 }
 
 void LavaModel::Bind(VkCommandBuffer& CommandBuffer)

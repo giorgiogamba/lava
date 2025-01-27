@@ -9,6 +9,7 @@
 
 #include <stdio.h>
 #include <vector>
+#include <memory>
 
 #define GLM_FORCE_RADIANS // expects angles to be defined in radians
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -44,15 +45,27 @@ namespace lava
 // Interleaved implementation which alternates position and color inside the same buffer
 struct Vertex
 {
-    glm::vec3 position;
-    glm::vec3 color;
-    
     static std::vector<VkVertexInputBindingDescription> GetBindingDesc();
     static std::vector<VkVertexInputAttributeDescription> GetAttributeDescs();
+
+    glm::vec3 position{};
+    glm::vec3 color{};
+    glm::vec3 normal{};
+    glm::vec2 uv{};
+
+    inline bool operator==(const Vertex& Other) const
+    {
+        return position == Other.position
+            && color == Other.color
+            && normal == Other.normal
+            && uv == Other.uv;
+    }
 };
 
 struct Builder
 {
+    void LoadModel(const std::string& Filename);
+
     std::vector<Vertex> Vertices{};
     std::vector<uint32_t> Indices{};
 };
@@ -68,6 +81,8 @@ public:
     
     LavaModel(const LavaModel&) = delete;
     LavaModel& operator=(const LavaModel&) = delete;
+
+    static std::unique_ptr<LavaModel> CreateModelFromFile(LavaDevice& Device, const std::string& Filepath);
     
     void Bind(VkCommandBuffer& CommandBuffer);
     void Draw(VkCommandBuffer& CommandBuffer);
