@@ -54,26 +54,11 @@ std::vector<VkVertexInputBindingDescription> Vertex::GetBindingDesc()
 
 std::vector<VkVertexInputAttributeDescription> Vertex::GetAttributeDescs()
 {
-    std::vector<VkVertexInputAttributeDescription> AttributeDescs(2);
-    AttributeDescs[0].binding = 0;
-    AttributeDescs[0].location = 0;                         // Matches shaders
-    AttributeDescs[0].format = VK_FORMAT_R32G32B32_SFLOAT;  // Also if a position, we use color coordinates
-    AttributeDescs[0].offset = 0;  // 0
-    
-    AttributeDescs[1].binding = 0;
-    AttributeDescs[1].location = 1;                          // Matches shaders
-    AttributeDescs[1].format = VK_FORMAT_R32G32B32_SFLOAT;
-    AttributeDescs[1].offset = offsetof(Vertex, color);
-
-    //AttributeDescs[2].binding = 0;
-    //AttributeDescs[2].location = 2;                          // Matches shaders
-    //AttributeDescs[2].format = VK_FORMAT_R32G32B32_SFLOAT;
-    //AttributeDescs[2].offset = offsetof(Vertex, normal);
-
-    //AttributeDescs[3].binding = 0;
-    //AttributeDescs[3].location = 1;                          // Matches shaders
-    //AttributeDescs[3].format = VK_FORMAT_R32G32_SFLOAT;
-    //AttributeDescs[3].offset = offsetof(Vertex, uv);
+    std::vector<VkVertexInputAttributeDescription> AttributeDescs{};
+    AttributeDescs.push_back({0, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, position)});
+    AttributeDescs.push_back({1, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, color)});
+    AttributeDescs.push_back({2, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, normal)});
+    AttributeDescs.push_back({3, 0, VK_FORMAT_R32G32_SFLOAT, offsetof(Vertex, uv)}); //uv are 2D
     
     return AttributeDescs;
 }
@@ -117,23 +102,13 @@ void Builder::LoadModel(const std::string& Filename)
                     Attrib.vertices[startingIdx + 2]
                 };        
 
-
                 // Supposed the provided file owns colors after vertices positions
-                auto colorIdx = 3 * Index.vertex_index + 2;
-                if (colorIdx < Attrib.colors.size())
+                V.color =
                 {
-                    V.color =
-                    {
-                        Attrib.colors[startingIdx - 2],
-                        Attrib.colors[startingIdx - 1], 
-                        Attrib.colors[startingIdx]
-                    };
-                }
-                else
-                {
-                    // Set default color
-                    V.color = {1.f, 0.f, 0.f};
-                }
+                    Attrib.colors[startingIdx],
+                    Attrib.colors[startingIdx + 1], 
+                    Attrib.colors[startingIdx + 2]
+                }; 
             }
 
             if (Index.normal_index >= 0)
