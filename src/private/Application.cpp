@@ -33,7 +33,7 @@ Application::~Application()
 {
 }
 
-void Application::Run()
+void Application::Run(std::atomic<bool>& bRunning)
 {
     RenderSystem RS{Device, Renderer.GetSwapChainRenderPass()};
     LavaCamera Camera{};
@@ -48,8 +48,10 @@ void Application::Run()
     
     auto CurrentTime = std::chrono::high_resolution_clock::now();
     
-    while (!Window.shouldClose())
+    while (!Window.shouldClose() && bRunning.load())
     {
+        std::cout << "TEST" << std::endl;
+
         // Blocking action
         glfwPollEvents();
         
@@ -81,6 +83,13 @@ void Application::Run()
     }
     
     // Makes the CPU wait until all the GPU resources are freed
+    vkDeviceWaitIdle(Device.device());
+}
+
+void Application::Stop()
+{
+    Window.shouldClose();
+    std::cout << "Stop" << std::endl;
     vkDeviceWaitIdle(Device.device());
 }
 

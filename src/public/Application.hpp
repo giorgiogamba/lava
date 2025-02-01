@@ -56,7 +56,8 @@ public:
     Application(const Application&) = delete;
     Application& operator=(const Application&) = delete;
     
-    void Run();
+    void Run(std::atomic<bool>& bRunning);
+    void Stop();
     
 private:
     
