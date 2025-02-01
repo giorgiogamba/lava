@@ -1,5 +1,7 @@
 #version 450
 
+// Input data
+
 layout(location = 0) in vec3 position;
 
 // It is also possibile to pass data from vertex shader to fragment shader using the same pattern:
@@ -12,14 +14,26 @@ layout(location = 0) in vec3 position;
 
 layout(location = 1) in vec3 color;
 
+layout(location = 2) in vec3 normal;
+
+layout(location = 3) in vec2 uv;
+
+// Output data
+
 layout(location = 0) out vec3 fragmentColor; // Also if again of location 0, there's no overlap between in and out variables
 
 layout(push_constant) uniform PushConstant
 {
     mat4 transform;
-    vec3 color;
+    mat4 modelMatrix;
 } pushConstants;
 
+// DIRECT LIGHTNING SIMULATION
+// Each vertex is hit by the same raylight. Simulates a light that is infinitely far away, like the sun, and parallel
+const vec3 DIRECTION_TO_LIGHT = normalize(vec3(1.0, -3.0, -1.0));
+
+// INDIRECT LIGHTNING SIMULATION (AMBIENT)
+const float AMBIENT_INTENSITY = 0.02;
 
 // Executed for each vertex
 // Receives input from input assembler
@@ -33,6 +47,13 @@ void main()
     
     gl_Position = pushConstants.transform * vec4(position, 1.0);
     
+    // Conversion to mat3 deletes row4 and col4. Not generally correct implementastion
+    vec3 normalWorldSpace = normalize(mat3(pushConstants.modelMatrix) * normal);
+
+    // Minimized to 0 in case vector is not facing light
+    float lightIntensity = max(dot(normalWorldSpace, DIRECTION_TO_LIGHT), 0);
+
     // Not used with push constants
-    fragmentColor = color;
+    const float totalLightIntensity = AMBIENT_INTENSITY + lightIntensity;
+    fragmentColor = totalLightIntensity * color;
 }
