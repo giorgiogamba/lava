@@ -67,3 +67,6 @@ Defined by 6 planes: near/far, top/bottom, left/right
 The challenge is to convert this box to the vulkan canonical view volume: we scale and translate
 Ofc the implementation depends on the axis adopted and their direction
 
+Normals computation influences the way the objects are rendered:
+- Vertex Normals: they provide a smooth shading and so curved surfaces
+- Face Normals: they provide Flat shading -> low poly style -> we can have multiple normals for each vertex position
