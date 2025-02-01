@@ -112,6 +112,39 @@ struct TransformComponent
             {Translation.x, Translation.y, Translation.z, 1.f}
         };
     };
+
+    // A normal matrix is built by R * Sˆ-1
+    // This means that we we need the rotation matrix together with the scale matrix with
+    // the elements converted by their mutual component (1 / scale)
+    glm::mat3 normalMatrix()
+    {
+        const float c3 = glm::cos(Rotation.z);
+        const float s3 = glm::sin(Rotation.z);
+        const float c2 = glm::cos(Rotation.x);
+        const float s2 = glm::sin(Rotation.x);
+        const float c1 = glm::cos(Rotation.y);
+        const float s1 = glm::sin(Rotation.y);
+        const glm::vec3 InverseScale = 1.f / Scale;
+        
+        return glm::mat3
+        {
+            {
+                InverseScale.x * (c1 * c3 + s1 * s2 * s3),
+                InverseScale.x * (c2 * s3),
+                InverseScale.x * (c1 * s2 * s3 - c3 * s1),
+            },
+            {
+                InverseScale.y * (c3 * s1 * s2 - c1 * s3),
+                InverseScale.y * (c2 * c3),
+                InverseScale.y * (c1 * c3 * s2 + s1 * s3),
+            },
+            {
+                InverseScale.z * (c2 * s1),
+                InverseScale.z * (-s2),
+                InverseScale.z * (c1 * c2),
+            },
+        };
+    }
 };
 
 #pragma endregion
@@ -137,7 +170,9 @@ struct PushConstant3DData
     // We align the field becuase of the requirement made by Push Constants, which need to define
     // multiples of N in size 2 (N, 2N, 4N, ...). In case of colors, they must be in 4N, which means
     // that a padding between offset and color will be set in order to make the elements aligned
-    alignas(16) glm::vec3 color;
+    //alignas(16) glm::vec3 color;
+
+    glm::mat4 normalMatrix{1.f};
 };
 
 #pragma endregion
