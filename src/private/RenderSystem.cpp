@@ -89,7 +89,7 @@ void RenderSystem::RenderGameObjects(VkCommandBuffer CommandBuffer, std::vector<
         
         glm::mat4 modelMatrix = GameObject.Transform.mat4();
         PushConstant.transform = ProjectionView * modelMatrix;
-        PushConstant.modelMatrix = modelMatrix;
+        PushConstant.normalMatrix = GameObject.Transform.normalMatrix(); // Automatically padded to 4x4 matrix
 
         // Applies perspective
         PushConstant.transform = ProjectionView * GameObject.Transform.mat4();

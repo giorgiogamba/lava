@@ -25,7 +25,7 @@ layout(location = 0) out vec3 fragmentColor; // Also if again of location 0, the
 layout(push_constant) uniform PushConstant
 {
     mat4 transform;
-    mat4 modelMatrix;
+    mat4 normalMatrix;
 } pushConstants;
 
 // DIRECT LIGHTNING SIMULATION
@@ -48,7 +48,7 @@ void main()
     gl_Position = pushConstants.transform * vec4(position, 1.0);
     
     // Conversion to mat3 deletes row4 and col4. Not generally correct implementastion
-    vec3 normalWorldSpace = normalize(mat3(pushConstants.modelMatrix) * normal);
+    vec3 normalWorldSpace = normalize(mat3(pushConstants.normalMatrix) * normal);
 
     // Minimized to 0 in case vector is not facing light
     float lightIntensity = max(dot(normalWorldSpace, DIRECTION_TO_LIGHT), 0);
