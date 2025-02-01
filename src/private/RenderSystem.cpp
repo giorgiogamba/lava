@@ -85,8 +85,12 @@ void RenderSystem::RenderGameObjects(VkCommandBuffer CommandBuffer, std::vector<
     for (LavaGameObject& GameObject : GameObjects)
     {
         PushConstant3DData PushConstant{};
-        PushConstant.color = GameObject.GetColor();
+        //PushConstant.color = GameObject.GetColor();
         
+        glm::mat4 modelMatrix = GameObject.Transform.mat4();
+        PushConstant.transform = ProjectionView * modelMatrix;
+        PushConstant.modelMatrix = modelMatrix;
+
         // Applies perspective
         PushConstant.transform = ProjectionView * GameObject.Transform.mat4();
         

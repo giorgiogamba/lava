@@ -137,7 +137,9 @@ struct PushConstant3DData
     // We align the field becuase of the requirement made by Push Constants, which need to define
     // multiples of N in size 2 (N, 2N, 4N, ...). In case of colors, they must be in 4N, which means
     // that a padding between offset and color will be set in order to make the elements aligned
-    alignas(16) glm::vec3 color;
+    //alignas(16) glm::vec3 color;
+
+    glm::mat4 modelMatrix{1.f};
 };
 
 #pragma endregion
