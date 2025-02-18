@@ -156,19 +156,7 @@ LavaModel::LavaModel(LavaDevice& InDevice, const Builder& Builder)
     CreateIndexBuffers(Builder.Indices);
 }
 
-LavaModel::~LavaModel()
-{
-    // NOTE: When creating complex scenes, we will run into allocation problems, thus it will be convenient to add
-    // a memory allocator like the one defined in
-    // https://www.youtube.com/redirect?event=video_description&redir_token=QUFFLUhqbU5VUnJqS2c1YWJJTE5oV1c0TjNCSUFyUEtud3xBQ3Jtc0ttZzBQWXJsZWJZcVZzRUlSeDFzV0Y1NkhVam1NdVZQUXJnclllcWY1VVI0eklDcFFGbUFhWGFzaFJDSTlDQkFZZ0F0d0RqMmVjdkF2enFJTFFtRTY2U1FPLS1aeUEwUWZSQ25rcEpfeTAta0xMZi1CNA&q=http%3A%2F%2Fkylehalladay.com%2Fblog%2Ftutorial%2F2017%2F12%2F13%2FCustom-Allocators-Vulkan.html&v=mnKp501RXDc
-    
-    ClearBufferAndMemory(VertexBuffer, VertexBufferMemory);
-    
-    if (bHasIndexBuffer)
-    {
-        ClearBufferAndMemory(IndexBuffer, IndexBufferMemory);
-    }
-}
+LavaModel::~LavaModel() {}
 
 std::unique_ptr<LavaModel> LavaModel::CreateModelFromFile(LavaDevice& Device, const std::string& Filepath)
 {
@@ -182,14 +170,14 @@ std::unique_ptr<LavaModel> LavaModel::CreateModelFromFile(LavaDevice& Device, co
 
 void LavaModel::Bind(VkCommandBuffer& CommandBuffer)
 {
-    VkBuffer Buffers[] = {VertexBuffer};
+    VkBuffer Buffers[] = {VertexBuffer->getBuffer()};
     VkDeviceSize Offsets[] = {0};
     vkCmdBindVertexBuffers(CommandBuffer, 0, 1, Buffers, Offsets);
     
     if (bHasIndexBuffer)
     {
         // 32bit index type for huge storing
-        vkCmdBindIndexBuffer(CommandBuffer, IndexBuffer, 0, VK_INDEX_TYPE_UINT32);
+        vkCmdBindIndexBuffer(CommandBuffer, IndexBuffer->getBuffer(), 0, VK_INDEX_TYPE_UINT32);
     }
 }
 
@@ -223,31 +211,30 @@ void LavaModel::CreateVertexBuffers(const std::vector<Vertex>& Vertices)
     
     // Compute the total number of bytes required to store the current model
     const VkDeviceSize BufferSize = sizeof(Vertices[0]) * VertexCount;
+
+    const uint32_t VertexSize = sizeof(Vertices[0]);
+
+    // Copies data from CPU to GPU
+    LavaBuffer StagingBuffer
+        { Device
+        , VertexSize
+        , VertexCount
+        , VK_BUFFER_USAGE_TRANSFER_SRC_BIT
+        , VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
+        };
+
+    StagingBuffer.map();
+    StagingBuffer.writeToBuffer((void*) Vertices.data());
+
+    VertexBuffer = std::make_unique<LavaBuffer>
+        ( Device
+        , VertexSize
+        , VertexCount
+        , VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT
+        , VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT
+        );
     
-    VkBuffer StagingBuffer;
-    VkDeviceMemory StagingBufferMemory;
-    
-    // We define the buffer as a source location for a memory transfer operation
-    // Visible makes the memory visible to the CPU, Coherent keeps the host and device memory regions consistent to each others
-    Device.createBuffer(BufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, StagingBuffer, StagingBufferMemory);
-    
-    // Creates a reference on the CPU of the data allocated in the GPU.
-    // When it is updated (when someone writes in it), it creates a copy on the GPU
-    void* data;
-    vkMapMemory(Device.device(), StagingBufferMemory, 0, BufferSize, 0, &data);
-    
-    // Copies vertices data to the host map memory region. Since we set the Coherent bit to true, then since
-    // the host memory is updated, then the device memory is updated consequently
-    memcpy(data, Vertices.data(), static_cast<size_t>(BufferSize));
-    
-    // Since we don't need data information on the host (CPU), we clear it so that we have it only on GPU
-    vkUnmapMemory(Device.device(), StagingBufferMemory);
-    
-    Device.createBuffer(BufferSize, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, VertexBuffer, VertexBufferMemory);
-    
-    Device.copyBuffer(StagingBuffer, VertexBuffer, BufferSize);
-    
-    ClearBufferAndMemory(StagingBuffer, StagingBufferMemory);
+    Device.copyBuffer(StagingBuffer.getBuffer(), VertexBuffer->getBuffer(), BufferSize);
 }
 
 #pragma endregion
@@ -263,32 +250,28 @@ void LavaModel::CreateIndexBuffers(const std::vector<uint32_t>& Indices)
         return;
     
     VkDeviceSize BufferSize = sizeof(Indices[0]) * IndexCount;
+
+    const uint64_t IndexSize = sizeof(Indices[0]);
+
+    LavaBuffer StagingBuffer
+        { Device
+        , IndexSize
+        , IndexCount
+        , VK_BUFFER_USAGE_TRANSFER_SRC_BIT
+        , VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
+        };
     
-    // We define a staging buffer so that we can define a device local memory directly on GPU and get higher performance
-    VkBuffer StagingBuffer;
-    VkDeviceMemory StagingBufferMemory;
-    
-    // We define the buffer as a source location for a memory transfer operation
-    // Visible makes the memory visible to the CPU, Coherent keeps the host and device memory regions consistent to each others
-    Device.createBuffer(BufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, StagingBuffer, StagingBufferMemory);
-    
-    // Creates a reference on the CPU of the data allocated in the GPU.
-    // When it is updated (when someone writes in it), it creates a copy on the GPU
-    void* data;
-    vkMapMemory(Device.device(), StagingBufferMemory, 0, BufferSize, 0, &data);
-    
-    // Copies vertices data to the host map memory region. Since we set the Coherent bit to true, then since
-    // the host memory is updated, then the device memory is updated consequently
-    memcpy(data, Indices.data(), static_cast<size_t>(BufferSize));
-    
-    // Since we don't need data information on the host (CPU), we clear it so that we have it only on GPU
-    vkUnmapMemory(Device.device(), StagingBufferMemory);
-    
-    Device.createBuffer(BufferSize, VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, IndexBuffer, IndexBufferMemory);
-    
-    Device.copyBuffer(StagingBuffer, IndexBuffer, BufferSize);
-    
-    ClearBufferAndMemory(StagingBuffer, StagingBufferMemory);
+    StagingBuffer.map();
+    StagingBuffer.writeToBuffer((void*) Indices.data());
+
+    IndexBuffer = std::make_unique<LavaBuffer>
+        ( Device
+        , IndexSize
+        , IndexCount
+        , VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT
+        , VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT );
+
+    Device.copyBuffer(StagingBuffer.getBuffer(), IndexBuffer->getBuffer(), BufferSize);
 }
 
 #pragma endregion

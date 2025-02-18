@@ -16,6 +16,7 @@
 #include <glm/glm.hpp>
 
 #include "LavaDevice.hpp"
+#include "LavaBuffer.hpp"
 
 // Vertex Buffer
 
@@ -101,8 +102,7 @@ private:
     
     bool bHasIndexBuffer;
     
-    VkBuffer VertexBuffer;
-    VkDeviceMemory VertexBufferMemory;
+    std::unique_ptr<LavaBuffer> VertexBuffer;
     uint32_t VertexCount;
     
 #pragma endregion
@@ -113,8 +113,7 @@ private:
     
     void CreateIndexBuffers(const std::vector<uint32_t>& Indices);
     
-    VkBuffer IndexBuffer;
-    VkDeviceMemory IndexBufferMemory;
+    std::unique_ptr<LavaBuffer> IndexBuffer;
     uint32_t IndexCount;
     
 #pragma endregion
