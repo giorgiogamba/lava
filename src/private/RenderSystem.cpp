@@ -76,11 +76,11 @@ void RenderSystem::CreatePipeline(VkRenderPass& RenderPass)
 #pragma region GameObjects
 
 
-void RenderSystem::RenderGameObjects(VkCommandBuffer CommandBuffer, std::vector<LavaGameObject>& GameObjects, const LavaCamera& Camera)
+void RenderSystem::RenderGameObjects(const FrameDescriptor& FrameDesc, std::vector<LavaGameObject>& GameObjects)
 {
-    Pipeline->Bind(CommandBuffer);
+    Pipeline->Bind(FrameDesc.CommandBuffer);
     
-    auto ProjectionView = Camera.GetProjectionMat() * Camera.GetViewMat();
+    auto ProjectionView = FrameDesc.Camera.GetProjectionMat() * FrameDesc.Camera.GetViewMat();
     
     for (LavaGameObject& GameObject : GameObjects)
     {
@@ -94,10 +94,14 @@ void RenderSystem::RenderGameObjects(VkCommandBuffer CommandBuffer, std::vector<
         // Applies perspective
         PushConstant.transform = ProjectionView * GameObject.Transform.mat4();
         
-        vkCmdPushConstants(CommandBuffer, PipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant3DData), &PushConstant);
+        vkCmdPushConstants(FrameDesc.CommandBuffer, PipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant3DData), &PushConstant);
         
-        GameObject.GetModel()->Bind(CommandBuffer);
-        GameObject.GetModel()->Draw(CommandBuffer);
+        const std::shared_ptr<LavaModel> Model = GameObject.GetModel();
+        if (Model)
+        {
+            Model->Bind(FrameDesc.CommandBuffer);
+            Model->Draw(FrameDesc.CommandBuffer);
+        }
     }
 }
 
