@@ -35,6 +35,20 @@ Application::~Application()
 
 void Application::Run()
 {
+
+    // By setting to MAX_FRAME_IN_FLIGHT, we can avoid to think about sync between frames
+    // because we don't need the prev frame to be completed before writing
+    // We create a sort of double buffer
+    LavaBuffer GlobalUniformBuffer
+        { Device
+        , sizeof(UniformBuffer)
+        , LavaSwapChain::MAX_FRAMES_IN_FLIGHT
+        , VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT
+        , VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT
+        , Device.properties.limits.minUniformBufferOffsetAlignment };
+
+    GlobalUniformBuffer.map();
+
     RenderSystem RS{Device, Renderer.GetSwapChainRenderPass()};
     LavaCamera Camera{};
     
@@ -71,10 +85,19 @@ void Application::Run()
         
         if (auto CommandBuffer = Renderer.StartDrawFrame())
         {
-            // We kept this operations divided in order to add other drawing elements in between
-            
+            const int FrameIdx = Renderer.GetFrameIdx();
+
+            FrameDescriptor FrameDesc{FrameIdx, DeltaTime, CommandBuffer, Camera};
+
+            // Update objects and memory
+            UniformBuffer UBO{};
+            UBO.ProjectionMatrix = Camera.GetProjectionMat() * Camera.GetViewMat();
+            GlobalUniformBuffer.writeToIndex(&UBO, FrameIdx);
+            GlobalUniformBuffer.flushIndex(FrameIdx);
+
+            // Drawing
             Renderer.StartSwapChainRenderPass(CommandBuffer);
-            RS.RenderGameObjects(CommandBuffer, GameObjects, Camera);
+            RS.RenderGameObjects(FrameDesc, GameObjects);
             Renderer.EndSwapChainRenderPass(CommandBuffer);
             Renderer.EndDrawFrame();
         }
