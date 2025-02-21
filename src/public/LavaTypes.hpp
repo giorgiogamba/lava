@@ -12,6 +12,10 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include <vulkan/vulkan.h>
+
+#include "LavaCamera.hpp"
+
 #pragma region Transforms
 
 /**
@@ -174,5 +178,32 @@ struct PushConstant3DData
 
     glm::mat4 normalMatrix{1.f};
 };
+
+#pragma endregion
+
+#pragma region Uniform Buffers
+
+struct UniformBuffer
+{
+    glm::mat4 ProjectionMatrix{1.f};
+    glm::vec3 LightDirection = glm::normalize(glm::vec3{1.f, -3.f, -1.f});
+};
+
+#pragma endregion
+
+#pragma region Frame
+
+namespace lava
+{
+
+struct FrameDescriptor
+{
+    int FrameIdx;
+    float FrameTimeInS;
+    VkCommandBuffer CommandBuffer;
+    LavaCamera& Camera;
+};
+
+}
 
 #pragma endregion

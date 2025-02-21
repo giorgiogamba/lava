@@ -54,7 +54,7 @@ private:
 public:
 
     // Camera passed in argument in order to be shared between various systems
-    void RenderGameObjects(VkCommandBuffer CommandBuffer, std::vector<LavaGameObject>& GameObjects, const LavaCamera& Camera);
+    void RenderGameObjects(const FrameDescriptor& FrameDesc, std::vector<LavaGameObject>& GameObjects);
     
 #pragma endregion
     

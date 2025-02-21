@@ -70,3 +70,8 @@ Ofc the implementation depends on the axis adopted and their direction
 Normals computation influences the way the objects are rendered:
 - Vertex Normals: they provide a smooth shading and so curved surfaces
 - Face Normals: they provide Flat shading -> low poly style -> we can have multiple normals for each vertex position
+
+Uniform Buffers
+Uniform buffers are based on minium offset alignment -> supposed is i set to a certain number, we will need the uniform buffer to be of size equal to a multiple of it
+
+

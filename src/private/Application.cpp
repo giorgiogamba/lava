@@ -35,6 +35,19 @@ Application::~Application()
 
 void Application::Run()
 {
+    std::vector<std::unique_ptr<LavaBuffer>> UBOBuffers(LavaSwapChain::MAX_FRAMES_IN_FLIGHT);
+    for (int i = 0; i < UBOBuffers.size(); ++i)
+    {
+        UBOBuffers[i] = std::make_unique<LavaBuffer>
+            ( Device
+            , sizeof(UniformBuffer)
+            , 1 // In case you have multiple copies for instance
+            , VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT
+            , VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT );
+
+        UBOBuffers[i]->map();
+    }
+
     RenderSystem RS{Device, Renderer.GetSwapChainRenderPass()};
     LavaCamera Camera{};
     
@@ -71,10 +84,19 @@ void Application::Run()
         
         if (auto CommandBuffer = Renderer.StartDrawFrame())
         {
-            // We kept this operations divided in order to add other drawing elements in between
-            
+            const int FrameIdx = Renderer.GetFrameIdx();
+
+            FrameDescriptor FrameDesc{FrameIdx, DeltaTime, CommandBuffer, Camera};
+
+            // Update objects and memory
+            UniformBuffer UBO{};
+            UBO.ProjectionMatrix = Camera.GetProjectionMat() * Camera.GetViewMat();
+            UBOBuffers[FrameIdx]->writeToBuffer(&UBO);
+            UBOBuffers[FrameIdx]->flush();
+
+            // Drawing
             Renderer.StartSwapChainRenderPass(CommandBuffer);
-            RS.RenderGameObjects(CommandBuffer, GameObjects, Camera);
+            RS.RenderGameObjects(FrameDesc, GameObjects);
             Renderer.EndSwapChainRenderPass(CommandBuffer);
             Renderer.EndDrawFrame();
         }
