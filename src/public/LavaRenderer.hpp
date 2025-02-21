@@ -47,11 +47,11 @@ public:
     VkCommandBuffer StartDrawFrame();
     void EndDrawFrame();
     
+    int GetFrameIdx() const;
+
 private:
     
     bool IsFrameInProgress() const { return bIsFrameStarted; }
-    
-    int GetFrameIdx() const;
     
     uint32_t CurrImageIdx;
     int CurrFrameIdx; // Goes from 0 to MaxFramesInFlight
