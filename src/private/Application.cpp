@@ -35,19 +35,18 @@ Application::~Application()
 
 void Application::Run()
 {
+    std::vector<std::unique_ptr<LavaBuffer>> UBOBuffers(LavaSwapChain::MAX_FRAMES_IN_FLIGHT);
+    for (int i = 0; i < UBOBuffers.size(); ++i)
+    {
+        UBOBuffers[i] = std::make_unique<LavaBuffer>
+            ( Device
+            , sizeof(UniformBuffer)
+            , 1 // In case you have multiple copies for instance
+            , VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT
+            , VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT );
 
-    // By setting to MAX_FRAME_IN_FLIGHT, we can avoid to think about sync between frames
-    // because we don't need the prev frame to be completed before writing
-    // We create a sort of double buffer
-    LavaBuffer GlobalUniformBuffer
-        { Device
-        , sizeof(UniformBuffer)
-        , LavaSwapChain::MAX_FRAMES_IN_FLIGHT
-        , VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT
-        , VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT
-        , Device.properties.limits.minUniformBufferOffsetAlignment };
-
-    GlobalUniformBuffer.map();
+        UBOBuffers[i]->map();
+    }
 
     RenderSystem RS{Device, Renderer.GetSwapChainRenderPass()};
     LavaCamera Camera{};
@@ -92,8 +91,8 @@ void Application::Run()
             // Update objects and memory
             UniformBuffer UBO{};
             UBO.ProjectionMatrix = Camera.GetProjectionMat() * Camera.GetViewMat();
-            GlobalUniformBuffer.writeToIndex(&UBO, FrameIdx);
-            GlobalUniformBuffer.flushIndex(FrameIdx);
+            UBOBuffers[FrameIdx]->writeToBuffer(&UBO);
+            UBOBuffers[FrameIdx]->flush();
 
             // Drawing
             Renderer.StartSwapChainRenderPass(CommandBuffer);
