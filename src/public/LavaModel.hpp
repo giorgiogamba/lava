@@ -85,8 +85,8 @@ public:
 
     static std::unique_ptr<LavaModel> CreateModelFromFile(LavaDevice& Device, const std::string& Filepath);
     
-    void Bind(VkCommandBuffer& CommandBuffer);
-    void Draw(VkCommandBuffer& CommandBuffer);
+    void Bind(const VkCommandBuffer& CommandBuffer);
+    void Draw(const VkCommandBuffer& CommandBuffer);
     
 private:
     

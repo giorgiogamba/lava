@@ -168,7 +168,7 @@ std::unique_ptr<LavaModel> LavaModel::CreateModelFromFile(LavaDevice& Device, co
     return std::make_unique<LavaModel>(Device, ModelBuilder);
 }
 
-void LavaModel::Bind(VkCommandBuffer& CommandBuffer)
+void LavaModel::Bind(const VkCommandBuffer& CommandBuffer)
 {
     VkBuffer Buffers[] = {VertexBuffer->getBuffer()};
     VkDeviceSize Offsets[] = {0};
@@ -181,7 +181,7 @@ void LavaModel::Bind(VkCommandBuffer& CommandBuffer)
     }
 }
 
-void LavaModel::Draw(VkCommandBuffer& CommandBuffer)
+void LavaModel::Draw(const VkCommandBuffer& CommandBuffer)
 {
     if (bHasIndexBuffer)
     {
