@@ -39,7 +39,8 @@ LavaDescriptorSetLayout::LavaDescriptorSetLayout(LavaDevice &Device, std::unorde
     , bindings{bindings}
 {
     std::vector<VkDescriptorSetLayoutBinding> setLayoutBindings{};
-    for (auto kv : bindings) {
+    for (auto kv : bindings)
+    {
         setLayoutBindings.push_back(kv.second);
     }
 
@@ -48,11 +49,7 @@ LavaDescriptorSetLayout::LavaDescriptorSetLayout(LavaDevice &Device, std::unorde
     descriptorSetLayoutInfo.bindingCount = static_cast<uint32_t>(setLayoutBindings.size());
     descriptorSetLayoutInfo.pBindings = setLayoutBindings.data();
 
-    if (vkCreateDescriptorSetLayout(
-        Device.device(),
-        &descriptorSetLayoutInfo,
-        nullptr,
-        &descriptorSetLayout) != VK_SUCCESS)
+    if (vkCreateDescriptorSetLayout(Device.device(), &descriptorSetLayoutInfo, nullptr, &descriptorSetLayout) != VK_SUCCESS)
     {
         throw std::runtime_error("failed to create descriptor set layout!");
     }
@@ -112,11 +109,9 @@ bool LavaDescriptorPool::allocateDescriptor(const VkDescriptorSetLayout descript
     VkDescriptorSetAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
     allocInfo.descriptorPool = descriptorPool;
-    allocInfo.pSetLayouts = &descriptorSetLayout;
+    allocInfo.pSetLayouts = &descriptorSetLayout; // tells how many and what type of sets
     allocInfo.descriptorSetCount = 1;
 
-    // Might want to create a "DescriptorPoolManager" class that handles this case, and builds
-    // a new pool whenever an old pool fills up. But this is beyond our current scope
     if (vkAllocateDescriptorSets(Device.device(), &allocInfo, &descriptor) != VK_SUCCESS)
     {
         return false;
@@ -183,7 +178,8 @@ LavaDescriptorWriter& LavaDescriptorWriter::writeImage(uint32_t binding, VkDescr
 bool LavaDescriptorWriter::build(VkDescriptorSet &set)
 {
     bool success = pool.allocateDescriptor(setLayout.getDescriptorSetLayout(), set);
-    if (!success) {
+    if (!success)
+    {
         return false;
     }
 
