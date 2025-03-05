@@ -116,7 +116,10 @@ public:
     LavaDescriptorWriter& writeBuffer(uint32_t binding, VkDescriptorBufferInfo *bufferInfo);
     LavaDescriptorWriter& writeImage(uint32_t binding, VkDescriptorImageInfo *imageInfo);
 
+    /** Allocates descriptors set and overwrites the already allocated once in the pipeline */
     bool build(VkDescriptorSet &set);
+
+    /** Call if you already built the set */
     void overwrite(VkDescriptorSet &set);
 
 private:
