@@ -52,7 +52,12 @@ namespace lava
     VkResult LavaBuffer::map(VkDeviceSize size, VkDeviceSize offset)
     {
         assert(buffer && memory && "Called map on buffer before create");
-     return vkMapMemory(Device.device(), memory, offset, size, 0, &mapped);
+        
+        const bool bWholeSize = size == VK_WHOLE_SIZE;
+        const VkDeviceSize& CurrentSize = bWholeSize ? bufferSize : size;
+        const VkDeviceSize& CurrentOffset = bWholeSize ? 0 : offset;
+
+        return vkMapMemory(Device.device(), memory, CurrentOffset, CurrentSize, 0, &mapped);
     }
 
     void LavaBuffer::unmap()
