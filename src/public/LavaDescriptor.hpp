@@ -14,17 +14,20 @@
 
 namespace lava {
 
+/** Defines how pipeline accept descriptors for rendering */
 class LavaDescriptorSetLayout {
 
 public:
     
+    /** Convenience class to build DescriptorSetLayout */
     class Builder {
     
     public:
         
         Builder(LavaDevice &Device) : Device{Device} {}
     
-        Builder &addBinding(uint32_t binding, VkDescriptorType descriptorType, VkShaderStageFlags stageFlags, uint32_t count = 1);
+        /** Returns reference to itself in order to chain multiple invokations fo this method, and then call build */
+        Builder& addBinding(uint32_t binding, VkDescriptorType descriptorType, VkShaderStageFlags stageFlags, uint32_t count = 1);
         
         std::unique_ptr<LavaDescriptorSetLayout> build() const;
     
@@ -56,14 +59,17 @@ class LavaDescriptorPool {
 
 public:
 
+    /** Convenience class for faster LavaDescriptorPool build */
     class Builder {
     
     public:
+        
         Builder(LavaDevice &InDevice) : Device{InDevice} {}
 
-        Builder &addPoolSize(VkDescriptorType descriptorType, uint32_t count);
-        Builder &setPoolFlags(VkDescriptorPoolCreateFlags flags);
-        Builder &setMaxSets(uint32_t count);
+        /** Return reference to itself in order to chain multiple calls and the build */
+        Builder& addPoolSize(VkDescriptorType descriptorType, uint32_t count);
+        Builder& setPoolFlags(VkDescriptorPoolCreateFlags flags);
+        Builder& setMaxSets(uint32_t count);
         
         std::unique_ptr<LavaDescriptorPool> build() const;
 
@@ -73,8 +79,10 @@ public:
         
         std::vector<VkDescriptorPoolSize> poolSizes{};
         
+        /** Max number of elements that can be added to the pool */
         uint32_t maxSets = 1000;
         
+        /** Defines behaviour of the pool */
         VkDescriptorPoolCreateFlags poolFlags = 0;
     };
 
@@ -91,27 +99,30 @@ public:
     void resetPool();
 
 private:
+
     LavaDevice& Device;
     VkDescriptorPool descriptorPool;
 
     friend class LavaDescriptorWriter;
 };
 
+/** Ease descriptors objects creation */
 class LavaDescriptorWriter {
 
 public:
+
     LavaDescriptorWriter(LavaDescriptorSetLayout &setLayout, LavaDescriptorPool &pool);
 
-    LavaDescriptorWriter &writeBuffer(uint32_t binding, VkDescriptorBufferInfo *bufferInfo);
-    LavaDescriptorWriter &writeImage(uint32_t binding, VkDescriptorImageInfo *imageInfo);
+    LavaDescriptorWriter& writeBuffer(uint32_t binding, VkDescriptorBufferInfo *bufferInfo);
+    LavaDescriptorWriter& writeImage(uint32_t binding, VkDescriptorImageInfo *imageInfo);
 
     bool build(VkDescriptorSet &set);
     void overwrite(VkDescriptorSet &set);
 
 private:
 
-    LavaDescriptorSetLayout &setLayout;
-    LavaDescriptorPool &pool;
+    LavaDescriptorSetLayout& setLayout;
+    LavaDescriptorPool& pool;
     std::vector<VkWriteDescriptorSet> writes;
 };
 
