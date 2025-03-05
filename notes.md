@@ -74,4 +74,4 @@ Normals computation influences the way the objects are rendered:
 Uniform Buffers
 Uniform buffers are based on minium offset alignment -> supposed is i set to a certain number, we will need the uniform buffer to be of size equal to a multiple of it
 
-
+Non-coherent-Atom-size: smallest memory range the device allows when syncing between host and device memory -> when executing flushIndex we get an error because of misalignment
