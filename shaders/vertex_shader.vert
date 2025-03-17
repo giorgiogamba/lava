@@ -24,7 +24,7 @@ layout(location = 0) out vec3 fragmentColor; // Also if again of location 0, the
 
 layout(push_constant) uniform PushConstant
 {
-    mat4 transform;
+    mat4 modelMatrix;
     mat4 normalMatrix;
 } pushConstants;
 
@@ -45,7 +45,7 @@ void main()
     // pushConstants.transform * position means that, given triangle defined in a "general way"(normalized, model space)
     // it receives a transform applied on it in the world space
     
-    gl_Position = pushConstants.transform * vec4(position, 1.0);
+    gl_Position = ubo.projectionViewMatrix * pushConstants.modelMatrix * vec4(position, 1.0);
     
     // Conversion to mat3 deletes row4 and col4. Not generally correct implementastion
     vec3 normalWorldSpace = normalize(mat3(pushConstants.normalMatrix) * normal);

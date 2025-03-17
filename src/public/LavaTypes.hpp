@@ -169,7 +169,7 @@ struct PushConstant2DData
 
 struct PushConstant3DData
 {
-    glm::mat4 transform{1.f};
+    glm::mat4 ModelMatrix{1.f};
     
     // We align the field becuase of the requirement made by Push Constants, which need to define
     // multiples of N in size 2 (N, 2N, 4N, ...). In case of colors, they must be in 4N, which means
