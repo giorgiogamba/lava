@@ -15,8 +15,15 @@ layout(location = 0) in vec3 position;
 layout(location = 1) in vec3 color;
 
 layout(location = 2) in vec3 normal;
-
+ 
 layout(location = 3) in vec2 uv;
+
+// Matches with descriptor set layout
+layout (set = 0, binding = 0) uniform GlobalUniformBuffer
+{
+    mat4 projectionViewMatrix;
+    vec3 directionToLight;
+} ubo;
 
 // Output data
 
@@ -27,10 +34,6 @@ layout(push_constant) uniform PushConstant
     mat4 modelMatrix;
     mat4 normalMatrix;
 } pushConstants;
-
-// DIRECT LIGHTNING SIMULATION
-// Each vertex is hit by the same raylight. Simulates a light that is infinitely far away, like the sun, and parallel
-const vec3 DIRECTION_TO_LIGHT = normalize(vec3(1.0, -3.0, -1.0));
 
 // INDIRECT LIGHTNING SIMULATION (AMBIENT)
 const float AMBIENT_INTENSITY = 0.02;
@@ -51,7 +54,7 @@ void main()
     vec3 normalWorldSpace = normalize(mat3(pushConstants.normalMatrix) * normal);
 
     // Minimized to 0 in case vector is not facing light
-    float lightIntensity = max(dot(normalWorldSpace, DIRECTION_TO_LIGHT), 0);
+    float lightIntensity = max(dot(normalWorldSpace, ubo.directionToLight ), 0);
 
     // Not used with push constants
     const float totalLightIntensity = AMBIENT_INTENSITY + lightIntensity;
