@@ -48,7 +48,20 @@ void Application::Run()
         UBOBuffers[i]->map();
     }
 
-    RenderSystem RS{Device, Renderer.GetSwapChainRenderPass()};
+    auto GlobalSetLayout = LavaDescriptorSetLayout::Builder(Device)
+        .addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT)
+        .build();
+
+    std::vector<VkDescriptorSet> GlobalDescriptorSets(LavaSwapChain::MAX_FRAMES_IN_FLIGHT);
+    for (int i = 0; i < GlobalDescriptorSets.size(); ++i)
+    {
+        auto BufferInfo = UBOBuffers[i]->descriptorInfo();
+        LavaDescriptorWriter(*GlobalSetLayout, *GlobalPool)
+            .writeBuffer(0,  &BufferInfo)
+            .build(GlobalDescriptorSets[i]);
+    }
+
+    RenderSystem RS{Device, Renderer.GetSwapChainRenderPass(), GlobalSetLayout->getDescriptorSetLayout()};
     LavaCamera Camera{};
     
     Camera.SetViewDirection(glm::vec3(0.f), glm::vec3(0.5f, 0.f, 1.f));

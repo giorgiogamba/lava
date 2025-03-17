@@ -19,10 +19,10 @@ namespace lava {
 
 #pragma region Lifecycle
 
-RenderSystem::RenderSystem(LavaDevice& InDevice, VkRenderPass InRenderPass)
+RenderSystem::RenderSystem(LavaDevice& InDevice, VkRenderPass InRenderPass, VkDescriptorSetLayout GlobalSetLayout)
 : Device(InDevice)
 {
-    CreatePipelineLayout();
+    CreatePipelineLayout(GlobalSetLayout);
     CreatePipeline(InRenderPass);
 }
 
@@ -35,17 +35,19 @@ RenderSystem::~RenderSystem()
 
 #pragma region Pipeline
 
-void RenderSystem::CreatePipelineLayout()
+void RenderSystem::CreatePipelineLayout(VkDescriptorSetLayout GlobalSetLayout)
 {
     VkPushConstantRange PushConstantRange{};
     PushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
     PushConstantRange.offset = 0;
     PushConstantRange.size = sizeof(PushConstantRange);
+
+    std::vector<VkDescriptorSetLayout> DescriptorSetLayouts{GlobalSetLayout};
     
     VkPipelineLayoutCreateInfo PipelineLayoutInfo{};
     PipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-    PipelineLayoutInfo.setLayoutCount = 0;
-    PipelineLayoutInfo.pSetLayouts = nullptr;
+    PipelineLayoutInfo.setLayoutCount = static_cast<uint32_t>(DescriptorSetLayouts.size());
+    PipelineLayoutInfo.pSetLayouts = DescriptorSetLayouts.data();
     PipelineLayoutInfo.pushConstantRangeCount = 1;
     PipelineLayoutInfo.pPushConstantRanges = &PushConstantRange;
     
