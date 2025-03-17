@@ -26,6 +26,13 @@ namespace lava {
 
 Application::Application()
 {
+    GlobalPool = LavaDescriptorPool::Builder(Device)
+        .setMaxSets(LavaSwapChain::MAX_FRAMES_IN_FLIGHT)
+        // Cannot repeat the operation by adding another uniform buffer because they are enough, 
+        // but other types can be added. It is possible to add max 2 sets at a time
+        .addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, LavaSwapChain::MAX_FRAMES_IN_FLIGHT)
+        .build();
+
     LoadGameObjects();
 }
 
