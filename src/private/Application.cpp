@@ -86,7 +86,7 @@ void Application::Run()
         {
             const int FrameIdx = Renderer.GetFrameIdx();
 
-            FrameDescriptor FrameDesc{FrameIdx, DeltaTime, CommandBuffer, Camera};
+            FrameDescriptor FrameDesc{FrameIdx, DeltaTime, CommandBuffer, Camera, GlobalDescriptorSets[FrameIdx]};
 
             // Update objects and memory
             UniformBuffer UBO{};

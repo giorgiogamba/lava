@@ -202,6 +202,7 @@ struct FrameDescriptor
     float FrameTimeInS;
     VkCommandBuffer CommandBuffer;
     LavaCamera& Camera;
+    VkDescriptorSet GlobalDescriptorSet;
 };
 
 }
