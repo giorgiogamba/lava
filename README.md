@@ -1,5 +1,20 @@
 # lava
-A Vulkan render engine
+A Vulkan render engine.
+
+## Scope
+The aim of this project is to build a system that permits the used to load 3D objects from .obj files and place them inside the World Space. The use will also be able to change the models transforms and navigate inside the space to inspect the objects. 
+
+---
+# Build and Run
+1. Install Vulkan SDK:
+
+2. Setup `enviroment` file by adding your locations
+3. ```$ cd lava && make && ./a.out```
+
+## Future Developments
+There are many possible improvements that could be made to enhance the project:
+1. Create a simple GUI for easier user's interaction with objects or add information about the general project setup
+2. Add collisions detection
 
 ---
 # Resources
@@ -7,23 +22,6 @@ A Vulkan render engine
 Project setup: https://vulkan-tutorial.com/Development_environment#page_MacOS
 
 ---
-# Progresses
-## First milestone achieved: drawn a red triangle.
-![Screenshot 2025-01-03 alle 10 57 58](https://github.com/user-attachments/assets/c84dc548-9182-4324-888f-97ccf2b0422e)
-
-In order to achieve this result, we needed to define all the basic Vulkan configuration in order to draw something on screen, like the implementations for SwapChain, Pipeline and Command Buffers
-
-## Second milestone reached
-Draw a triangle based on fragment interpolation
-![Screenshot 2025-01-07 alle 21 10 55](https://github.com/user-attachments/assets/86f8a6dd-f550-4ca9-b06f-0397838a1589)
-
-## New step achieved
-Finally I developed push constants for multiple objects efficient draw. Here's the result
-![Screenshot 2025-01-09 alle 16 24 02](https://github.com/user-attachments/assets/2fb756bb-8fad-4ed6-9b58-15efcc700991)
-
-## New milestone achieved
-Finally able to render 3D objects:
-
+# Current Progress
+Here's an example of an animated rendering:
 https://github.com/user-attachments/assets/6d137dd6-0a12-4ec0-b1c0-8f27ca9da831
-
-
