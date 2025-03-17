@@ -17,6 +17,7 @@
 #include "LavaPipeline.hpp"
 #include "LavaRenderer.hpp"
 #include "LavaGameObject.hpp"
+#include "LavaDescriptor.hpp"
 
 namespace lava {
 
@@ -75,8 +76,11 @@ private:
 private:
     
     void LoadGameObjects();
-    
+
     std::vector<LavaGameObject> GameObjects;
+
+    // Since members are deallocated in bottom-up order, it is important to add GlobalPool after Device
+    std::unique_ptr<LavaDescriptorPool> GlobalPool{};
     
 #pragma endregion
     

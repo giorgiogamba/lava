@@ -34,7 +34,7 @@ class RenderSystem
     
 public:
     
-    RenderSystem(LavaDevice& InDevice, VkRenderPass InRenderPass);
+    RenderSystem(LavaDevice& InDevice, VkRenderPass InRenderPass, VkDescriptorSetLayout GlobalSetLayout);
     ~RenderSystem();
     
     RenderSystem(const RenderSystem&) = delete;
@@ -62,7 +62,7 @@ public:
     
 private:
     
-    void CreatePipelineLayout();
+    void CreatePipelineLayout(VkDescriptorSetLayout GlobalSetLayout);
     
     void CreatePipeline(VkRenderPass& RenderPass);
     

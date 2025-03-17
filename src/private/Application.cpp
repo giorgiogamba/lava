@@ -26,6 +26,13 @@ namespace lava {
 
 Application::Application()
 {
+    GlobalPool = LavaDescriptorPool::Builder(Device)
+        .setMaxSets(LavaSwapChain::MAX_FRAMES_IN_FLIGHT)
+        // Cannot repeat the operation by adding another uniform buffer because they are enough, 
+        // but other types can be added. It is possible to add max 2 sets at a time
+        .addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, LavaSwapChain::MAX_FRAMES_IN_FLIGHT)
+        .build();
+
     LoadGameObjects();
 }
 
@@ -48,7 +55,20 @@ void Application::Run()
         UBOBuffers[i]->map();
     }
 
-    RenderSystem RS{Device, Renderer.GetSwapChainRenderPass()};
+    auto GlobalSetLayout = LavaDescriptorSetLayout::Builder(Device)
+        .addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT)
+        .build();
+
+    std::vector<VkDescriptorSet> GlobalDescriptorSets(LavaSwapChain::MAX_FRAMES_IN_FLIGHT);
+    for (int i = 0; i < GlobalDescriptorSets.size(); ++i)
+    {
+        auto BufferInfo = UBOBuffers[i]->descriptorInfo();
+        LavaDescriptorWriter(*GlobalSetLayout, *GlobalPool)
+            .writeBuffer(0,  &BufferInfo)
+            .build(GlobalDescriptorSets[i]);
+    }
+
+    RenderSystem RS{Device, Renderer.GetSwapChainRenderPass(), GlobalSetLayout->getDescriptorSetLayout()};
     LavaCamera Camera{};
     
     Camera.SetViewDirection(glm::vec3(0.f), glm::vec3(0.5f, 0.f, 1.f));
@@ -86,7 +106,7 @@ void Application::Run()
         {
             const int FrameIdx = Renderer.GetFrameIdx();
 
-            FrameDescriptor FrameDesc{FrameIdx, DeltaTime, CommandBuffer, Camera};
+            FrameDescriptor FrameDesc{FrameIdx, DeltaTime, CommandBuffer, Camera, GlobalDescriptorSets[FrameIdx]};
 
             // Update objects and memory
             UniformBuffer UBO{};

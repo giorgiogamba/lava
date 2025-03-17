@@ -19,10 +19,10 @@ namespace lava {
 
 #pragma region Lifecycle
 
-RenderSystem::RenderSystem(LavaDevice& InDevice, VkRenderPass InRenderPass)
+RenderSystem::RenderSystem(LavaDevice& InDevice, VkRenderPass InRenderPass, VkDescriptorSetLayout GlobalSetLayout)
 : Device(InDevice)
 {
-    CreatePipelineLayout();
+    CreatePipelineLayout(GlobalSetLayout);
     CreatePipeline(InRenderPass);
 }
 
@@ -35,17 +35,19 @@ RenderSystem::~RenderSystem()
 
 #pragma region Pipeline
 
-void RenderSystem::CreatePipelineLayout()
+void RenderSystem::CreatePipelineLayout(VkDescriptorSetLayout GlobalSetLayout)
 {
     VkPushConstantRange PushConstantRange{};
     PushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
     PushConstantRange.offset = 0;
     PushConstantRange.size = sizeof(PushConstantRange);
+
+    std::vector<VkDescriptorSetLayout> DescriptorSetLayouts{GlobalSetLayout};
     
     VkPipelineLayoutCreateInfo PipelineLayoutInfo{};
     PipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-    PipelineLayoutInfo.setLayoutCount = 0;
-    PipelineLayoutInfo.pSetLayouts = nullptr;
+    PipelineLayoutInfo.setLayoutCount = static_cast<uint32_t>(DescriptorSetLayouts.size());
+    PipelineLayoutInfo.pSetLayouts = DescriptorSetLayouts.data();
     PipelineLayoutInfo.pushConstantRangeCount = 1;
     PipelineLayoutInfo.pPushConstantRanges = &PushConstantRange;
     
@@ -79,20 +81,24 @@ void RenderSystem::CreatePipeline(VkRenderPass& RenderPass)
 void RenderSystem::RenderGameObjects(const FrameDescriptor& FrameDesc, std::vector<LavaGameObject>& GameObjects)
 {
     Pipeline->Bind(FrameDesc.CommandBuffer);
-    
-    auto ProjectionView = FrameDesc.Camera.GetProjectionMat() * FrameDesc.Camera.GetViewMat();
+
+    // At each frame we can bind multiple sets at time, but you must point the starting set
+    // also if you are adding a set in previous positions
+    vkCmdBindDescriptorSets
+        ( FrameDesc.CommandBuffer
+        , VK_PIPELINE_BIND_POINT_GRAPHICS
+        , PipelineLayout
+        , 0
+        , 1
+        , &FrameDesc.GlobalDescriptorSet
+        , 0
+        , nullptr);
     
     for (LavaGameObject& GameObject : GameObjects)
     {
-        PushConstant3DData PushConstant{};
-        //PushConstant.color = GameObject.GetColor();
-        
-        glm::mat4 modelMatrix = GameObject.Transform.mat4();
-        PushConstant.transform = ProjectionView * modelMatrix;
+        PushConstant3DData PushConstant{};       
+        PushConstant.ModelMatrix = GameObject.Transform.mat4();
         PushConstant.normalMatrix = GameObject.Transform.normalMatrix(); // Automatically padded to 4x4 matrix
-
-        // Applies perspective
-        PushConstant.transform = ProjectionView * GameObject.Transform.mat4();
         
         vkCmdPushConstants(FrameDesc.CommandBuffer, PipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant3DData), &PushConstant);
         

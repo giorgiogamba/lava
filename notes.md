@@ -75,3 +75,20 @@ Uniform Buffers
 Uniform buffers are based on minium offset alignment -> supposed is i set to a certain number, we will need the uniform buffer to be of size equal to a multiple of it
 
 Non-coherent-Atom-size: smallest memory range the device allows when syncing between host and device memory -> when executing flushIndex we get an error because of misalignment
+
+Descriptor Sets: Pointer to a resource
+E.g.: Image Descriptors: pointer to image and sampler
+
+They store additional data to describe the resource
+
+Vulkan has the advantage, respect to other pipelines, that descriptors must be must be contained inside a sets, based on their binding frequency, before sending to the pipeline for performance reasons
+
+e.g. Camera and perspective matrix are in the same set
+
+Once we bound a descriptor set, we can keep it bound in order to reuse it if resources remain the same
+
+ONLY 4 MAX DESCRIPTOR SETS
+
+The descriptor layout defines how the pipeline must receive descriptor sets, and it is priorly defined
+
+We can define a descriptor pools that contains all sets (used or not) and then bind them at runtime when needed
