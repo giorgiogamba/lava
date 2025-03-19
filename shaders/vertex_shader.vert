@@ -30,6 +30,8 @@ layout (set = 0, binding = 0) uniform GlobalUniformBuffer
 // Output data
 
 layout(location = 0) out vec3 fragmentColor; // Also if again of location 0, there's no overlap between in and out variables
+layout(location = 1) out vec3 fragmentWorldPos; 
+layout(location = 2) out vec3 fragmentWorldNormal; 
 
 layout(push_constant) uniform PushConstant
 {
@@ -52,19 +54,8 @@ void main()
     gl_Position = ubo.projectionViewMatrix * positionInWorldSpace;
     
     // Conversion to mat3 deletes row4 and col4. Not generally correct implementastion
-    vec3 normalWorldSpace = normalize(mat3(pushConstants.normalMatrix) * normal);
+    fragmentWorldNormal = normalize(mat3(pushConstants.normalMatrix) * normal);
 
-    vec3 directionToLight = ubo.pointLightPos - positionInWorldSpace.xyz; // do not consider w
-
-    // The dot prod of a vector for itself is an efficient way to compute the vetor squared
-    // Attenutation to be computed before the normalization vector
-    float attentuationFactor = 1.0 / dot(directionToLight, directionToLight);
-
-    // Scale lights for their intesity
-    vec3 lightColor = ubo.pointLightCol.xyz * ubo.pointLightCol.w;
-    vec3 ambientLight = ubo.ambientLightCol.xyz * ubo.ambientLightCol.w;
-
-    vec3 diffuseLight = lightColor * max(dot(normalWorldSpace, normalize(directionToLight)), 0);
-
-    fragmentColor = (diffuseLight * ambientLight) * color;
+    fragmentWorldPos = positionInWorldSpace.xyz;
+    fragmentColor = color;
 }
