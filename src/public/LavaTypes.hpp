@@ -186,7 +186,15 @@ struct PushConstant3DData
 struct UniformBuffer
 {
     glm::mat4 ProjectionMatrix{1.f};
-    glm::vec3 LightDirection = glm::normalize(glm::vec3{1.f, -3.f, -1.f});
+    
+    glm::vec4 AmbientLightCol{1.f, 1.f, 1.f, 0.2f}; // w is intensity
+
+    // Since vec3 and vec4 need to be aligned respect to 16 bytes, 
+    // we need to add a padding or use aligned as
+
+    // Point Light Definition
+    glm::vec3 PointLightPos{-1.f};
+    alignas(16) glm::vec4 PointLightCol{1.f}; // w coord contains light intensity
 };
 
 #pragma endregion

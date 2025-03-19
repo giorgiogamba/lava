@@ -22,7 +22,9 @@ layout(location = 3) in vec2 uv;
 layout (set = 0, binding = 0) uniform GlobalUniformBuffer
 {
     mat4 projectionViewMatrix;
-    vec3 directionToLight;
+    vec4 ambientLightCol; // w is intensity
+    vec3 pointLightPos;
+    vec4 pointLightCol; // w is intensity
 } ubo;
 
 // Output data
@@ -35,9 +37,6 @@ layout(push_constant) uniform PushConstant
     mat4 normalMatrix;
 } pushConstants;
 
-// INDIRECT LIGHTNING SIMULATION (AMBIENT)
-const float AMBIENT_INTENSITY = 0.02;
-
 // Executed for each vertex
 // Receives input from input assembler
 void main()
@@ -47,16 +46,25 @@ void main()
     // "position" is the position of the vertex received in the shader
     // pushConstants.transform * position means that, given triangle defined in a "general way"(normalized, model space)
     // it receives a transform applied on it in the world space
+
+    vec4 positionInWorldSpace = pushConstants.modelMatrix * vec4(position, 1.0);
     
-    gl_Position = ubo.projectionViewMatrix * pushConstants.modelMatrix * vec4(position, 1.0);
+    gl_Position = ubo.projectionViewMatrix * positionInWorldSpace;
     
     // Conversion to mat3 deletes row4 and col4. Not generally correct implementastion
     vec3 normalWorldSpace = normalize(mat3(pushConstants.normalMatrix) * normal);
 
-    // Minimized to 0 in case vector is not facing light
-    float lightIntensity = max(dot(normalWorldSpace, ubo.directionToLight ), 0);
+    vec3 directionToLight = ubo.pointLightPos - positionInWorldSpace.xyz; // do not consider w
 
-    // Not used with push constants
-    const float totalLightIntensity = AMBIENT_INTENSITY + lightIntensity;
-    fragmentColor = totalLightIntensity * color;
+    // The dot prod of a vector for itself is an efficient way to compute the vetor squared
+    // Attenutation to be computed before the normalization vector
+    float attentuationFactor = 1.0 / dot(directionToLight, directionToLight);
+
+    // Scale lights for their intesity
+    vec3 lightColor = ubo.pointLightCol.xyz * ubo.pointLightCol.w;
+    vec3 ambientLight = ubo.ambientLightCol.xyz * ubo.ambientLightCol.w;
+
+    vec3 diffuseLight = lightColor * max(dot(normalWorldSpace, normalize(directionToLight)), 0);
+
+    fragmentColor = (diffuseLight * ambientLight) * color;
 }
