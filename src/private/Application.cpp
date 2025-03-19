@@ -102,7 +102,7 @@ void Application::Run()
         // We compute projection at every frame so that the view volume aspect ratio is always updated with the window
         const float aspectRatio = Renderer.GetAspectRatio();
         //Camera.SetOrthoProjection(-aspectRatio, aspectRatio, -1.f, 1.f, -1.f, 1.f);
-        Camera.SetPerspectiveProjection(glm::radians(50.f), aspectRatio, 0.1f, 10.f);
+        Camera.SetPerspectiveProjection(glm::radians(50.f), aspectRatio, 0.1f, 1000.f);
         
         if (auto CommandBuffer = Renderer.StartDrawFrame())
         {
