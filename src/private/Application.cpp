@@ -140,10 +140,20 @@ void Application::LoadGameObjects()
     // Vulkan Canonical View Volume: X(-1, 1) Y(-1, 1) Z(0, 1)
     // where +X is to the right, +Y is to the botton and +Z is in the opposite way respect to the user
     // We translate the cube to the middle of the canonical view volume so that it is not cut by scissors when rotating
-    GameObject.Transform.Translation = {.0f, .0f, 2.5f};
+    GameObject.Transform.Translation = {.0f, .0f, 0.f};
     GameObject.Transform.Scale = {.5f, .5f, .5f};
     
     GameObjects.push_back(std::move(GameObject));
+
+
+    // Floor object
+    const std::filesystem::path FloorModelPath = std::filesystem::absolute("models/quad.obj");
+    const std::shared_ptr<LavaModel> FloorModel = LavaModel::CreateModelFromFile(Device, FloorModelPath);
+    LavaGameObject FloorGameObject = LavaGameObject::CreateGameObject();
+    FloorGameObject.SetModel(FloorModel);
+    FloorGameObject.Transform.Translation = {0.5f, 0.5f, 0.f};
+    FloorGameObject.Transform.Scale = {3.f, 1.5f, 3.f};
+    GameObjects.push_back(std::move(FloorGameObject));
 }
 
 #pragma endregion
