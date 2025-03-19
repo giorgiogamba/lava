@@ -92,3 +92,9 @@ ONLY 4 MAX DESCRIPTOR SETS
 The descriptor layout defines how the pipeline must receive descriptor sets, and it is priorly defined
 
 We can define a descriptor pools that contains all sets (used or not) and then bind them at runtime when needed
+
+Point Lights:
+Rays are starting from a single point, thus the resulting angles hitting object's surface will be different depending on the point where the hit happens. Intensity is attenuated through the inverse square law, composed in the denominator as (constant + linear * distance + quadratic * distanceˆ2)
+
+Fragment shading:
+we want to execute shading on fragments instead of vertices because with vertices and big objects, like for example the floor, the shading is executed on vertices and thus the rest of the mesh is interpolated, resulting in a wrong lighting. Fragment shading is expensive but we can afford it.

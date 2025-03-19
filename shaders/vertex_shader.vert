@@ -22,21 +22,22 @@ layout(location = 3) in vec2 uv;
 layout (set = 0, binding = 0) uniform GlobalUniformBuffer
 {
     mat4 projectionViewMatrix;
-    vec3 directionToLight;
+    vec4 ambientLightCol; // w is intensity
+    vec3 pointLightPos;
+    vec4 pointLightCol; // w is intensity
 } ubo;
 
 // Output data
 
 layout(location = 0) out vec3 fragmentColor; // Also if again of location 0, there's no overlap between in and out variables
+layout(location = 1) out vec3 fragmentWorldPos; 
+layout(location = 2) out vec3 fragmentWorldNormal; 
 
 layout(push_constant) uniform PushConstant
 {
     mat4 modelMatrix;
     mat4 normalMatrix;
 } pushConstants;
-
-// INDIRECT LIGHTNING SIMULATION (AMBIENT)
-const float AMBIENT_INTENSITY = 0.02;
 
 // Executed for each vertex
 // Receives input from input assembler
@@ -47,16 +48,14 @@ void main()
     // "position" is the position of the vertex received in the shader
     // pushConstants.transform * position means that, given triangle defined in a "general way"(normalized, model space)
     // it receives a transform applied on it in the world space
+
+    vec4 positionInWorldSpace = pushConstants.modelMatrix * vec4(position, 1.0);
     
-    gl_Position = ubo.projectionViewMatrix * pushConstants.modelMatrix * vec4(position, 1.0);
+    gl_Position = ubo.projectionViewMatrix * positionInWorldSpace;
     
     // Conversion to mat3 deletes row4 and col4. Not generally correct implementastion
-    vec3 normalWorldSpace = normalize(mat3(pushConstants.normalMatrix) * normal);
+    fragmentWorldNormal = normalize(mat3(pushConstants.normalMatrix) * normal);
 
-    // Minimized to 0 in case vector is not facing light
-    float lightIntensity = max(dot(normalWorldSpace, ubo.directionToLight ), 0);
-
-    // Not used with push constants
-    const float totalLightIntensity = AMBIENT_INTENSITY + lightIntensity;
-    fragmentColor = totalLightIntensity * color;
+    fragmentWorldPos = positionInWorldSpace.xyz;
+    fragmentColor = color;
 }
