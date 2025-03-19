@@ -92,3 +92,8 @@ ONLY 4 MAX DESCRIPTOR SETS
 The descriptor layout defines how the pipeline must receive descriptor sets, and it is priorly defined
 
 We can define a descriptor pools that contains all sets (used or not) and then bind them at runtime when needed
+
+Point Lights:
+Rays are starting from a single point, thus the resulting angles hitting object's surface will be different depending on the point where the hit happens. Intensity is attenuated through the inverse square law, composed in the denominator as (constant + linear * distance + quadratic * distanceˆ2)
+
+
