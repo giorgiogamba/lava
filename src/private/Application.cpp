@@ -76,6 +76,8 @@ void Application::Run()
     
     // Saves camera sate
     LavaGameObject ViewerObject = LavaGameObject::CreateGameObject();
+
+    ViewerObject.Transform.Translation.z = -2.5f;
     
     KeyboardMovementController CameraController{};
     
