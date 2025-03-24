@@ -113,7 +113,8 @@ void Application::Run()
 
             // Update objects and memory
             UniformBuffer UBO{};
-            UBO.ProjectionMatrix = Camera.GetProjectionMat() * Camera.GetViewMat();
+            UBO.ProjectionMatrix = Camera.GetProjectionMat();
+            UBO.viewMatrix = Camera.GetViewMat();
             UBOBuffers[FrameIdx]->writeToBuffer(&UBO);
             UBOBuffers[FrameIdx]->flush();
 

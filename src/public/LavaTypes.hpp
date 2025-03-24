@@ -50,6 +50,7 @@ struct PushConstant3DData
 struct UniformBuffer
 {
     glm::mat4 ProjectionMatrix{1.f};
+    glm::mat4 viewMatrix{1.f};
     
     glm::vec4 AmbientLightCol{1.f, 1.f, 1.f, 0.2f}; // w is intensity
 
