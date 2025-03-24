@@ -98,3 +98,7 @@ Rays are starting from a single point, thus the resulting angles hitting object'
 
 Fragment shading:
 we want to execute shading on fragments instead of vertices because with vertices and big objects, like for example the floor, the shading is executed on vertices and thus the rest of the mesh is interpolated, resulting in a wrong lighting. Fragment shading is expensive but we can afford it.
+
+GIZMOS:
+2D objects always parallel to the view plane and in the foreground. One way to create them is to make their rotation dependent on the rotation of the camera. Otherwise, we could orient them to the viewport, and makes them dependent on rotation and position. The first approach works well for small symmetrical objects.
+Each vertex position will be calculated in a vertex shader. 
