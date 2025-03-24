@@ -11,8 +11,6 @@
 
 #include <unordered_map>
 
-#include "LavaTypes.hpp"
-
 #pragma region Transforms
 
 /**

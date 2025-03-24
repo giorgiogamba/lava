@@ -19,6 +19,7 @@
 #include "RenderSystem.hpp"
 #include "LavaCamera.hpp"
 #include "KeyboardMovementController.hpp"
+#include "LavaTypes.hpp"
 
 namespace lava {
 

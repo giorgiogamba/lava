@@ -24,6 +24,7 @@
 #include "LavaPipeline.hpp"
 #include "LavaGameObject.hpp"
 #include "LavaCamera.hpp"
+#include "LavaTypes.hpp"
 
 namespace lava {
 
