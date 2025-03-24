@@ -21,7 +21,8 @@ layout(location = 3) in vec2 uv;
 // Matches with descriptor set layout
 layout (set = 0, binding = 0) uniform GlobalUniformBuffer
 {
-    mat4 projectionViewMatrix;
+    mat4 projectionMatrix;
+    mat4 viewMatrix;
     vec4 ambientLightCol; // w is intensity
     vec3 pointLightPos;
     vec4 pointLightCol; // w is intensity
@@ -51,7 +52,7 @@ void main()
 
     vec4 positionInWorldSpace = pushConstants.modelMatrix * vec4(position, 1.0);
     
-    gl_Position = ubo.projectionViewMatrix * positionInWorldSpace;
+    gl_Position = ubo.projectionMatrix * ubo.viewMatrix * positionInWorldSpace;
     
     // Conversion to mat3 deletes row4 and col4. Not generally correct implementastion
     fragmentWorldNormal = normalize(mat3(pushConstants.normalMatrix) * normal);
