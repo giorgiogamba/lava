@@ -9,6 +9,8 @@
 
 #include "LavaModel.hpp"
 
+#include <unordered_map>
+
 #include "LavaTypes.hpp"
 
 #pragma region Transforms
@@ -158,6 +160,7 @@ class LavaGameObject
 public:
     
     using id_t = unsigned int;
+    using Objects = std::unordered_map<id_t, LavaGameObject>;
     
     static LavaGameObject CreateGameObject()
     {
