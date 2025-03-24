@@ -15,6 +15,7 @@
 #include <vulkan/vulkan.h>
 
 #include "LavaCamera.hpp"
+#include "LavaGameObject.hpp"
 
 #pragma region PushConstants
 
@@ -74,6 +75,7 @@ struct FrameDescriptor
     VkCommandBuffer CommandBuffer;
     LavaCamera& Camera;
     VkDescriptorSet GlobalDescriptorSet;
+    LavaGameObject::Objects& Objects;
 };
 
 }

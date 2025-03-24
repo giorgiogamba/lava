@@ -78,7 +78,7 @@ void RenderSystem::CreatePipeline(VkRenderPass& RenderPass)
 #pragma region GameObjects
 
 
-void RenderSystem::RenderGameObjects(const FrameDescriptor& FrameDesc, std::vector<LavaGameObject>& GameObjects)
+void RenderSystem::RenderGameObjects(const FrameDescriptor& FrameDesc)
 {
     Pipeline->Bind(FrameDesc.CommandBuffer);
 
@@ -94,15 +94,15 @@ void RenderSystem::RenderGameObjects(const FrameDescriptor& FrameDesc, std::vect
         , 0
         , nullptr);
     
-    for (LavaGameObject& GameObject : GameObjects)
+    for (auto& GameObject : FrameDesc.Objects)
     {
         PushConstant3DData PushConstant{};       
-        PushConstant.ModelMatrix = GameObject.Transform.mat4();
-        PushConstant.normalMatrix = GameObject.Transform.normalMatrix(); // Automatically padded to 4x4 matrix
+        PushConstant.ModelMatrix = GameObject.second.Transform.mat4();
+        PushConstant.normalMatrix = GameObject.second.Transform.normalMatrix(); // Automatically padded to 4x4 matrix
         
         vkCmdPushConstants(FrameDesc.CommandBuffer, PipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant3DData), &PushConstant);
         
-        const std::shared_ptr<LavaModel> Model = GameObject.GetModel();
+        const std::shared_ptr<LavaModel> Model = GameObject.second.GetModel();
         if (Model)
         {
             Model->Bind(FrameDesc.CommandBuffer);

@@ -166,8 +166,6 @@ public:
         return LavaGameObject{CurrentId++};
     }
     
-    // Remove copy operators
-    LavaGameObject(LavaGameObject&) = delete;
     LavaGameObject& operator=(LavaGameObject&) = delete;
     
     // Add move operators

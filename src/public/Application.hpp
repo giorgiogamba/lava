@@ -77,7 +77,7 @@ private:
     
     void LoadGameObjects();
 
-    std::vector<LavaGameObject> GameObjects;
+    LavaGameObject::Objects GameObjects;
 
     // Since members are deallocated in bottom-up order, it is important to add GlobalPool after Device
     std::unique_ptr<LavaDescriptorPool> GlobalPool{};
