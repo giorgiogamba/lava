@@ -19,6 +19,7 @@
 #include "RenderSystem.hpp"
 #include "LavaCamera.hpp"
 #include "KeyboardMovementController.hpp"
+#include "LavaTypes.hpp"
 
 namespace lava {
 
@@ -108,7 +109,7 @@ void Application::Run()
         {
             const int FrameIdx = Renderer.GetFrameIdx();
 
-            FrameDescriptor FrameDesc{FrameIdx, DeltaTime, CommandBuffer, Camera, GlobalDescriptorSets[FrameIdx]};
+            FrameDescriptor FrameDesc{FrameIdx, DeltaTime, CommandBuffer, Camera, GlobalDescriptorSets[FrameIdx], GameObjects};
 
             // Update objects and memory
             UniformBuffer UBO{};
@@ -118,7 +119,7 @@ void Application::Run()
 
             // Drawing
             Renderer.StartSwapChainRenderPass(CommandBuffer);
-            RS.RenderGameObjects(FrameDesc, GameObjects);
+            RS.RenderGameObjects(FrameDesc);
             Renderer.EndSwapChainRenderPass(CommandBuffer);
             Renderer.EndDrawFrame();
         }
@@ -145,7 +146,7 @@ void Application::LoadGameObjects()
     GameObject.Transform.Translation = {.0f, .0f, 0.f};
     GameObject.Transform.Scale = {.5f, .5f, .5f};
     
-    GameObjects.push_back(std::move(GameObject));
+    GameObjects.emplace(GameObject.GetId(), std::move(GameObject));
 
 
     // Floor object
@@ -155,7 +156,7 @@ void Application::LoadGameObjects()
     FloorGameObject.SetModel(FloorModel);
     FloorGameObject.Transform.Translation = {0.5f, 0.5f, 0.f};
     FloorGameObject.Transform.Scale = {3.f, 1.5f, 3.f};
-    GameObjects.push_back(std::move(FloorGameObject));
+    GameObjects.emplace(FloorGameObject.GetId(), std::move(FloorGameObject));
 }
 
 #pragma endregion

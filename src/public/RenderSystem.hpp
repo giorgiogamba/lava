@@ -24,6 +24,7 @@
 #include "LavaPipeline.hpp"
 #include "LavaGameObject.hpp"
 #include "LavaCamera.hpp"
+#include "LavaTypes.hpp"
 
 namespace lava {
 
@@ -54,7 +55,7 @@ private:
 public:
 
     // Camera passed in argument in order to be shared between various systems
-    void RenderGameObjects(const FrameDescriptor& FrameDesc, std::vector<LavaGameObject>& GameObjects);
+    void RenderGameObjects(const FrameDescriptor& FrameDesc);
     
 #pragma endregion
     
