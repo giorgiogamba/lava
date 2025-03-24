@@ -7,6 +7,11 @@
 
 #include "KeyboardMovementController.hpp"
 
+#define GLM_FORCE_RADIANS // expects angles to be defined in radians
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 namespace lava
 {
 
