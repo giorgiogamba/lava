@@ -41,3 +41,5 @@ vertex_shader.vert.spv
 fragment_shader.frag.spv
 
 lava/environment
+shaders/point_light_shader.vert.spv
+shaders/point_light_shader.frag.spv

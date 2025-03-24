@@ -18,7 +18,8 @@ layout(push_constant) uniform PushConstant
 // Matches with descriptor set layout
 layout (set = 0, binding = 0) uniform GlobalUniformBuffer
 {
-    mat4 projectionViewMatrix;
+    mat4 projectionMatrix;
+    mat4 viewMatrix;
     vec4 ambientLightCol; // w is intensity
     vec3 pointLightPos;
     vec4 pointLightCol; // w is intensity

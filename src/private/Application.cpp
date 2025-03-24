@@ -17,6 +17,7 @@
 #include <filesystem>
 
 #include "RenderSystem.hpp"
+#include "PointLightRenderSystem.hpp"
 #include "LavaCamera.hpp"
 #include "KeyboardMovementController.hpp"
 #include "LavaTypes.hpp"
@@ -70,6 +71,7 @@ void Application::Run()
     }
 
     RenderSystem RS{Device, Renderer.GetSwapChainRenderPass(), GlobalSetLayout->getDescriptorSetLayout()};
+    PointLightRenderSystem PLRS{Device, Renderer.GetSwapChainRenderPass(), GlobalSetLayout->getDescriptorSetLayout()};
     LavaCamera Camera{};
     
     Camera.SetViewDirection(glm::vec3(0.f), glm::vec3(0.5f, 0.f, 1.f));
@@ -113,13 +115,15 @@ void Application::Run()
 
             // Update objects and memory
             UniformBuffer UBO{};
-            UBO.ProjectionMatrix = Camera.GetProjectionMat() * Camera.GetViewMat();
+            UBO.ProjectionMatrix = Camera.GetProjectionMat();
+            UBO.viewMatrix = Camera.GetViewMat();
             UBOBuffers[FrameIdx]->writeToBuffer(&UBO);
             UBOBuffers[FrameIdx]->flush();
 
             // Drawing
             Renderer.StartSwapChainRenderPass(CommandBuffer);
             RS.RenderGameObjects(FrameDesc);
+            PLRS.RenderGameObjects(FrameDesc);
             Renderer.EndSwapChainRenderPass(CommandBuffer);
             Renderer.EndDrawFrame();
         }
